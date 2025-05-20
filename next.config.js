@@ -1,6 +1,5 @@
-import type { NextConfig } from "next";
-
-const nextConfig: NextConfig = {
+/** @type {import('next').NextConfig} */
+const nextConfig = {
   /* config options here */
   output: 'standalone',
   typescript: {
@@ -10,7 +9,9 @@ const nextConfig: NextConfig = {
   outputFileTracingExcludes: {
     '*': ['**/.next/**'],
   },
-  // Disable tracing completely for now to avoid EPERM error
-};
+  experimental: {
+    // Remove the properties that have been moved to root level
+  },
+}
 
-export default nextConfig;
+module.exports = nextConfig
