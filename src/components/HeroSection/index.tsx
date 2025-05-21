@@ -14,14 +14,14 @@ export default function HeroSection() {
     <section className="py-8 pt-12">
       <div className="container mx-auto px-4 max-w-5xl">
         {/* Hero section with profile and info */}
-        <div className="flex flex-col md:flex-row items-center md:items-start gap-8 mb-6 relative">
+        <div className="flex flex-col md:flex-row items-center md:items-start gap-8 mb-12 relative">
           {/* Vertical line connecting profile to blurb - positioned absolutely */}
           <div 
             className="absolute w-0.5 bg-white hidden md:block" 
             style={{
               left: "36px",
               top: "56px", // Center of profile image
-              bottom: "-240px", // Reduced to pull the line up a bit
+              bottom: "-259px", // Extend below the hero section to connect with blurb
               zIndex: "0"
             }}
           ></div>
@@ -69,10 +69,8 @@ export default function HeroSection() {
           </div>
         </div>
         
-        {/* Blurb section - moved up with negative margin-top */}
-        <div className="mt-[-20px]">
-          <ProfileBlurb />
-        </div>
+        {/* Blurb section */}
+        <ProfileBlurb />
       </div>
     </section>
   );

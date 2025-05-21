@@ -18,6 +18,7 @@ export default function NavMenu() {
   const navItems: NavItem[] = [
     { id: 'about', label: 'About' },
     { id: 'experience', label: 'Experience' },
+    { id: 'projects', label: 'Projects' },
     { id: 'skills', label: 'Skills' },
     { id: 'tech-stack', label: 'Tech Stack' },
     { id: 'contact', label: 'Contact', isEmail: true, email: 'artem.ceshire@gmail.com' }

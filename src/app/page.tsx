@@ -8,6 +8,7 @@ import { DesktopHeroSection, MobileHeroSection } from '@/components/HeroSection'
 import { DesktopExperienceSection, MobileExperienceSection } from '@/components/ExperienceSection';
 import { DesktopSkillsSection, MobileSkillsSection } from '@/components/SkillsSection';
 import { DesktopTechStackSection, MobileTechStackSection } from '@/components/TechStackSection';
+import { DesktopRecentProjectsSection, MobileRecentProjectsSection } from '@/components/RecentProjectsSection';
 import Footer from '@/components/Footer';
 
 export default function Home() {
@@ -39,6 +40,14 @@ export default function Home() {
           <ResponsiveWrapper
             mobileComponent={<MobileExperienceSection />}
             desktopComponent={<DesktopExperienceSection />}
+          />
+        </div>
+        
+        {/* Recent Projects Section - moved up right after Experience */}
+        <div id="projects">
+          <ResponsiveWrapper
+            mobileComponent={<MobileRecentProjectsSection />}
+            desktopComponent={<DesktopRecentProjectsSection />}
           />
         </div>
         

@@ -12,6 +12,7 @@ export default function MobileNavMenu() {
   const navLinks = [
     { name: 'Home', href: '#top', isEmail: false },
     { name: 'Experience', href: '#experience', isEmail: false },
+    { name: 'Projects', href: '#projects', isEmail: false },
     { name: 'Skills', href: '#skills', isEmail: false },
     { name: 'Tech Stack', href: '#tech-stack', isEmail: false },
     { name: 'Contact', href: 'mailto:artem.ceshire@gmail.com', isEmail: true }
@@ -28,6 +29,27 @@ export default function MobileNavMenu() {
     document.addEventListener('mousedown', handleClickOutside);
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
+  // Listen for custom events to hide/show the navigation
+  useEffect(() => {
+    // Function to handle the project modal state changes
+    const handleProjectModalStateChange = (event: CustomEvent) => {
+      const isModalOpen = event.detail.isOpen;
+      
+      // If project modal is open, close and hide the nav
+      if (isModalOpen) {
+        setIsOpen(false);
+      }
+    };
+
+    // Add event listener for custom events
+    document.addEventListener('projectModalStateChange', handleProjectModalStateChange as EventListener);
+    
+    // Cleanup
+    return () => {
+      document.removeEventListener('projectModalStateChange', handleProjectModalStateChange as EventListener);
     };
   }, []);
 
@@ -57,7 +79,7 @@ export default function MobileNavMenu() {
   };
 
   return (
-    <nav className="fixed top-4 right-4 z-50">
+    <nav className="fixed top-4 right-4 z-50" id="mobile-nav">
       {/* Mobile menu button with enhanced animation */}
       <button 
         onClick={() => setIsOpen(!isOpen)} 

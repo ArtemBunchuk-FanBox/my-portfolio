@@ -57,16 +57,7 @@ export default function ProfileBlurb() {
 
   return (
     <div className="relative pl-20">
-      {/* Modified vertical line that connects with above section */}
-      <div 
-        className="absolute w-0.5 bg-white" 
-        style={{
-          left: "36px",
-          top: "-12px", // Start slightly above to ensure clean connection
-          bottom: "0",
-          zIndex: "1"
-        }}
-      ></div>
+
       
       {/* Blurb text with highlighted phrases */}
       <p className="max-w-4xl text-base md:text-lg text-gray-300 leading-relaxed text-left">
