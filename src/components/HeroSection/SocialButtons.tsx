@@ -6,9 +6,22 @@ import { FaEnvelope, FaLinkedin, FaGithub, FaUtensils, FaDownload } from 'react-
 interface SocialButtonsProps {
   activeTooltip: string | null;
   setActiveTooltip: (id: string | null) => void;
+  resumeUrl?: string;
+  linkedinUrl?: string;
+  githubUrl?: string;
+  emailAddress?: string;
+  blogUrl?: string;
 }
 
-export default function SocialButtons({ activeTooltip, setActiveTooltip }: SocialButtonsProps) {
+export default function SocialButtons({ 
+  activeTooltip, 
+  setActiveTooltip,
+  resumeUrl = "/your-resume.pdf",
+  linkedinUrl = "https://linkedin.com/in/yourprofile",
+  githubUrl = "https://github.com/yourusername",
+  emailAddress = "your.email@example.com",
+  blogUrl = "https://your-cooking-blog.com"
+}: SocialButtonsProps) {
   const [resumeHovered, setResumeHovered] = useState(false);
 
   return (
@@ -16,7 +29,7 @@ export default function SocialButtons({ activeTooltip, setActiveTooltip }: Socia
       {/* Resume button - larger size */}
       <div className="relative">
         <motion.a 
-          href="/your-resume.pdf" 
+          href={resumeUrl} 
           className="bg-gray-800/70 text-gray-300 px-5 py-2.5 text-lg rounded-md flex items-center gap-2 overflow-hidden relative"
           onMouseEnter={() => {
             setActiveTooltip('resume');
@@ -77,7 +90,7 @@ export default function SocialButtons({ activeTooltip, setActiveTooltip }: Socia
       {/* LinkedIn with brand color */}
       <SocialIconButton 
         icon={<FaLinkedin size={24} />} 
-        href="https://linkedin.com/in/yourprofile" 
+        href={linkedinUrl} 
         tooltip="LinkedIn Profile"
         tooltipId="linkedin"
         activeTooltip={activeTooltip}
@@ -88,7 +101,7 @@ export default function SocialButtons({ activeTooltip, setActiveTooltip }: Socia
       {/* GitHub with brand color */}
       <SocialIconButton 
         icon={<FaGithub size={24} />} 
-        href="https://github.com/yourusername" 
+        href={githubUrl} 
         tooltip="GitHub Projects"
         tooltipId="github"
         activeTooltip={activeTooltip}
@@ -99,7 +112,7 @@ export default function SocialButtons({ activeTooltip, setActiveTooltip }: Socia
       {/* Email with brand color */}
       <SocialIconButton 
         icon={<FaEnvelope size={24} />} 
-        href="mailto:your.email@example.com" 
+        href={`mailto:${emailAddress}`} 
         tooltip="Contact Me"
         tooltipId="email"
         activeTooltip={activeTooltip}
@@ -110,7 +123,7 @@ export default function SocialButtons({ activeTooltip, setActiveTooltip }: Socia
       {/* Food blog with brand color */}
       <SocialIconButton 
         icon={<FaUtensils size={24} />} 
-        href="https://your-cooking-blog.com" 
+        href={blogUrl} 
         tooltip="Artichoks - My Cooking Blog"
         tooltipId="food"
         activeTooltip={activeTooltip}

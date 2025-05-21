@@ -1,37 +1,66 @@
-// src/app/page.tsx
-import HeroSection from '@/components/HeroSection';
-import ExperienceSection from '@/components/ExperienceSection';
-import SkillsSection from '@/components/SkillsSection';
-import TechStackSection from '@/components/TechStackSection';
-import NavMenu from '@/components/NavMenu';
+"use client";
+
 import { Sky } from '@/components/Sky';
+import { useResponsive } from '@/context/ResponsiveContext';
+import ResponsiveWrapper from '@/components/ResponsiveWrapper';
+import { NavMenu, MobileNavMenu } from '@/components/NavMenu/index';
+import { DesktopHeroSection, MobileHeroSection } from '@/components/HeroSection';
+import { DesktopExperienceSection, MobileExperienceSection } from '@/components/ExperienceSection';
+import { DesktopSkillsSection, MobileSkillsSection } from '@/components/SkillsSection';
+import { DesktopTechStackSection, MobileTechStackSection } from '@/components/TechStackSection';
+import Footer from '@/components/Footer';
 
 export default function Home() {
+  const { isMobile } = useResponsive();
+  
   return (
-    <main className="relative">
-      {/* Sky background - positioned absolutely to cover the page */}
-      <div className="fixed inset-0 z-0">
-        <Sky />
-      </div>
+    <main className="min-h-screen bg-gray-900 text-white relative" id="top">
+      {/* Background with stars and clouds */}
+      <Sky />
       
-      {/* Navigation menu */}
-      <NavMenu />
+      {/* Responsive Navigation */}
+      <ResponsiveWrapper 
+        mobileComponent={<MobileNavMenu />}
+        desktopComponent={<NavMenu />}
+      />
       
-      {/* Content sections with relative positioning and higher z-index */}
-      <div className="relative z-10 pt-24">
-        <section id="about">
-          <HeroSection />
-        </section>
-        <section id="experience">
-          <ExperienceSection />
-        </section>
-        <section id="skills">
-          <SkillsSection />
-        </section>
-        <section id="tech-stack">
-          <TechStackSection />
-        </section>
-        {/* More sections will be added here */}
+      {/* Main Content - conditionally apply desktop styling */}
+      <div className={`relative z-10 ${!isMobile ? 'pt-24' : ''}`}>
+        {/* Hero Section - use different versions for mobile/desktop */}
+        <div id="hero">
+          <ResponsiveWrapper
+            mobileComponent={<MobileHeroSection />}
+            desktopComponent={<DesktopHeroSection />}
+          />
+        </div>
+        
+        {/* Experience Section - now with mobile/desktop versions */}
+        <div id="experience">
+          <ResponsiveWrapper
+            mobileComponent={<MobileExperienceSection />}
+            desktopComponent={<DesktopExperienceSection />}
+          />
+        </div>
+        
+        {/* Skills Section - now with mobile/desktop versions */}
+        <div id="skills">
+          <ResponsiveWrapper
+            mobileComponent={<MobileSkillsSection />}
+            desktopComponent={<DesktopSkillsSection />}
+          />
+        </div>
+        
+        {/* Tech Stack Section - now with mobile/desktop versions */}
+        <div id="tech-stack">
+          <ResponsiveWrapper
+            mobileComponent={<MobileTechStackSection />}
+            desktopComponent={<DesktopTechStackSection />}
+          />
+        </div>
+        
+        <div id="contact">
+          <Footer />
+        </div>
       </div>
     </main>
   );
