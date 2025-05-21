@@ -418,7 +418,7 @@ export default function ExperienceSection() {
                               
                               {/* Title now comes after period */}
                               <span
-                                className={`text-2xl md:text-3xl font-bold ${hasHighlightedPoints ? 'relative' : ''}`}
+                                className={`text-2xl md:text-3xl font-bold`}
                                 style={{
                                   background: 'linear-gradient(90deg, #a64ff9 0%, #8226e3 50%, #c0392b 100%)',
                                   WebkitBackgroundClip: 'text',
@@ -428,21 +428,7 @@ export default function ExperienceSection() {
                                 }}
                               >
                                 {role.title}
-                                {/* Add a subtle indicator for roles with highlighted points */}
-                                {hasHighlightedPoints && (
-                                  <span 
-                                    className="absolute -right-6 top-1/2 transform -translate-y-1/2 text-sm"
-                                    style={{ 
-                                      animation: 'pulse 2s infinite',
-                                      WebkitBackgroundClip: 'initial',
-                                      WebkitTextFillColor: 'initial',
-                                      backgroundClip: 'initial',
-                                      color: '#a64ff9'
-                                    }}
-                                  >
-                                    •
-                                  </span>
-                                )}
+                                {/* Removed the pulsating purple dot indicator */}
                               </span>
                               
                               {/* Reduced spacing between bullet points */}

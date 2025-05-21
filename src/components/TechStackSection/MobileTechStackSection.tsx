@@ -1,8 +1,8 @@
 "use client";
 
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { FaJs, FaReact, FaVuejs, FaNodeJs, FaPython, FaGitAlt, FaGithub, FaWordpress } from 'react-icons/fa';
 import { SiTypescript, SiPhp, SiC, SiCplusplus, SiNextdotjs, SiIonic, SiTailwindcss, SiMongodb, SiSupabase, SiBitbucket, SiElementor, SiAdobephotoshop, SiAdobeillustrator, SiMysql, SiClerk } from 'react-icons/si';
 
@@ -16,6 +16,9 @@ type TechType = Technology['type'];
 
 export default function MobileTechStackSection() {
   const [activeType, setActiveType] = useState<TechType | null>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [containerHeight, setContainerHeight] = useState<number | 'auto'>('auto');
+  const [isAnimating, setIsAnimating] = useState(false);
   
   // Define technologies with their categories
   const technologies: Technology[] = [
@@ -95,9 +98,38 @@ export default function MobileTechStackSection() {
     design: 'bg-gradient-to-r from-pink-500 to-rose-600',
   };
 
-  // Function to handle filter selection
+  // Simplified filter handling with height preservation
   const handleFilterClick = (type: TechType | null) => {
-    setActiveType(type === activeType ? null : type);
+    // Don't do anything if already animating
+    if (isAnimating) return;
+    
+    const newFilter = type === activeType ? null : type;
+    const isReduction = (activeType === null && type !== null) || 
+                        (activeType !== null && type !== null && activeType !== type);
+    
+    if (isReduction && containerRef.current) {
+      // Save current height before filter change
+      setContainerHeight(containerRef.current.offsetHeight);
+      setIsAnimating(true);
+      
+      // Update filter after a short delay
+      setTimeout(() => {
+        setActiveType(newFilter);
+        
+        // Begin gradual height transition
+        setTimeout(() => {
+          setContainerHeight('auto');
+          
+          // Wait for transition to complete
+          setTimeout(() => {
+            setIsAnimating(false);
+          }, 400); // Match with transition duration
+        }, 50);
+      }, 50);
+    } else {
+      // For expansion or same filter, just update immediately
+      setActiveType(newFilter);
+    }
   };
 
   // Get technologies to display based on active filter
@@ -117,7 +149,7 @@ export default function MobileTechStackSection() {
             {/* Mobile-optimized filter pills */}
             <div className="mb-4 flex flex-wrap gap-2">
               <button
-                className={`px-3 py-1.5 rounded-full text-sm font-medium transition-all ${
+                className={`px-3 py-1.5 rounded-full text-sm font-medium transition-all duration-300 ${
                   activeType === null 
                     ? 'bg-gradient-to-r from-purple-600 to-pink-500 text-white' 
                     : 'bg-gray-700/50 text-gray-300'
@@ -130,7 +162,7 @@ export default function MobileTechStackSection() {
               {(Object.keys(typeToName) as TechType[]).map(type => (
                 <button
                   key={type}
-                  className={`px-3 py-1.5 rounded-full text-sm font-medium transition-all ${
+                  className={`px-3 py-1.5 rounded-full text-sm font-medium transition-all duration-300 ${
                     activeType === type 
                       ? typeToColor[type] + ' text-white'
                       : 'bg-gray-700/50 text-gray-300'
@@ -142,33 +174,51 @@ export default function MobileTechStackSection() {
               ))}
             </div>
             
-            {/* Tech stack items in a more compact grid */}
-            <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
-              {filteredTechnologies.map((tech) => (
-                <motion.div
-                  key={tech.name}
-                  className={`flex items-center gap-2 px-3 py-2 rounded-md ${getTypeColor(tech.type)}`}
-                  whileTap={{ scale: 0.98 }}
-                  transition={{ duration: 0.1 }}
+            {/* Container with controlled height transition */}
+            <div 
+              ref={containerRef}
+              style={{ 
+                height: containerHeight, 
+                transition: 'height 400ms ease-out',
+                overflow: 'hidden'
+              }}
+            >
+              <AnimatePresence mode="wait">
+                <motion.div 
+                  key={activeType || 'all'} // Force re-render on filter change
+                  className="grid grid-cols-2 gap-2 sm:grid-cols-3"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.3 }}
                 >
-                  <div className="text-xl flex-shrink-0">
-                    {typeof tech.icon === 'string' ? (
-                      <Image 
-                        src={tech.icon} 
-                        alt={tech.name} 
-                        width={20} 
-                        height={20} 
-                        className="w-5 h-5"
-                      />
-                    ) : (
-                      tech.icon
-                    )}
-                  </div>
-                  <span className="font-medium text-sm whitespace-nowrap overflow-hidden text-ellipsis">
-                    {tech.name}
-                  </span>
+                  {filteredTechnologies.map((tech) => (
+                    <motion.div
+                      key={tech.name}
+                      className={`flex items-center gap-2 px-3 py-2 rounded-md ${getTypeColor(tech.type)}`}
+                      whileTap={{ scale: 0.98 }}
+                      transition={{ duration: 0.2 }}
+                    >
+                      <div className="text-xl flex-shrink-0">
+                        {typeof tech.icon === 'string' ? (
+                          <Image 
+                            src={tech.icon} 
+                            alt={tech.name} 
+                            width={20} 
+                            height={20} 
+                            className="w-5 h-5"
+                          />
+                        ) : (
+                          tech.icon
+                        )}
+                      </div>
+                      <span className="font-medium text-sm whitespace-nowrap overflow-hidden text-ellipsis">
+                        {tech.name}
+                      </span>
+                    </motion.div>
+                  ))}
                 </motion.div>
-              ))}
+              </AnimatePresence>
             </div>
           </div>
         </div>

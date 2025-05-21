@@ -384,7 +384,7 @@ export default function MobileExperienceSection() {
                             
                             {/* Title with larger font size */}
                             <h3
-                              className={`text-xl font-bold mb-4 ${hasHighlightedPoints ? 'relative' : ''}`}
+                              className={`text-xl font-bold mb-4`}
                               style={{
                                 background: 'linear-gradient(90deg, #a64ff9 0%, #8226e3 50%, #c0392b 100%)',
                                 WebkitBackgroundClip: 'text',
@@ -394,21 +394,6 @@ export default function MobileExperienceSection() {
                               }}
                             >
                               {role.title}
-                              {/* Indicator for relevant points */}
-                              {hasHighlightedPoints && (
-                                <span 
-                                  className="absolute -right-4 top-1/2 transform -translate-y-1/2 text-sm"
-                                  style={{ 
-                                    animation: 'pulse 2s infinite',
-                                    WebkitBackgroundClip: 'initial',
-                                    WebkitTextFillColor: 'initial',
-                                    backgroundClip: 'initial',
-                                    color: '#a64ff9'
-                                  }}
-                                >
-                                  •
-                                </span>
-                              )}
                             </h3>
                             
                             {/* Responsibilities - larger text for better readability */}
