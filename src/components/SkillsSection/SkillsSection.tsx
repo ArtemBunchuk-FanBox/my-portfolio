@@ -183,10 +183,10 @@ export default function SkillsSection() {
   }, [highlightedSkills]);
 
   return (
-    <section className="py-8 overflow-visible">
-      <div className="container mx-auto px-4 max-w-5xl">
+    <section className="py-8 overflow-visible select-none">
+      <div className="container mx-auto px-4 max-w-5xl select-none">
         <div className="rounded-md border border-white overflow-visible">
-          <h2 className="text-3xl font-bold py-4 px-6 border-b border-white text-white bg-gray-800/50">
+          <h2 className="text-3xl font-bold py-4 px-6 border-b border-white text-white bg-gray-800/50 select-none">
             Skills
           </h2>
           
@@ -203,9 +203,9 @@ export default function SkillsSection() {
             ></div>
             
             {/* Shifted content to the right */}
-            <div className="pl-20">
+            <div className="pl-20 select-none">
               {skillCategories.map((category, categoryIndex) => (
-                <div key={category.category} className="mb-8 relative">
+                <div key={category.category} className="mb-8 relative select-none">
                   {/* Horizontal line extension for each category - corrected position */}
                   <div 
                     className="absolute h-0.5 bg-white" 
@@ -217,11 +217,11 @@ export default function SkillsSection() {
                     }}
                   ></div>
                 
-                  <h3 className="text-xl font-bold mb-4 text-white">
+                  <h3 className="text-xl font-bold mb-4 text-white select-none">
                     {category.category}
                   </h3>
                   
-                  <div className="flex flex-wrap gap-3">
+                  <div className="flex flex-wrap gap-3 select-none">
                     {category.skills.map((skill) => (
                       <SkillBadge 
                         key={skill} 
@@ -271,7 +271,7 @@ function SkillBadge({
   
   return (
     <motion.div
-      className={`relative px-4 py-2 rounded-md text-white font-medium overflow-hidden bg-gradient-to-r ${gradientColor}`}
+      className={`relative px-4 py-2 rounded-md text-white font-medium overflow-hidden bg-gradient-to-r ${gradientColor} select-none`}
       animate={{ 
         opacity: opacity,
         boxShadow: isHighlighted ? `0 0 12px 2px ${glowColor}` : 'none', // Glow that matches the color
@@ -298,7 +298,7 @@ function SkillBadge({
           }
         }}
       />
-      <span className="relative z-10">{skill}</span>
+      <span className="relative z-10 select-none">{skill}</span>
     </motion.div>
   );
 }

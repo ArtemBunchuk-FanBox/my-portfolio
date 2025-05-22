@@ -32,7 +32,7 @@ export default function Footer() {
           {/* Right side - Social links */}
           <div className="flex items-center space-x-6">
             <Link 
-              href="https://linkedin.com/in/yourprofile" 
+              href="https://linkedin.com/in/artem-bunchuk-4023b6143" 
               target="_blank" 
               rel="noopener noreferrer"
               className="text-gray-400 hover:text-white transition-colors"
@@ -40,7 +40,7 @@ export default function Footer() {
               <FaLinkedin size={20} />
             </Link>
             <Link 
-              href="https://github.com/yourusername" 
+              href="https://github.com/ArtemBunchuk-FanBox" 
               target="_blank" 
               rel="noopener noreferrer"
               className="text-gray-400 hover:text-white transition-colors"
@@ -48,7 +48,7 @@ export default function Footer() {
               <FaGithub size={20} />
             </Link>
             <Link 
-              href="mailto:your.email@example.com"
+              href="mailto:artem.cheshire@gmail.com"
               className="text-gray-400 hover:text-white transition-colors"
             >
               <FaEnvelope size={20} />

@@ -2,7 +2,7 @@
 /* eslint-disable */
 import { useState, useEffect, useCallback } from 'react';
 import Image from 'next/image';
-import { FaSuitcase } from 'react-icons/fa';
+import { FaSuitcase, FaExternalLinkAlt } from 'react-icons/fa';
 
 // Define types for our data
 type Role = {
@@ -341,17 +341,34 @@ export default function MobileExperienceSection() {
               <div className="space-y-10">
                 {(activeTab === 'work' ? workExperience : educationExperience).map((institution, index) => (
                   <div key={`${institution.name}-${index}`} className="bg-gray-800/30 rounded-lg border border-purple-500/20 overflow-hidden">
-                    {/* Institution logo at the top */}
-                    <div className="flex justify-center pt-4 pb-2">
+                    {/* Institution logo aligned to the left */}
+                    <div className="flex justify-start pl-2 pt-4 pb-2">
                       <div className="w-[60px] h-[60px] rounded-full overflow-hidden flex items-center justify-center border-2 border-white/70 bg-white/10">
                         {institution.logo ? (
-                          <Image
-                            src={institution.logo}
-                            alt={institution.name}
-                            width={60}
-                            height={60}
-                            style={{ objectFit: 'contain' }}
-                          />
+                          institution.link ? (
+                            <a 
+                              href={institution.link} 
+                              target="_blank" 
+                              rel="noopener noreferrer"
+                              className="w-full h-full flex items-center justify-center"
+                            >
+                              <Image
+                                src={institution.logo}
+                                alt={institution.name}
+                                width={60}
+                                height={60}
+                                style={{ objectFit: 'contain' }}
+                              />
+                            </a>
+                          ) : (
+                            <Image
+                              src={institution.logo}
+                              alt={institution.name}
+                              width={60}
+                              height={60}
+                              style={{ objectFit: 'contain' }}
+                            />
+                          )
                         ) : (
                           <FaSuitcase className="w-8 h-8 text-white" />
                         )}
@@ -369,17 +386,24 @@ export default function MobileExperienceSection() {
                             key={`${role.title}-${roleIndex}`} 
                             className={`mb-6 ${roleIndex > 0 ? 'pt-5 border-t border-white/10' : ''}`}
                           >
-                            {/* Organization name and period ABOVE the title */}
-                            <div className="flex justify-between items-center mb-3 text-sm">
-                              <a 
-                                href={institution.link} 
-                                target="_blank" 
-                                rel="noopener noreferrer"
-                                className="text-white hover:text-purple-400 transition-colors font-medium"
-                              >
-                                {institution.name}
-                              </a>
-                              <span className="text-gray-300">{role.period}</span>
+                            {/* Organization name and period ABOVE the title - ensure same size and alignment */}
+                            <div className="flex justify-between items-center mb-3">
+                              {institution.link ? (
+                                <a 
+                                  href={institution.link} 
+                                  target="_blank" 
+                                  rel="noopener noreferrer"
+                                  className="text-white hover:text-white/80 transition-colors text-sm font-medium flex items-center gap-1"
+                                >
+                                  {institution.name}
+                                  <FaExternalLinkAlt className="text-[10px] opacity-70" />
+                                </a>
+                              ) : (
+                                <span className="text-gray-300 text-sm font-medium">
+                                  {institution.name}
+                                </span>
+                              )}
+                              <span className="text-gray-300 text-sm">{role.period}</span>
                             </div>
                             
                             {/* Title with larger font size */}

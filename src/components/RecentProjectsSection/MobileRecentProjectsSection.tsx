@@ -491,7 +491,7 @@ export default function MobileRecentProjectsSection() {
               </button>
               
               {/* Scrollable content container with improved layout */}
-              <div className="overflow-y-auto h-full pb-24 pt-4">
+              <div className="overflow-y-auto h-full pb-12 pt-4"> {/* Reduced pb-24 to pb-12 */}
                 {/* Hero image section without title overlay */}
                 <div className="h-56 md:h-64 relative w-full overflow-hidden">
                   <Image
@@ -507,11 +507,11 @@ export default function MobileRecentProjectsSection() {
                 </div>
                 
                 {/* Project content with properly positioned title */}
-                <div className="px-5 pt-6 pb-20 relative z-10">
+                <div className="px-5 pt-6 pb-6 relative z-10">
                   {/* Title section with proper background and styling */}
                   <div className="mb-6 pb-6 border-b border-gray-800">
                     <h2 
-                      className="text-2xl font-bold"
+                      className="text-3xl font-bold" // Changed from text-2xl to text-3xl
                       style={{
                         background: 'linear-gradient(90deg, #a64ff9 0%, #8226e3 50%, #c0392b 100%)',
                         WebkitBackgroundClip: 'text',
@@ -523,7 +523,7 @@ export default function MobileRecentProjectsSection() {
                       {activeProject.title}
                     </h2>
                   </div>
-                  
+                
                   {/* Technology badges */}
                   <div className="mb-6 pb-6 border-b border-gray-800">
                     <div className="flex flex-wrap gap-2">
@@ -540,28 +540,38 @@ export default function MobileRecentProjectsSection() {
                   
                   {/* Project description with better typography */}
                   <div className="mb-6 pb-6 border-b border-gray-800">
-                    <h3 className="text-sm uppercase text-gray-500 font-medium mb-2">Overview</h3>
-                    <p className="text-base text-gray-300 font-light leading-relaxed mb-4">
-                      {activeProject.shortDescription}
-                    </p>
+                    <h3 className="text-base uppercase text-gray-200 font-medium mb-3">Overview</h3>
+                    {/* Short description - styled more subtly but distinct */}
+                    <div className="mb-5 bg-gray-800/30 border-l-2 border-purple-500/40 pl-4 py-2 pr-3 rounded-r-sm">
+                      <p className="text-base text-gray-300 leading-relaxed">
+                        {activeProject.shortDescription}
+                      </p>
+                    </div>
                     
+                    {/* Section divider - only show if there's a full description */}
+                    {(activeProject.fullDescription || activeProject.fullDescriptionHtml) && (
+                      <h3 className="text-base uppercase text-gray-200 font-medium mb-3">Details</h3>
+                    )}
+                  
                     {/* Full description with improved styling */}
                     <div className="text-gray-300 space-y-4 project-description">
-                      {activeProject.fullDescriptionHtml ? (
-                        <div 
-                          dangerouslySetInnerHTML={{ __html: activeProject.fullDescriptionHtml }} 
-                          className="description-content text-sm font-light leading-relaxed"
-                        />
-                      ) : (
-                        activeProject.fullDescription.split('\n\n').map((paragraph, idx) => (
-                          <p key={`para-${idx}`} className="text-sm font-light leading-relaxed">
-                            {paragraph}
-                          </p>
-                        ))
-                      )}
+                      <div className="bg-gray-800/30 border-l-2 border-purple-500/40 pl-4 py-2 pr-3 rounded-r-sm">
+                        {activeProject.fullDescriptionHtml ? (
+                          <div 
+                            dangerouslySetInnerHTML={{ __html: activeProject.fullDescriptionHtml }} 
+                            className="description-content text-base text-gray-300 leading-relaxed"
+                          />
+                        ) : (
+                          activeProject.fullDescription.split('\n\n').map((paragraph, idx) => (
+                            <p key={`para-${idx}`} className="text-base text-gray-300 leading-relaxed">
+                              {paragraph}
+                            </p>
+                          ))
+                        )}
+                      </div>
                     </div>
                   </div>
-                  
+                
                   {/* Project links without a section title */}
                   <div className="flex flex-col gap-3">
                     {activeProject.githubUrl && (

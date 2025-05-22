@@ -3,7 +3,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import Image from 'next/image';
-import { FaSuitcase } from 'react-icons/fa';
+import { FaSuitcase, FaExternalLinkAlt } from 'react-icons/fa';
 
 // Define types for our data
 type Role = {
@@ -289,10 +289,10 @@ export default function ExperienceSection() {
   }, [highlightIntensity, shouldHighlight]);
 
   return (
-    <section className="py-8 overflow-visible">
+    <section className="py-8 overflow-visible select-none">
       <div className="container mx-auto px-4 max-w-5xl">
         <div className="rounded-md border border-white overflow-visible">
-          <h2 className="text-3xl font-bold py-4 px-6 border-b border-white text-white bg-gray-800/50">
+          <h2 className="text-3xl font-bold py-4 px-6 border-b border-white text-white bg-gray-800/50 select-none">
             Experience
           </h2>
           
@@ -310,9 +310,9 @@ export default function ExperienceSection() {
             ></div>
             
             {/* Changed width to max-w-md (448px) */}
-            <div className="flex rounded-full mb-9 overflow-hidden bg-gray-800/50 max-w-md mx-auto p-1.5 border border-purple-500/30">
+            <div className="flex rounded-full mb-9 overflow-hidden bg-gray-800/50 max-w-md mx-auto p-1.5 border border-purple-500/30 select-none">
               <button
-                className={`flex-1 py-3 px-6 font-medium text-center relative transition-all duration-300 text-white rounded-full`}
+                className={`flex-1 py-3 px-6 font-medium text-center relative transition-all duration-300 text-white rounded-full select-none`}
                 onClick={(e) => {
                   e.preventDefault();
                   const scrollPosition = window.scrollY;
@@ -323,13 +323,14 @@ export default function ExperienceSection() {
                   background: activeTab === 'work' 
                     ? 'linear-gradient(90deg, #a64ff9 0%, #8226e3 50%, #c0392b 100%)' 
                     : 'transparent',
-                  boxShadow: activeTab === 'work' ? '0 4px 12px rgba(166, 79, 249, 0.4)' : 'none'
+                  boxShadow: activeTab === 'work' ? '0 4px 12px rgba(166, 79, 249, 0.4)' : 'none',
+                  cursor: 'pointer' // Add custom cursor style
                 }}
               >
                 Work
               </button>
               <button
-                className={`flex-1 py-3 px-6 font-medium text-center relative transition-all duration-300 text-white rounded-full`}
+                className={`flex-1 py-3 px-6 font-medium text-center relative transition-all duration-300 text-white rounded-full select-none cursor-pointer`}
                 onClick={(e) => {
                   e.preventDefault();
                   const scrollPosition = window.scrollY;
@@ -340,7 +341,8 @@ export default function ExperienceSection() {
                   background: activeTab === 'education' 
                     ? 'linear-gradient(90deg, #a64ff9 0%, #8226e3 50%, #c0392b 100%)' 
                     : 'transparent',
-                  boxShadow: activeTab === 'education' ? '0 4px 12px rgba(166, 79, 249, 0.4)' : 'none'
+                  boxShadow: activeTab === 'education' ? '0 4px 12px rgba(166, 79, 249, 0.4)' : 'none',
+                  cursor: 'pointer' // Add custom cursor style
                 }}
               >
                 Education
@@ -368,14 +370,32 @@ export default function ExperienceSection() {
                       <div className="w-[75px] h-[75px] rounded-full overflow-hidden flex items-center justify-center border-2 border-white
                       -500 bg-transparent relative p-0">
                         {institution.logo ? (
-                          <Image
-                            src={institution.logo}
-                            alt={institution.name}
-                            width={75}
-                            height={75}
-                            style={{ objectFit: 'contain', width: '75px', height: '75px' }}
-                            className=""
-                          />
+                          institution.link ? (
+                            <a 
+                              href={institution.link} 
+                              target="_blank" 
+                              rel="noopener noreferrer"
+                              className="w-full h-full flex items-center justify-center"
+                            >
+                              <Image
+                                src={institution.logo}
+                                alt={institution.name}
+                                width={75}
+                                height={75}
+                                style={{ objectFit: 'contain', width: '75px', height: '75px' }}
+                                className=""
+                              />
+                            </a>
+                          ) : (
+                            <Image
+                              src={institution.logo}
+                              alt={institution.name}
+                              width={75}
+                              height={75}
+                              style={{ objectFit: 'contain', width: '75px', height: '75px' }}
+                              className=""
+                            />
+                          )
                         ) : (
                           <FaSuitcase className="w-8 h-8 text-gray-800" />
                         )}
@@ -385,14 +405,21 @@ export default function ExperienceSection() {
                     {/* Content with updated font sizes */}
                     <div>
                       <div className="text-gray-400 text-base mb-1">{institution.period}</div>
-                      <a 
-                        href={institution.link} 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="text-xl md:text-2xl font-bold text-white hover:text-blue-400 transition-colors"
-                      >
-                        {institution.name}
-                      </a>
+                      {institution.link ? (
+                        <a 
+                          href={institution.link} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="text-xl md:text-2xl font-bold text-white hover:text-blue-400 transition-colors flex items-center gap-1"
+                        >
+                          {institution.name}
+                          <FaExternalLinkAlt className="text-xs opacity-70" />
+                        </a>
+                      ) : (
+                        <span className="text-xl md:text-2xl font-bold text-white">
+                          {institution.name}
+                        </span>
+                      )}
                       
                       {/* List all roles for this institution */}
                       <div className="mt-2 space-y-6">

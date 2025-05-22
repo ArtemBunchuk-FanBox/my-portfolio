@@ -17,7 +17,8 @@ export default function MobileSocialButtons({
     <div className="flex flex-wrap gap-3 justify-center mb-6">
       {/* Resume button */}
       <motion.a 
-        href="/your-resume.pdf" 
+        href="/Artem Bunchuk CV.pdf" 
+        download
         className="bg-gray-800/70 text-white px-3 py-2 text-sm rounded-md flex items-center gap-1"
         whileTap={{ scale: 0.95 }}
       >
@@ -28,28 +29,28 @@ export default function MobileSocialButtons({
       {/* LinkedIn */}
       <MobileSocialIconButton 
         icon={<FaLinkedin size={18} />} 
-        href="https://linkedin.com/in/yourprofile" 
+        href="https://www.linkedin.com/in/artem-bunchuk-4023b6143" 
         brandColor="#04a6fa"
-      />
-      
-      {/* GitHub */}
-      <MobileSocialIconButton 
-        icon={<FaGithub size={18} />} 
-        href="https://github.com/yourusername" 
-        brandColor="#aa92cd"
       />
       
       {/* Email */}
       <MobileSocialIconButton 
         icon={<FaEnvelope size={18} />} 
-        href="mailto:your.email@example.com" 
+        href="mailto:artem.cheshire@gmail.com" 
         brandColor="#EA4335"
+      />
+      
+      {/* GitHub */}
+      <MobileSocialIconButton 
+        icon={<FaGithub size={18} />} 
+        href="https://github.com/ArtemBunchuk-FanBox" 
+        brandColor="#aa92cd"
       />
       
       {/* Food blog */}
       <MobileSocialIconButton 
         icon={<FaUtensils size={18} />} 
-        href="https://your-cooking-blog.com" 
+        href="https://articooks.com" 
         brandColor="#FF9800"
       />
     </div>

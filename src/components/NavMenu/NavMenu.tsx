@@ -13,6 +13,7 @@ type NavItem = {
 export default function NavMenu() {
   const [hoveredItem, setHoveredItem] = useState<string | null>(null);
   const [scrolled, setScrolled] = useState(false);
+  const [modalIsOpen, setModalIsOpen] = useState(false);
   
   // Navigation items
   const navItems: NavItem[] = [
@@ -36,6 +37,19 @@ export default function NavMenu() {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+  
+  // Listen for modal state changes
+  useEffect(() => {
+    const handleModalStateChange = (event: Event) => {
+      const customEvent = event as CustomEvent<{ isOpen: boolean }>;
+      setModalIsOpen(customEvent.detail.isOpen);
+    };
+    
+    window.addEventListener('modalStateChange', handleModalStateChange as EventListener);
+    return () => {
+      window.removeEventListener('modalStateChange', handleModalStateChange as EventListener);
+    };
+  }, []);
 
   // Handle click on navigation item
   const handleNavClick = (item: NavItem) => {
@@ -54,6 +68,11 @@ export default function NavMenu() {
     }
   };
 
+  // Hide navigation completely when modal is open
+  if (modalIsOpen) {
+    return null;
+  }
+
   return (
     <div className="fixed top-0 left-0 w-full z-50">
       <div className="py-6 max-w-5xl mx-auto px-4">
@@ -70,7 +89,7 @@ export default function NavMenu() {
                   onClick={() => handleNavClick(item)}
                   onMouseEnter={() => setHoveredItem(item.id)}
                   onMouseLeave={() => setHoveredItem(null)}
-                  className={`px-6 py-3 text-white font-medium text-lg rounded-full transition-all duration-200 whitespace-nowrap
+                  className={`px-6 py-3 text-white font-medium text-lg rounded-full transition-all duration-200 whitespace-nowrap select-none
                     ${hoveredItem === item.id ? 'bg-gradient-to-r from-purple-600/80 to-pink-600/80' : 'bg-transparent'}`}
                 >
                   {item.label}

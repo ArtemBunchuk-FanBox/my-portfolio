@@ -6,7 +6,6 @@ import { FaEnvelope, FaLinkedin, FaGithub, FaUtensils, FaDownload } from 'react-
 interface SocialButtonsProps {
   activeTooltip: string | null;
   setActiveTooltip: (id: string | null) => void;
-  resumeUrl?: string;
   linkedinUrl?: string;
   githubUrl?: string;
   emailAddress?: string;
@@ -16,11 +15,10 @@ interface SocialButtonsProps {
 export default function SocialButtons({ 
   activeTooltip, 
   setActiveTooltip,
-  resumeUrl = "/your-resume.pdf",
-  linkedinUrl = "https://linkedin.com/in/yourprofile",
-  githubUrl = "https://github.com/yourusername",
-  emailAddress = "your.email@example.com",
-  blogUrl = "https://your-cooking-blog.com"
+  linkedinUrl = "https://www.linkedin.com/in/artem-bunchuk-4023b6143",
+  githubUrl = "https://github.com/ArtemBunchuk-FanBox",
+  emailAddress = "artem.cheshire@gmail.com",
+  blogUrl = "https://articooks.com"
 }: SocialButtonsProps) {
   const [resumeHovered, setResumeHovered] = useState(false);
 
@@ -29,7 +27,8 @@ export default function SocialButtons({
       {/* Resume button - larger size */}
       <div className="relative">
         <motion.a 
-          href={resumeUrl} 
+          href="/Artem Bunchuk CV.pdf" 
+          download
           className="bg-gray-800/70 text-gray-300 px-5 py-2.5 text-lg rounded-md flex items-center gap-2 overflow-hidden relative"
           onMouseEnter={() => {
             setActiveTooltip('resume');
@@ -98,17 +97,6 @@ export default function SocialButtons({
         brandColor="#04a6fa"
       />
       
-      {/* GitHub with brand color */}
-      <SocialIconButton 
-        icon={<FaGithub size={24} />} 
-        href={githubUrl} 
-        tooltip="GitHub Projects"
-        tooltipId="github"
-        activeTooltip={activeTooltip}
-        setActiveTooltip={setActiveTooltip}
-        brandColor="#aa92cd"
-      />
-      
       {/* Email with brand color */}
       <SocialIconButton 
         icon={<FaEnvelope size={24} />} 
@@ -118,6 +106,17 @@ export default function SocialButtons({
         activeTooltip={activeTooltip}
         setActiveTooltip={setActiveTooltip}
         brandColor="#EA4335"
+      />
+      
+      {/* GitHub with brand color */}
+      <SocialIconButton 
+        icon={<FaGithub size={24} />} 
+        href={githubUrl} 
+        tooltip="GitHub Projects"
+        tooltipId="github"
+        activeTooltip={activeTooltip}
+        setActiveTooltip={setActiveTooltip}
+        brandColor="#aa92cd"
       />
       
       {/* Food blog with brand color */}

@@ -195,11 +195,25 @@ export default function MobileTechStackSection() {
                   {filteredTechnologies.map((tech) => (
                     <motion.div
                       key={tech.name}
-                      className={`flex items-center gap-2 px-3 py-2 rounded-md ${getTypeColor(tech.type)}`}
-                      whileTap={{ scale: 0.98 }}
-                      transition={{ duration: 0.2 }}
+                      className={`flex items-center gap-2 px-3 py-2 rounded-md ${getTypeColor(tech.type)} overflow-hidden`}
+                      whileTap={{ 
+                        scale: 0.95,
+                        // Add a slight y offset to counter the visual shift
+                        y: 1
+                      }}
+                      transition={{ 
+                        duration: 0.1,  // Faster transition to reduce visible shift
+                        scale: { type: "spring", stiffness: 300 }
+                      }}
+                      style={{ 
+                        transformOrigin: 'center center',
+                        willChange: 'transform', // Optimize for transform changes
+                        backfaceVisibility: 'hidden',
+                        WebkitFontSmoothing: 'antialiased',
+                        WebkitBackfaceVisibility: 'hidden'
+                      }}
                     >
-                      <div className="text-xl flex-shrink-0">
+                      <div className="text-xl flex-shrink-0 flex items-center justify-center w-5 h-5">
                         {typeof tech.icon === 'string' ? (
                           <Image 
                             src={tech.icon} 
@@ -207,12 +221,13 @@ export default function MobileTechStackSection() {
                             width={20} 
                             height={20} 
                             className="w-5 h-5"
+                            style={{ transform: 'translateZ(0)' }} // Force GPU rendering
                           />
                         ) : (
-                          tech.icon
+                          <span style={{ transform: 'translateZ(0)' }}>{tech.icon}</span>
                         )}
                       </div>
-                      <span className="font-medium text-sm whitespace-nowrap overflow-hidden text-ellipsis">
+                      <span className="font-medium text-sm whitespace-nowrap overflow-hidden text-ellipsis leading-tight select-none" style={{ transform: 'translateZ(0)' }}>
                         {tech.name}
                       </span>
                     </motion.div>

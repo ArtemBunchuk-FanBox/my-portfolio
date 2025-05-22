@@ -1,36 +1,67 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Artem Bunchuk - Personal Portfolio
+
+A dynamic, responsive portfolio website built with Next.js that showcases professional experience through interactive role-based highlighting and context-aware content presentation.
+
+## Key Features
+
+**Interactive Role Showcase**: Cycling job titles with context-aware highlighting that dynamically emphasizes relevant experience, skills, and profile content based on the selected professional role.
+
+**Fully Responsive Design**: Separate mobile and desktop components with optimized layouts, touch-friendly navigation, and device-specific interactions.
+
+**Animated Visual Elements**: Dynamic night sky background with twinkling stars, smooth Framer Motion animations, and consistent gradient design system throughout.
+
+**Smart Content Organization**: Timeline-based experience display, filterable tech stack, project showcase with detailed modals, and skills matrix that adapts to highlight relevant competencies.
+
+## Acknowledgments
+
+Layout inspiration from [Ted's portfolio](https://tedawf.com) - check it out for more creative developer portfolio ideas.
 
 ## Getting Started
 
-First, run the development server:
-
 ```bash
+# Install dependencies
+npm install
+
+# Run development server
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+
+# Build for production
+npm run build
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) to view the portfolio.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Project Structure
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```
+src/
+├── app/                    # Next.js app directory
+├── components/             # Reusable components
+│   ├── ExperienceSection/  # Timeline and experience display
+│   ├── HeroSection/        # Profile, job titles, and bio
+│   ├── NavMenu/           # Navigation components
+│   ├── RecentProjectsSection/ # Project showcase
+│   ├── SkillsSection/     # Skills matrix
+│   ├── TechStackSection/  # Technology display
+│   └── Sky/               # Animated background
+├── context/               # React contexts
+├── data/                  # Project and content data
+└── public/               # Static assets
+```
+## Tech Stack
 
-## Learn More
+- **Framework**: Next.js 15.3.2 with React 19
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS 4.1.7
+- **Animations**: Framer Motion 12.12.1
+- **Icons**: React Icons 5.5.0
+- **Deployment**: Vercel
 
-To learn more about Next.js, take a look at the following resources:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## License
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+This project is for portfolio demonstration purposes. Feel free to use as inspiration for your own portfolio, but please don't copy directly.
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+*Built with curiosity, caffeine, and a healthy dose of productive procrastination.*
