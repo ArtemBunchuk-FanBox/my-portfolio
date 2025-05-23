@@ -29,14 +29,14 @@ export default function MobileNavMenu() {
   // Get the current title from the index
   const currentTitle = jobTitles[titleIndex];
 
-  // Navigation links
+  // Navigation links with updated formatting
   const navLinks = [
-    { name: 'Home', href: '#top', isEmail: false },
-    { name: 'Experience', href: '#experience', isEmail: false },
-    { name: 'Projects', href: '#projects', isEmail: false },
-    { name: 'Skills', href: '#skills', isEmail: false },
-    { name: 'Tech Stack', href: '#tech-stack', isEmail: false },
-    { name: 'Contact', href: 'mailto:artem.ceshire@gmail.com', isEmail: true }
+    { name: 'Home', href: '#top', id: 'top', isEmail: false },
+    { name: 'Experience', href: '#experience', id: 'experience', isEmail: false },
+    { name: 'Projects', href: '#projects', id: 'projects', isEmail: false },
+    { name: 'Skills', href: '#skills', id: 'skills', isEmail: false },
+    { name: 'Tech Stack', href: '#tech-stack', id: 'tech-stack', isEmail: false },
+    { name: 'Contact', href: 'mailto:artem.ceshire@gmail.com', id: 'contact', isEmail: true }
   ];
 
   // Handle click outside to close menu
@@ -130,7 +130,7 @@ export default function MobileNavMenu() {
   }, []);
 
   // Close menu and handle navigation based on link type
-  const handleNavigation = (href: string, isEmail: boolean) => {
+  const handleNavigation = (href: string, id: string, isEmail: boolean) => {
     setIsOpen(false);
     
     if (isEmail) {
@@ -139,16 +139,53 @@ export default function MobileNavMenu() {
     
     if (href === '#top') {
       window.scrollTo({ top: 0, behavior: 'smooth' });
+      // Update URL to remove hash when going home
+      if (window.history && window.history.pushState) {
+        window.history.pushState("", document.title, window.location.pathname);
+      }
       return;
     }
     
-    const element = document.querySelector(href);
+    const element = document.getElementById(id);
     if (element) {
       setTimeout(() => {
         element.scrollIntoView({ behavior: 'smooth' });
+        // Update URL hash without jumping
+        if (window.history && window.history.pushState) {
+          window.history.pushState(null, '', href);
+        }
       }, 100);
     }
   };
+
+  // Handle URL hash on initial load for mobile too
+  useEffect(() => {
+    const handleHashChange = () => {
+      const hash = window.location.hash.substring(1);
+      if (hash) {
+        setTimeout(() => {
+          const section = document.getElementById(hash);
+          if (section) {
+            window.scrollTo({
+              top: section.offsetTop - 60, // Smaller offset for mobile
+              behavior: 'smooth'
+            });
+          }
+        }, 100);
+      }
+    };
+
+    // Handle initial load with hash
+    if (window.location.hash) {
+      handleHashChange();
+    }
+
+    // Listen for hash changes
+    window.addEventListener('hashchange', handleHashChange);
+    return () => {
+      window.removeEventListener('hashchange', handleHashChange);
+    };
+  }, []);
 
   // Handle role selection
   const selectRole = (role: string) => {
@@ -393,7 +430,7 @@ export default function MobileNavMenu() {
                         if (!link.isEmail) {
                           e.preventDefault();
                         }
-                        handleNavigation(link.href, link.isEmail);
+                        handleNavigation(link.href, link.id, link.isEmail);
                       }}
                       whileHover={{ backgroundColor: 'rgba(139, 92, 246, 0.2)' }}
                       transition={{ duration: 0.2 }}

@@ -83,14 +83,14 @@ export default function MobileExperienceSection() {
   }, [currentJobTitle]);
 
   // Function to check if a responsibility should be highlighted
-  const shouldHighlight = useCallback((responsibility: string) => {
-    // Check if any highlighted point is contained in this responsibility
+  const shouldHighlight = useCallback((responsibility: {text: string, bold: string}) => {
+    // Check if any highlighted point is contained in this responsibility text
     return highlightedPoints.some(point => 
-      responsibility.toLowerCase().includes(point.toLowerCase()));
+      responsibility.text.toLowerCase().includes(point.toLowerCase()));
   }, [highlightedPoints]);
 
   // Get style for highlighted points - making relevant points much brighter and others dimmer
-  const getHighlightStyle = useCallback((responsibility: string) => {
+  const getHighlightStyle = useCallback((responsibility: {text: string, bold: string}) => {
     // Base text opacity values - increased contrast for mobile
     const baseOpacity = 0.6; // Slightly less dimmed for better readability on small screens
     const highlightedOpacity = 1.0; // Fully bright text (highlighted)
@@ -250,7 +250,16 @@ export default function MobileExperienceSection() {
                                     style={getHighlightStyle(responsibility)}
                                   >
                                     <span className="inline-block flex-shrink-0 w-4 mr-1.5 text-center">•</span>
-                                    <span className="flex-1">{responsibility}</span>
+                                    <span className="flex-1">
+                                      {responsibility.bold ? (
+                                        <>
+                                          <span className="font-bold">{responsibility.bold}</span>
+                                          {responsibility.text.substring(responsibility.bold.length)}
+                                        </>
+                                      ) : (
+                                        responsibility.text
+                                      )}
+                                    </span>
                                   </li>
                                 ))}
                               </ul>
@@ -429,7 +438,16 @@ export default function MobileExperienceSection() {
                                 style={getHighlightStyle(responsibility)}
                               >
                                 <span className="inline-block flex-shrink-0 w-4 mr-1.5 text-center">•</span>
-                                <span className="flex-1">{responsibility}</span>
+                                <span className="flex-1">
+                                  {responsibility.bold ? (
+                                    <>
+                                      <span className="font-bold">{responsibility.bold}</span>
+                                      {responsibility.text.substring(responsibility.bold.length)}
+                                    </>
+                                  ) : (
+                                    responsibility.text
+                                  )}
+                                </span>
                               </li>
                             ))}
                           </ul>

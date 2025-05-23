@@ -65,7 +65,7 @@ export default function NavMenu() {
     { id: 'contact', label: 'Contact', isEmail: true, email: 'artem.ceshire@gmail.com' }
   ];
 
-  // Fix the duplicate handleNavClick function
+  // Updated navigation click handler with hash support
   const handleNavClick = (item: NavItem) => {
     if (item.isEmail && item.email) {
       window.location.href = `mailto:${item.email}`;
@@ -74,6 +74,10 @@ export default function NavMenu() {
         top: 0,
         behavior: 'smooth'
       });
+      // Update URL to remove hash when going home
+      if (window.history && window.history.pushState) {
+        window.history.pushState("", document.title, window.location.pathname);
+      }
     } else {
       const section = document.getElementById(item.id);
       if (section) {
@@ -81,6 +85,10 @@ export default function NavMenu() {
           top: section.offsetTop - 80,
           behavior: 'smooth'
         });
+        // Update URL hash without jumping
+        if (window.history && window.history.pushState) {
+          window.history.pushState(null, '', `#${item.id}`);
+        }
       }
     }
   };

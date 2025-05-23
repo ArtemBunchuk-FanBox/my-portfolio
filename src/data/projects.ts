@@ -45,19 +45,42 @@ const projects: Project[] = [
     shortDescription: "Procrastinated writing a resume by building this with Next.js, TypeScript, and Tailwind CSS instead. Deployed on Vercel.",
     fullDescription: "",
     fullDescriptionHtml: 
-      "<p style='margin-bottom: 1rem'>Writing CVs is boring, and I am nothing if not a master of productive procrastination. So instead of just spending a couple of hours writing one, I decided to spend a couple of late nights on this instead. Like with most daunting tasks, I kicked this one off by watching a dozen or so YouTube videos... for research of course. </p>" +
+      "<p style='margin-bottom: 1rem'>Writing CVs is boring, and I am nothing if not a master of productive procrastination. So instead of just spending a couple of hours writing one, I decided to spend a couple of late nights on this porfolio instead. Like with most daunting tasks, I kicked this one off by watching a dozen or so YouTube videos... for research of course. </p>" +
       "<p style='margin-bottom: 1rem'>Shout out to <a href='https://www.youtube.com/@AnthonySistilli' target='_blank' rel='noopener noreferrer'>Anthony Sistilli's channel</a> where he roasts developers' portfolios. That's where I discovered <a href='https://tedawf.com/' target='_blank' rel='noopener noreferrer'>Ted's portfolio</a>, which inspired this layout. Of course, I had to add my own touches, like the changing role titles and the context-sensitive highlights that showcase the different hats I wear and bring the most relevant information to the front.</p>" +
-      "<p>Under the hood, it's built with Next.js, TypeScript, and Tailwind CSS. I used Framer Motion to smooth out the animations, and React Icons to keep things visually sharp. The site is fully responsive, with separate mobile and desktop components. A few thousand lines of code, several questionable decisions, and one Vercel deploy button later, here we are.</p>",
+      "<p>Under the hood, it's built with Next.js, TypeScript, and Tailwind CSS. I used Framer Motion to smooth out the animations, and React Icons to keep things visually sharp. I also integrated the Anthropic API to provide intelligent content recommendations based on user interaction patterns. The site is fully responsive, with separate mobile and desktop components. A few thousand lines of code (some courtesy of Claude), a few bad ideas, lots of caffeine, and one Vercel deploy later, here we are.</p>",
     previewImage: "/images/projects/portfolio.png",
     technologies: [
       { name: "Next.js", color: "bg-black text-white" },
       { name: "React", color: "bg-blue-500" },
       { name: "TypeScript", color: "bg-blue-700" },
       { name: "Tailwind CSS", color: "bg-teal-500" },
-      { name: "Framer Motion", color: "bg-purple-600" }
+      { name: "Framer Motion", color: "bg-purple-600" },
+      { name: "Anthropic API", color: "bg-indigo-500" }
     ],
     githubUrl: "https://github.com/ArtemBunchuk-FanBox/my-portfolio",
     featured: true
+  },
+  
+  {
+    id: "hugging-face-agents",
+    title: "Hugging Face Agents Course",
+    shortDescription: "Built a network of specialized AI agents as part of Hugging Face's course, applying multi-step reasoning and tool integration to solve structured challenges based on the GAIA benchmark.",
+    fullDescription: "",
+    fullDescriptionHtml: 
+      "<p style='margin-bottom: 1rem'>With all the buzz and hype around AI Agents, I did not want to fall behind, as I have already introduced several AI implementations in both professional and personal contexts. So when I saw that Hugging Face was launching their <a href='https://huggingface.co/learn/agents-course/en/unit0/introduction' target='_blank' rel='noopener noreferrer'>AI Agents course</a>, I immediately signed up.</p>" +
+      "<p style='margin-bottom: 1rem'>To my surprise, I was already building AI agents, like the comment reply system or content analysis tools for FanBox. However, this course was still full of revelations, putting my existing knowledge into context, and providing structure and teaching me valuable taxonomy, along with best practices I hadn't considered.</p>" +
+      "<p style='margin-bottom: 1rem'>For the final project, I created a network of specialized agents that scrape data from political think tanks, tag, categorize and summarize content, then store everything in a database. The system answers user questions by querying this database, discussing findings across multiple sources, and providing links to source material.</p>" +
+      "<p style='margin-bottom: 1rem'>One key challenge was deciding where implementation of AI was truly beneficial versus where traditional automation would suffice. Since this was an AI agents course, I leaned my decisions towards use of AI, but if I was to recreate this project as a product, a lot of it would employ fewer AI steps since traditional algorithms are still more reliable and cost-effective for many tasks.</p>" +
+      "<p>In the end, this course helped bridge the gap between what I had been building intuitively and what is emerging as best practice. It gave me a stronger grasp of agent architecture and pushed me to think more critically about how to balance complexity, performance, and practicality. This perspective has already influenced how we're approaching our next generation of tools at FanBox.</p>",
+    previewImage: "/images/projects/hugging-face-agents.png",
+    technologies: [
+      { name: "AI Agents", color: "bg-yellow-600" },
+      { name: "Python", color: "bg-blue-800" },
+      { name: "Hugging Face", color: "bg-yellow-500" },
+      { name: "LangGraph", color: "bg-purple-800" },
+      { name: "LlamaIndex", color: "bg-green-600" },
+    ],
+    featured: false
   },
   
   {

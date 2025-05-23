@@ -11,12 +11,39 @@ import { DesktopTechStackSection, MobileTechStackSection } from '@/components/Te
 import { DesktopRecentProjectsSection, MobileRecentProjectsSection } from '@/components/RecentProjectsSection';
 import Footer from '@/components/Footer';
 import { JobTitleProvider } from '@/context/JobTitleContext';
+import { useEffect } from 'react';
 
 export default function Home() {
   const { isMobile } = useResponsive();
   
+  // Super simple scroll detection without side effects
+  useEffect(() => {
+    // Handle hash navigation on page load
+    const handleInitialHash = () => {
+      const hash = window.location.hash.substring(1);
+      if (hash) {
+        const targetElement = document.getElementById(hash);
+        if (targetElement) {
+          setTimeout(() => {
+            const offsetTop = targetElement.offsetTop;
+            window.scrollTo({
+              top: offsetTop - 100, // Adjust offset as needed
+              behavior: 'smooth'
+            });
+          }, 100);
+        }
+      }
+    };
+    
+    // Run once on mount
+    handleInitialHash();
+    
+    // No scroll event listener to avoid any side effects
+    
+  }, []);
+  
   return (
-    <main className="min-h-screen bg-gray-900 text-white relative" id="top">
+    <main className="min-h-screen bg-gray-900 text-white relative">
       {/* Background with stars and clouds */}
       <Sky />
       
@@ -30,7 +57,7 @@ export default function Home() {
         
         {/* Main Content - conditionally apply desktop styling */}
         <div className={`relative z-10 ${!isMobile ? 'pt-24' : ''}`}>
-          {/* Hero Section - use different versions for mobile/desktop */}
+          {/* Hero Section */}
           <div id="hero">
             <ResponsiveWrapper
               mobileComponent={<MobileHeroSection />}
@@ -38,7 +65,7 @@ export default function Home() {
             />
           </div>
           
-          {/* Experience Section - now with mobile/desktop versions */}
+          {/* Experience Section */}
           <div id="experience">
             <ResponsiveWrapper
               mobileComponent={<MobileExperienceSection />}
@@ -46,7 +73,7 @@ export default function Home() {
             />
           </div>
           
-          {/* Recent Projects Section - moved up right after Experience */}
+          {/* Recent Projects Section */}
           <div id="projects">
             <ResponsiveWrapper
               mobileComponent={<MobileRecentProjectsSection />}
@@ -54,7 +81,7 @@ export default function Home() {
             />
           </div>
           
-          {/* Skills Section - now with mobile/desktop versions */}
+          {/* Skills Section */}
           <div id="skills">
             <ResponsiveWrapper
               mobileComponent={<MobileSkillsSection />}
@@ -62,7 +89,7 @@ export default function Home() {
             />
           </div>
           
-          {/* Tech Stack Section - now with mobile/desktop versions */}
+          {/* Tech Stack Section */}
           <div id="tech-stack">
             <ResponsiveWrapper
               mobileComponent={<MobileTechStackSection />}
