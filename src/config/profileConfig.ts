@@ -24,7 +24,7 @@ export const profileConfig = {
     "Head of Research", 
     "VP of Marketing", 
     "Insights Director", 
-    "Game Master"
+    "Dungeon Master"
   ],
   
   // Job-specific highlighted keywords
@@ -34,7 +34,7 @@ export const profileConfig = {
     "Innovation Lead": ["innovation", "cutting-edge technologies", "strategic thinker", "science"],
     "Head of Research": ["psychometric research", "qualitative", "quantitative research methods", "science", "data-driven decision-making"],
     "VP of Marketing": ["strategic thinker", "insight-driven stories", "compassion", "innovation"],
-    "Game Master": ["innovation", "strategic thinker", "cutting-edge technologies", "compassion"],
+    "Dungeon Master": ["innovation", "strategic thinker", "cutting-edge technologies", "compassion"],
     "Insights Director": ["insight-driven stories", "data-driven decision-making", "strategic thinker", "revolutionising understanding of human behaviour", "quantitative research methods"]
   }
 };

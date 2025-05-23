@@ -257,7 +257,7 @@ export const educationExperience: Institution[] = [
       {
         title: 'MSc. Advanced Neuroimaging',
         period: '2015 - 2016',
-        summary: "Although the program focused on neuroimaging, I used it as a foundation to explore questions that first drew me to the field, particularly those around brain function and cognition. I centred my research on neuropsychology, focusing on how brain stimulation affects cognitive performance.",
+        summary: "The program provided me with foundational knowledge in neuroimaging, which I used to explore deeper questions about brain function and cognition. I focused my research on neuropsychology, particularly studying how brain stimulation affects cognitive performance.",
         responsibilities: [
           {
             text: "Completed core modules in neuroanatomy, neuroimaging instrumentation, data acquisition techniques, and image processing at UCL's Queen Square Institute of Neurology",
@@ -290,7 +290,7 @@ export const educationExperience: Institution[] = [
       {
         title: 'BSc Physics with Philosophy',
         period: '2012 - 2015',
-        summary: "Although the degree was titled Physics with Philosophy, the course was primarily focused on physics, with around 80% of modules taken in the physics department. This provided a robust scientific foundation while still allowing exploration of the philosophical underpinnings of scientific inquiry.",
+        summary: "My physics-focused degree provided a robust scientific foundation, with around 80% of modules taken in the physics department while still allowing exploration of the philosophical underpinnings of scientific inquiry. The program combined rigorous scientific training with critical philosophical thinking.",
         responsibilities: [
           {
             text: "Developed technical problem-solving skills through physics laboratory work and computational modeling",

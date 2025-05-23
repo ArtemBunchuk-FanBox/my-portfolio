@@ -219,7 +219,7 @@ export const jobTitleToSkills: JobTitleSkillMap = {
   "Brand Strategy",
   "Content Strategy"
 ],
-"Game Master": [
+"Dungeon Master": [
   "Creative Direction",
   "Game Design", 
   "Visual Communication",
