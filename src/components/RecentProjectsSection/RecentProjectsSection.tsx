@@ -315,7 +315,7 @@ export default function RecentProjectsSection() {
                                   {paragraph}
                                 </p>
                               ))
-                            )}
+                           ) }
                           </div>
                         </div>
                       </div>
