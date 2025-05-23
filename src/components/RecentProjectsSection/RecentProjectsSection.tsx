@@ -233,13 +233,20 @@ export default function RecentProjectsSection() {
                 >
                   {/* Scrollable content container */}
                   <div className="max-h-[calc(100vh-80px)] overflow-y-auto">
-                    {/* Project image */}
-                    <div className="h-64 relative w-full overflow-hidden select-none">
+                    {/* Project image - removed border and adjusted positioning */}
+                    <div className="h-64 relative w-full overflow-hidden select-none" style={{ 
+                      marginTop: '-1px', /* Remove top border/gap */
+                      borderTop: 'none'  /* Explicitly remove top border */
+                    }}>
                       <Image
                         src={activeProject.previewImage}
                         alt={activeProject.title}
                         fill
-                        style={{ objectFit: 'cover' }}
+                        style={{ 
+                          objectFit: 'cover',
+                          marginTop: '0', /* Ensure image aligns at the very top */
+                          borderTop: 'none' /* Explicitly remove any border */
+                        }}
                         quality={95}
                         priority
                         className="brightness-90 select-none"

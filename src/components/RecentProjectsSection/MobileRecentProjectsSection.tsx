@@ -491,17 +491,30 @@ export default function MobileRecentProjectsSection() {
               </button>
               
               {/* Scrollable content container with improved layout */}
-              <div className="overflow-y-auto h-full pb-12 pt-4"> {/* Reduced pb-24 to pb-12 */}
-                {/* Hero image section without title overlay */}
-                <div className="h-56 md:h-64 relative w-full overflow-hidden">
+              <div className="overflow-y-auto h-full pb-12 pt-0"> {/* Changed from pt-4 to pt-0 */}
+                {/* Hero image section - improve loading behavior */}
+                <div className="h-56 md:h-64 relative w-full overflow-hidden" style={{ 
+                  marginTop: '-1px',
+                  borderTop: 'none',
+                  backgroundColor: 'rgba(17, 24, 39, 1)' // Match background color for smoother transition
+                }}>
                   <Image
                     src={activeProject.previewImage}
                     alt={activeProject.title}
                     fill
-                    style={{ objectFit: 'cover' }}
+                    style={{ 
+                      objectFit: 'cover',
+                      marginTop: '0',
+                      borderTop: 'none'
+                    }}
                     quality={95}
-                    priority
+                    priority={true} // Force high priority loading
+                    loading="eager" // Use eager loading for immediate display
                     className="brightness-90"
+                    onLoadingComplete={(img) => {
+                      // This ensures the image is properly displayed only when fully loaded
+                      img.style.opacity = '1';
+                    }}
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/80 to-transparent"></div>
                 </div>
@@ -567,7 +580,7 @@ export default function MobileRecentProjectsSection() {
                               {paragraph}
                             </p>
                           ))
-                        )}
+                       ) }
                       </div>
                     </div>
                   </div>
