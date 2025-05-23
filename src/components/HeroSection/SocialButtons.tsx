@@ -23,7 +23,7 @@ export default function SocialButtons({
   const [resumeHovered, setResumeHovered] = useState(false);
 
   return (
-    <div className="flex flex-wrap gap-4 justify-center md:justify-start">
+    <div className="flex flex-wrap gap-4 justify-center md:justify-start select-none">
       {/* Resume button - larger size */}
       <div className="relative">
         <motion.a 
@@ -71,7 +71,7 @@ export default function SocialButtons({
         {/* Tooltip */}
         {activeTooltip === 'resume' && (
           <motion.div 
-            className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-1 bg-gray-800 text-xs rounded whitespace-nowrap"
+            className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-1 bg-gray-800 text-xs rounded whitespace-nowrap select-none"
             initial={{ opacity: 0, y: 5 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3, duration: 0.3 }}
@@ -207,10 +207,10 @@ function SocialIconButton({
         </div>
       </motion.a>
       
-      {/* Tooltip - now with brand color styling */}
+      {/* Tooltip - now with select-none class added */}
       {activeTooltip === tooltipId && (
         <motion.div 
-          className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-1 bg-gray-800 text-xs rounded whitespace-nowrap"
+          className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-1 bg-gray-800 text-xs rounded whitespace-nowrap select-none"
           initial={{ opacity: 0, y: 5 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3, duration: 0.3 }}

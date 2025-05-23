@@ -34,18 +34,19 @@ export default function HeroSection() {
           
           {/* Info Section */}
           <div className="text-center md:text-left md:flex-1">
-            {/* Reduced name size */}
-            <h1 className="text-3xl md:text-4xl font-bold mb-1 text-white">Artem Bunchuk</h1>
+            {/* Reduced name size with select-none added */}
+            <h1 className="text-3xl md:text-4xl font-bold mb-1 text-white select-none">Artem Bunchuk</h1>
             
-            {/* Subtitle with "Meet your next" */}
-            <div className="flex items-center justify-center md:justify-start text-xl md:text-2xl text-gray-300 mb-1">
+            {/* Subtitle with "Meet your next" and select-none added */}
+            <div className="flex items-center justify-center md:justify-start text-xl md:text-2xl text-gray-300 mb-1 select-none">
               <span className="font-semibold">Meet your next:</span>
             </div>
             
             {/* Job title component */}
             <JobTitle />
             
-            <div className="flex items-center justify-center md:justify-start text-gray-400 mb-5">
+            {/* Location with select-none added */}
+            <div className="flex items-center justify-center md:justify-start text-gray-400 mb-5 select-none">
               <svg 
                 className="w-5 h-5 mr-2" 
                 fill="currentColor" 

@@ -3,100 +3,19 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
 import { useState, useRef } from 'react';
-import { FaJs, FaReact, FaVuejs, FaNodeJs, FaPython, FaGitAlt, FaGithub, FaWordpress } from 'react-icons/fa';
-import { SiTypescript, SiPhp, SiC, SiCplusplus, SiNextdotjs, SiIonic, SiTailwindcss, SiMongodb, SiSupabase, SiBitbucket, SiElementor, SiAdobephotoshop, SiAdobeillustrator, SiMysql, SiClerk } from 'react-icons/si';
-
-type Technology = {
-  name: string;
-  icon: React.ReactNode | string;
-  type: 'language' | 'frontend' | 'backend' | 'database' | 'versionControl' | 'design';
-};
-
-type TechType = Technology['type'];
+import { 
+  technologies, 
+  typeToColor, 
+  typeToName, 
+  getTypeColor,
+  TechType 
+} from '@/data/technologies';
 
 export default function MobileTechStackSection() {
   const [activeType, setActiveType] = useState<TechType | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [containerHeight, setContainerHeight] = useState<number | 'auto'>('auto');
   const [isAnimating, setIsAnimating] = useState(false);
-  
-  // Define technologies with their categories
-  const technologies: Technology[] = [
-    // Programming Languages
-    { name: 'JavaScript', icon: <FaJs />, type: 'language' },
-    { name: 'TypeScript', icon: <SiTypescript />, type: 'language' },
-    { name: 'PHP', icon: <SiPhp />, type: 'language' },
-    { name: 'Python', icon: <FaPython />, type: 'language' },
-    { name: 'C', icon: <SiC />, type: 'language' },
-    { name: 'C++', icon: <SiCplusplus />, type: 'language' },
-    
-    // Frontend
-    { name: 'React', icon: <FaReact />, type: 'frontend' },
-    { name: 'Vue.JS', icon: <FaVuejs />, type: 'frontend' },
-    { name: 'Next.JS', icon: <SiNextdotjs />, type: 'frontend' },
-    { name: 'Ionic', icon: <SiIonic />, type: 'frontend' },
-    { name: 'Tailwind CSS', icon: <SiTailwindcss />, type: 'frontend' },
-    
-    // Backend
-    { name: 'Node.JS', icon: <FaNodeJs />, type: 'backend' },
-    { name: 'Clerk', icon: <SiClerk />, type: 'backend' },
-    
-    // Databases
-    { name: 'MongoDB', icon: <SiMongodb />, type: 'database' },
-    { name: 'MySQL', icon: <SiMysql />, type: 'database' },
-    { name: 'Supabase', icon: <SiSupabase />, type: 'database' },
-    
-    // Version Control
-    { name: 'Git', icon: <FaGitAlt />, type: 'versionControl' },
-    { name: 'GitHub', icon: <FaGithub />, type: 'versionControl' },
-    { name: 'BitBucket', icon: <SiBitbucket />, type: 'versionControl' },
-    
-    // Design
-    { name: 'WordPress', icon: <FaWordpress />, type: 'design' },
-    { name: 'Elementor', icon: <SiElementor />, type: 'design' },
-    { name: 'Photoshop', icon: <SiAdobephotoshop />, type: 'design' },
-    { name: 'Illustrator', icon: <SiAdobeillustrator />, type: 'design' },
-  ];
-
-  // Map of types to their display names
-  const typeToName = {
-    language: 'Programming Languages',
-    frontend: 'Frontend',
-    backend: 'Backend',
-    database: 'Databases',
-    versionControl: 'Version Control',
-    design: 'Design',
-  };
-
-  // Get appropriate color based on technology type - updated to make colors more distinct
-  const getTypeColor = (type: Technology['type']) => {
-    switch (type) {
-      case 'language':
-        return 'bg-gradient-to-r from-indigo-600 to-blue-600 text-white';
-      case 'frontend':
-        return 'bg-gradient-to-r from-teal-500 to-emerald-600 text-white';
-      case 'backend':
-        return 'bg-gradient-to-r from-purple-600 to-fuchsia-500 text-white';
-      case 'database':
-        return 'bg-gradient-to-r from-amber-500 to-orange-600 text-white';
-      case 'versionControl':
-        return 'bg-gradient-to-r from-cyan-500 to-blue-500 text-white';
-      case 'design':
-        return 'bg-gradient-to-r from-pink-500 to-rose-600 text-white';
-      default:
-        return 'bg-gray-600 text-white';
-    }
-  };
-
-  // Map of types to their legend colors
-  const typeToColor = {
-    language: 'bg-gradient-to-r from-indigo-600 to-blue-600',
-    frontend: 'bg-gradient-to-r from-teal-500 to-emerald-600',
-    backend: 'bg-gradient-to-r from-purple-600 to-fuchsia-500',
-    database: 'bg-gradient-to-r from-amber-500 to-orange-600',
-    versionControl: 'bg-gradient-to-r from-cyan-500 to-blue-500',
-    design: 'bg-gradient-to-r from-pink-500 to-rose-600',
-  };
 
   // Simplified filter handling with height preservation
   const handleFilterClick = (type: TechType | null) => {
@@ -186,7 +105,7 @@ export default function MobileTechStackSection() {
               <AnimatePresence mode="wait">
                 <motion.div 
                   key={activeType || 'all'} // Force re-render on filter change
-                  className="grid grid-cols-2 gap-2 sm:grid-cols-3"
+                  className="flex flex-wrap gap-2" // Changed to flex-wrap like in SkillsSection
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
@@ -195,39 +114,25 @@ export default function MobileTechStackSection() {
                   {filteredTechnologies.map((tech) => (
                     <motion.div
                       key={tech.name}
-                      className={`flex items-center gap-2 px-3 py-2 rounded-md ${getTypeColor(tech.type)} overflow-hidden`}
-                      whileTap={{ 
-                        scale: 0.95,
-                        // Add a slight y offset to counter the visual shift
-                        y: 1
-                      }}
-                      transition={{ 
-                        duration: 0.1,  // Faster transition to reduce visible shift
-                        scale: { type: "spring", stiffness: 300 }
-                      }}
-                      style={{ 
-                        transformOrigin: 'center center',
-                        willChange: 'transform', // Optimize for transform changes
-                        backfaceVisibility: 'hidden',
-                        WebkitFontSmoothing: 'antialiased',
-                        WebkitBackfaceVisibility: 'hidden'
-                      }}
+                      className={`flex items-center gap-2 px-3 py-1.5 rounded-md ${getTypeColor(tech.type)} overflow-hidden`} // Exact same padding as SkillsSection
+                      whileTap={{ scale: 0.95 }} // Same animation as SkillsSection
+                      transition={{ duration: 0.5 }}
                     >
-                      <div className="text-xl flex-shrink-0 flex items-center justify-center w-5 h-5">
+                      <div className="flex-shrink-0 flex items-center justify-center w-4 h-4">
                         {typeof tech.icon === 'string' ? (
                           <Image 
                             src={tech.icon} 
                             alt={tech.name} 
-                            width={20} 
-                            height={20} 
-                            className="w-5 h-5"
-                            style={{ transform: 'translateZ(0)' }} // Force GPU rendering
+                            width={16} 
+                            height={16} 
+                            className="w-4 h-4"
+                            style={{ transform: 'translateZ(0)' }}
                           />
                         ) : (
                           <span style={{ transform: 'translateZ(0)' }}>{tech.icon}</span>
                         )}
                       </div>
-                      <span className="font-medium text-sm whitespace-nowrap overflow-hidden text-ellipsis leading-tight select-none" style={{ transform: 'translateZ(0)' }}>
+                      <span className="font-medium text-sm whitespace-nowrap overflow-hidden text-ellipsis" style={{ transform: 'translateZ(0)' }}>
                         {tech.name}
                       </span>
                     </motion.div>

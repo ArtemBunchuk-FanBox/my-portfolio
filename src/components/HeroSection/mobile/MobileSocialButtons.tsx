@@ -2,6 +2,8 @@
 import { motion } from 'framer-motion';
 import { FaEnvelope, FaLinkedin, FaGithub, FaUtensils, FaDownload } from 'react-icons/fa';
 
+// No context needed here, just updating comment to clarify
+
 interface MobileSocialButtonsProps {
   activeTooltip: string | null;
   setActiveTooltip: (id: string | null) => void;
@@ -16,15 +18,18 @@ export default function MobileSocialButtons({
   return (
     <div className="flex flex-wrap gap-3 justify-center mb-6">
       {/* Resume button */}
-      <motion.a 
-        href="/Artem Bunchuk CV.pdf" 
-        download
-        className="bg-gray-800/70 text-white px-3 py-2 text-sm rounded-md flex items-center gap-1"
-        whileTap={{ scale: 0.95 }}
-      >
-        <FaDownload size={14} />
-        <span>Resume</span>
-      </motion.a>
+<motion.a 
+  href="/Artem Bunchuk CV.pdf" 
+  download
+  className="bg-gray-800/70 text-white px-3 py-2 text-sm rounded-md flex items-center gap-1"
+  whileTap={{ scale: 0.95 }}
+  animate={{
+    boxShadow: `0 0 8px 2px rgba(37, 99, 235, 0.7)`
+  }}
+>
+  <FaDownload size={14} />
+  <span>Resume</span>
+</motion.a>
       
       {/* LinkedIn */}
       <MobileSocialIconButton 
@@ -76,7 +81,7 @@ function MobileSocialIconButton({
       style={{ width: '38px', height: '38px' }}
       whileTap={{ scale: 0.95 }}
       animate={{
-        boxShadow: `0 0 5px 1px ${brandColor}30`
+        boxShadow: `0 0 8px 2px ${brandColor}60`
       }}
     >
       <div className="relative z-10">

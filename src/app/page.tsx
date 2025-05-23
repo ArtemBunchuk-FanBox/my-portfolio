@@ -10,6 +10,7 @@ import { DesktopSkillsSection, MobileSkillsSection } from '@/components/SkillsSe
 import { DesktopTechStackSection, MobileTechStackSection } from '@/components/TechStackSection';
 import { DesktopRecentProjectsSection, MobileRecentProjectsSection } from '@/components/RecentProjectsSection';
 import Footer from '@/components/Footer';
+import { JobTitleProvider } from '@/context/JobTitleContext';
 
 export default function Home() {
   const { isMobile } = useResponsive();
@@ -19,58 +20,61 @@ export default function Home() {
       {/* Background with stars and clouds */}
       <Sky />
       
-      {/* Responsive Navigation */}
-      <ResponsiveWrapper 
-        mobileComponent={<MobileNavMenu />}
-        desktopComponent={<NavMenu />}
-      />
-      
-      {/* Main Content - conditionally apply desktop styling */}
-      <div className={`relative z-10 ${!isMobile ? 'pt-24' : ''}`}>
-        {/* Hero Section - use different versions for mobile/desktop */}
-        <div id="hero">
-          <ResponsiveWrapper
-            mobileComponent={<MobileHeroSection />}
-            desktopComponent={<DesktopHeroSection />}
-          />
-        </div>
+      {/* Wrap the entire content with JobTitleProvider so NavMenu can access it */}
+      <JobTitleProvider>
+        {/* Responsive Navigation */}
+        <ResponsiveWrapper 
+          mobileComponent={<MobileNavMenu />}
+          desktopComponent={<NavMenu />}
+        />
         
-        {/* Experience Section - now with mobile/desktop versions */}
-        <div id="experience">
-          <ResponsiveWrapper
-            mobileComponent={<MobileExperienceSection />}
-            desktopComponent={<DesktopExperienceSection />}
-          />
+        {/* Main Content - conditionally apply desktop styling */}
+        <div className={`relative z-10 ${!isMobile ? 'pt-24' : ''}`}>
+          {/* Hero Section - use different versions for mobile/desktop */}
+          <div id="hero">
+            <ResponsiveWrapper
+              mobileComponent={<MobileHeroSection />}
+              desktopComponent={<DesktopHeroSection />}
+            />
+          </div>
+          
+          {/* Experience Section - now with mobile/desktop versions */}
+          <div id="experience">
+            <ResponsiveWrapper
+              mobileComponent={<MobileExperienceSection />}
+              desktopComponent={<DesktopExperienceSection />}
+            />
+          </div>
+          
+          {/* Recent Projects Section - moved up right after Experience */}
+          <div id="projects">
+            <ResponsiveWrapper
+              mobileComponent={<MobileRecentProjectsSection />}
+              desktopComponent={<DesktopRecentProjectsSection />}
+            />
+          </div>
+          
+          {/* Skills Section - now with mobile/desktop versions */}
+          <div id="skills">
+            <ResponsiveWrapper
+              mobileComponent={<MobileSkillsSection />}
+              desktopComponent={<DesktopSkillsSection />}
+            />
+          </div>
+          
+          {/* Tech Stack Section - now with mobile/desktop versions */}
+          <div id="tech-stack">
+            <ResponsiveWrapper
+              mobileComponent={<MobileTechStackSection />}
+              desktopComponent={<DesktopTechStackSection />}
+            />
+          </div>
+          
+          <div id="contact">
+            <Footer />
+          </div>
         </div>
-        
-        {/* Recent Projects Section - moved up right after Experience */}
-        <div id="projects">
-          <ResponsiveWrapper
-            mobileComponent={<MobileRecentProjectsSection />}
-            desktopComponent={<DesktopRecentProjectsSection />}
-          />
-        </div>
-        
-        {/* Skills Section - now with mobile/desktop versions */}
-        <div id="skills">
-          <ResponsiveWrapper
-            mobileComponent={<MobileSkillsSection />}
-            desktopComponent={<DesktopSkillsSection />}
-          />
-        </div>
-        
-        {/* Tech Stack Section - now with mobile/desktop versions */}
-        <div id="tech-stack">
-          <ResponsiveWrapper
-            mobileComponent={<MobileTechStackSection />}
-            desktopComponent={<DesktopTechStackSection />}
-          />
-        </div>
-        
-        <div id="contact">
-          <Footer />
-        </div>
-      </div>
+      </JobTitleProvider>
     </main>
   );
 }

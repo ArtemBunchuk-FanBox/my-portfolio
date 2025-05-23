@@ -365,7 +365,7 @@ export default function MobileRecentProjectsSection() {
                         ←
                       </button>
                       <p className="text-xs text-center text-gray-400">
-                        Swipe to navigate <span className="text-white text-sm ml-1">{currentProjectIndex + 1}/{carouselProjects.length}</span>
+                        Swipe to navigate <span className="text-xs text-center text-gray-400">{currentProjectIndex + 1}/{carouselProjects.length}</span>
                       </p>
                       <button 
                         onClick={goToNextProject}

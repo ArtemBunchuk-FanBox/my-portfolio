@@ -1,259 +1,86 @@
 "use client";
 /* eslint-disable */
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import Image from 'next/image';
-import { FaSuitcase, FaExternalLinkAlt } from 'react-icons/fa';
-
-// Define types for our data
-type Role = {
-  title: string;
-  period: string;
-  responsibilities: string[];
-  keyPoints?: string[]; // Specify which responsibilities are key points for certain job titles
-};
-
-type Institution = {
-  name: string;
-  logo?: string;
-  link?: string;
-  period: string;
-  roles: Role[];
-};
-
-// Definition of which responsibility points relate to each job title
-interface JobTitleResponsibilityMap {
-  [jobTitle: string]: {
-    [institution: string]: {
-      [roleTitle: string]: string[]; // Array of responsibility text snippets to highlight
-    }
-  }
-}
+import { FaSuitcase, FaExternalLinkAlt, FaTimes } from 'react-icons/fa';
+import { motion, AnimatePresence } from 'framer-motion';
+import { 
+  workExperience, 
+  educationExperience, 
+  jobTitleToResponsibilities, 
+  projectTags,
+  Institution 
+} from '@/data/experience';
+import { useJobTitle } from '@/context/JobTitleContext';
+import React from 'react';
 
 export default function MobileExperienceSection() {
   const [activeTab, setActiveTab] = useState<'work' | 'education'>('work');
-  const [currentJobTitle, setCurrentJobTitle] = useState<string>('');
-  const [highlightIntensity, setHighlightIntensity] = useState<number>(1);
-  const [highlightedPoints, setHighlightedPoints] = useState<string[]>([]);
+  const [activeInstitution, setActiveInstitution] = useState<Institution | null>(null);
+  
+  // Use the JobTitle context directly instead of events
+  const {
+    titleIndex,
+    jobTitles,
+    highlightIntensity,
+    titlePinned
+  } = useJobTitle();
+  
+  // Get the current job title
+  const currentJobTitle = jobTitles[titleIndex];
 
-  // Map of job titles to relevant experience bullets
-  const jobTitleToResponsibilities: JobTitleResponsibilityMap = {
-    "Strategy Director": {
-      "Fanbox": {
-        "Head of Operations": [
-          "Co-created revenue and LTIP strategies aligned with company goals",
-          "Conducted risk assessments to strengthen company resilience"
-        ],
-        "Head of Research, Insights & Audience Activation": [
-          "Developed predictive analytics tools and multi-source data strategies"
-        ],
-        "Strategy Consultant": [
-          "Managed 30+ research projects across sectors"
-        ]
-      }
-    },
-    "VP of Product": {
-      "Fanbox": {
-        "Head of Operations": [
-          "Built Content Department, expanded digital presence, and opened new B2B/B2C opportunities",
-          "Automated freelancer management, reducing invoice payment time from 21 to 5 days"
-        ],
-        "Head of Research, Insights & Audience Activation": [
-          "Directed neuromarketing R&D and contributed to Popcorn event platform launch",
-          "Automated and built the Popcorn Movie Database, merging 120k profiles"
-        ]
-      }
-    },
-    "Innovation Lead": {
-      "Fanbox": {
-        "Head of Operations": [
-          "Built Content Department, expanded digital presence, and opened new B2B/B2C opportunities" 
-        ],
-        "Head of Research, Insights & Audience Activation": [
-          "Directed neuromarketing R&D and contributed to Popcorn event platform launch"
-        ],
-        "Strategy Consultant": [
-          "Developed psychometric campaigns and led R&D for platform innovation"
-        ]
-      }
-    },
-    "Head of Research": {
-      "Fanbox": {
-        "Head of Research, Insights & Audience Activation": [
-          "Led a team of 8 in audience growth, analytics, and psychometric research",
-          "Directed neuromarketing R&D and contributed to Popcorn event platform launch",
-          "Developed predictive analytics tools and multi-source data strategies"
-        ],
-        "Strategy Consultant": [
-          "Managed 30+ research projects across sectors"
-        ]
-      }
-    },
-    "VP of Marketing": {
-      "Fanbox": {
-        "Head of Operations": [
-          "Built Content Department, expanded digital presence, and opened new B2B/B2C opportunities"
-        ],
-        "Head of Research, Insights & Audience Activation": [
-          "Grew subscriber base from 5k to 120k through influencer collaborations"
-        ],
-        "Head of Project Delivery – Universal Pictures (UP)": [
-          "Managed Universal Pictures account, generating $2M annual revenue",
-          "Negotiated contracts, expanded account value, and developed creative toolkits"
-        ]
-      }
-    },
-    "Insights Director": {
-      "Fanbox": {
-        "Head of Research, Insights & Audience Activation": [
-          "Led a team of 8 in audience growth, analytics, and psychometric research",
-          "Developed predictive analytics tools and multi-source data strategies"
-        ],
-        "Strategy Consultant": [
-          "Managed 30+ research projects across sectors",
-          "Developed psychometric campaigns and led R&D for platform innovation"
-        ]
-      }
-    },
-    "Game Master": {
-      "Fanbox": {
-        "Head of Operations": [
-          "Launched employee benefits and initiatives to boost engagement and efficiency"
-        ],
-        "Head of Project Delivery – Universal Pictures (UP)": [
-          "Led workshops and market research for new business opportunities"
-        ]
-      }
-    }
+  // Function to open institution details modal
+  const openInstitutionDetails = (institution: Institution) => {
+    setActiveInstitution(institution);
+    document.body.style.overflow = 'hidden'; // Prevent background scrolling
+    
+    // Dispatch custom event to hide navigation
+    const event = new CustomEvent('modalStateChange', { 
+      detail: { isOpen: true } 
+    });
+    window.dispatchEvent(event);
+    
+    // For backward compatibility with mobile navigation
+    const navElement = document.getElementById('mobile-nav');
+    if (navElement) navElement.style.display = 'none';
   };
 
-  // Sample work experience data
-  const workExperience: Institution[] = [
-    {
-      name: 'Fanbox',
-      logo: '/images/wearefanbox_logo (1).jpg',
-      link: 'https://www.linkedin.com/company/75001500/',
-      period: '',
-      roles: [
-        {
-          title: 'Head of Operations',
-          period: 'Jul 2023 - Present',
-          responsibilities: [
-            'Oversaw operations for 41 staff, reporting to founders.',
-            'Led restructuring, reducing overtime by 20% and raising satisfaction by 15%.',
-            'Built Content Department, expanded digital presence, and opened new B2B/B2C opportunities.',
-            'Automated freelancer management, reducing invoice payment time from 21 to 5 days.',
-            'Co-created revenue and LTIP strategies aligned with company goals.',
-            'Launched employee benefits and initiatives to boost engagement and efficiency.',
-            'Conducted risk assessments to strengthen company resilience.'
-          ]
-        },
-        {
-          title: 'Head of Research, Insights & Audience Activation',
-          period: 'Jul 2021 - Jul 2023',
-          responsibilities: [
-            'Led a team of 8 in audience growth, analytics, and psychometric research.',
-            'Directed neuromarketing R&D and contributed to Popcorn event platform launch.',
-            'Automated and built the Popcorn Movie Database, merging 120k profiles.',
-            'Developed predictive analytics tools and multi-source data strategies.',
-            'Grew subscriber base from 5k to 120k through influencer collaborations.'
-          ]
-        },
-        {
-          title: 'Head of Project Delivery – Universal Pictures (UP)',
-          period: 'Jul 2020 - Jul 2021',
-          responsibilities: [
-            'Managed Universal Pictures account, generating $2M annual revenue.',
-            'Negotiated contracts, expanded account value, and developed creative toolkits.',
-            'Led workshops and market research for new business opportunities.'
-          ]
-        },
-        {
-          title: 'Strategy Consultant',
-          period: 'Jul 2019 - Jun 2020',
-          responsibilities: [
-            'Managed 30+ research projects across sectors.',
-            'Developed psychometric campaigns and led R&D for platform innovation.',
-            'Implemented software tools to streamline operations.'
-          ]
-        }
-      ]
-    }
-  ];
+  // Function to close institution details modal
+  const closeInstitutionDetails = () => {
+    setActiveInstitution(null);
+    document.body.style.overflow = 'auto'; // Restore scrolling
+    
+    // Dispatch custom event to show navigation again
+    const event = new CustomEvent('modalStateChange', { 
+      detail: { isOpen: false } 
+    });
+    window.dispatchEvent(event);
+    
+    // For backward compatibility with mobile navigation
+    const navElement = document.getElementById('mobile-nav');
+    if (navElement) navElement.style.display = '';
+  };
 
-  // Sample education data
-  const educationExperience: Institution[] = [
-    {
-      name: 'University of Manchester',
-      logo: '/images/MCR.jpg',
-      link: undefined,
-      period: '',
-      roles: [
-        {
-          title: 'BSc Physics with Philosophy',
-          period: '2012 - 2015',
-          responsibilities: []
-        }
-      ]
-    },
-    {
-      name: 'University College London',
-      logo: '/images/university_college_london_logo.jpg',
-      link: undefined,
-      period: '',
-      roles: [
-        {
-          title: 'MSc. Advanced Neuroimaging',
-          period: '2015 - 2016',
-          responsibilities: []
-        }
-      ]
-    }
-  ];
-
-  // Project tags
-  const projectTags = [
-    { name: 'NFTVue', url: '#' }
-  ];
-
-  // Listen for job title changes from HeroSection
-  useEffect(() => {
-    const handleTitleChange = (event: Event) => {
-      const customEvent = event as CustomEvent<{
-        currentTitle: string;
-        highlightedWords: string[];
-        highlightIntensity: number;
-      }>;
-
-      const { currentTitle, highlightIntensity } = customEvent.detail;
-      setCurrentJobTitle(currentTitle);
-      setHighlightIntensity(highlightIntensity);
-
-      // Gather all the responsibility points that should be highlighted for this job title
-      const highlightPoints: string[] = [];
-
-      const jobMapping = jobTitleToResponsibilities[currentTitle] || {};
-
-      // For each institution in the mapping
-      Object.keys(jobMapping).forEach(instName => {
-        const institutionMapping = jobMapping[instName];
-
-        // For each role in this institution
-        Object.keys(institutionMapping).forEach(roleTitle => {
-          // Add all points that should be highlighted
-          const points = institutionMapping[roleTitle] || [];
-          highlightPoints.push(...points);
-        });
+  // Gather all the responsibility points that should be highlighted for this job title
+  const highlightedPoints = React.useMemo(() => {
+    const points: string[] = [];
+    
+    const jobMapping = jobTitleToResponsibilities[currentJobTitle] || {};
+    
+    // For each institution in the mapping
+    Object.keys(jobMapping).forEach(instName => {
+      const institutionMapping = jobMapping[instName];
+      
+      // For each role in this institution
+      Object.keys(institutionMapping).forEach(roleTitle => {
+        // Add all points that should be highlighted
+        const rolePoints = institutionMapping[roleTitle] || [];
+        points.push(...rolePoints);
       });
-
-      setHighlightedPoints(highlightPoints);
-    };
-
-    window.addEventListener('jobTitleChange', handleTitleChange as EventListener);
-
-    return () => {
-      window.removeEventListener('jobTitleChange', handleTitleChange as EventListener);
-    };
-  }, []);
+    });
+    
+    return points;
+  }, [currentJobTitle]);
 
   // Function to check if a responsibility should be highlighted
   const shouldHighlight = useCallback((responsibility: string) => {
@@ -270,12 +97,17 @@ export default function MobileExperienceSection() {
     
     // If this responsibility should be highlighted, make it brighter
     if (shouldHighlight(responsibility)) {
+      // Use full intensity when pinned
+      const effectiveIntensity = titlePinned ? 1 : highlightIntensity;
+      
       // Interpolate opacity based on highlight intensity
-      const opacity = baseOpacity + (highlightedOpacity - baseOpacity) * highlightIntensity;
+      const opacity = baseOpacity + (highlightedOpacity - baseOpacity) * effectiveIntensity;
       
       return {
         opacity: opacity,
-        transition: 'opacity 0.5s ease' // Slightly longer transition for smoother effect
+        transition: 'opacity 0.5s ease', // Slightly longer transition for smoother effect
+        // Add subtle text shadow when pinned
+        textShadow: titlePinned ? '0 0 1px rgba(255,255,255,0.1)' : 'none'
       };
     } 
     // Otherwise, dim it more significantly
@@ -285,7 +117,7 @@ export default function MobileExperienceSection() {
         transition: 'opacity 0.5s ease'
       };
     }
-  }, [highlightIntensity, shouldHighlight]);
+  }, [highlightIntensity, shouldHighlight, titlePinned]);
 
   return (
     <section className="py-6">
@@ -341,34 +173,20 @@ export default function MobileExperienceSection() {
               <div className="space-y-10">
                 {(activeTab === 'work' ? workExperience : educationExperience).map((institution, index) => (
                   <div key={`${institution.name}-${index}`} className="bg-gray-800/30 rounded-lg border border-purple-500/20 overflow-hidden">
-                    {/* Institution logo aligned to the left */}
-                    <div className="flex justify-start pl-2 pt-4 pb-2">
-                      <div className="w-[60px] h-[60px] rounded-full overflow-hidden flex items-center justify-center border-2 border-white/70 bg-white/10">
+                    {/* Institution logo aligned to the left - now clickable */}
+                    <div 
+                      className="flex justify-start pl-2 pt-4 pb-2"
+                      onClick={() => openInstitutionDetails(institution)}
+                    >
+                      <div className="w-[60px] h-[60px] rounded-full overflow-hidden flex items-center justify-center border-2 border-white/70 bg-white/10 cursor-pointer hover:border-purple-500/70 transition-all duration-300">
                         {institution.logo ? (
-                          institution.link ? (
-                            <a 
-                              href={institution.link} 
-                              target="_blank" 
-                              rel="noopener noreferrer"
-                              className="w-full h-full flex items-center justify-center"
-                            >
-                              <Image
-                                src={institution.logo}
-                                alt={institution.name}
-                                width={60}
-                                height={60}
-                                style={{ objectFit: 'contain' }}
-                              />
-                            </a>
-                          ) : (
-                            <Image
-                              src={institution.logo}
-                              alt={institution.name}
-                              width={60}
-                              height={60}
-                              style={{ objectFit: 'contain' }}
-                            />
-                          )
+                          <Image
+                            src={institution.logo}
+                            alt={institution.name}
+                            width={60}
+                            height={60}
+                            style={{ objectFit: 'contain' }}
+                          />
                         ) : (
                           <FaSuitcase className="w-8 h-8 text-white" />
                         )}
@@ -386,29 +204,24 @@ export default function MobileExperienceSection() {
                             key={`${role.title}-${roleIndex}`} 
                             className={`mb-6 ${roleIndex > 0 ? 'pt-5 border-t border-white/10' : ''}`}
                           >
-                            {/* Organization name and period ABOVE the title - ensure same size and alignment */}
+                            {/* Organization name and period - correctly fixed to keep date in place */}
                             <div className="flex justify-between items-center mb-3">
-                              {institution.link ? (
-                                <a 
-                                  href={institution.link} 
-                                  target="_blank" 
-                                  rel="noopener noreferrer"
-                                  className="text-white hover:text-white/80 transition-colors text-sm font-medium flex items-center gap-1"
+                              <div className="flex-1 min-w-0 pr-2">
+                                {/* Make company name clickable to open modal */}
+                                <span 
+                                  className="text-white hover:text-white/80 transition-colors text-sm font-medium cursor-pointer inline-block"
+                                  onClick={() => openInstitutionDetails(institution)}
                                 >
                                   {institution.name}
-                                  <FaExternalLinkAlt className="text-[10px] opacity-70" />
-                                </a>
-                              ) : (
-                                <span className="text-gray-300 text-sm font-medium">
-                                  {institution.name}
+                                  <FaExternalLinkAlt className="text-[10px] opacity-70 ml-1 inline-block align-baseline" />
                                 </span>
-                              )}
-                              <span className="text-gray-300 text-sm">{role.period}</span>
+                              </div>
+                              <span className="text-gray-300 text-sm whitespace-nowrap flex-shrink-0">{role.period}</span>
                             </div>
                             
-                            {/* Title with larger font size */}
+                            {/* Title with larger font size and proper wrapping */}
                             <h3
-                              className={`text-xl font-bold mb-4`}
+                              className={`text-xl font-bold mb-2 break-words`}
                               style={{
                                 background: 'linear-gradient(90deg, #a64ff9 0%, #8226e3 50%, #c0392b 100%)',
                                 WebkitBackgroundClip: 'text',
@@ -420,16 +233,24 @@ export default function MobileExperienceSection() {
                               {role.title}
                             </h3>
                             
+                            {/* Add role summary - NEW ADDITION */}
+                            {role.summary && (
+                              <p className="text-gray-300 text-sm mb-3 leading-relaxed">
+                                {role.summary}
+                              </p>
+                            )}
+                            
                             {/* Responsibilities - larger text for better readability */}
                             {role.responsibilities.length > 0 && (
-                              <ul className="space-y-2 list-disc list-outside ml-5 text-gray-200 text-base">
+                              <ul className="space-y-2 text-gray-200 text-sm">
                                 {role.responsibilities.map((responsibility, respIndex) => (
                                   <li 
                                     key={`resp-${respIndex}`}
+                                    className="flex transition-all duration-300 mb-1.5"
                                     style={getHighlightStyle(responsibility)}
-                                    className="transition-all duration-300"
                                   >
-                                    {responsibility}
+                                    <span className="inline-block flex-shrink-0 w-4 mr-1.5 text-center">•</span>
+                                    <span className="flex-1">{responsibility}</span>
                                   </li>
                                 ))}
                               </ul>
@@ -462,6 +283,166 @@ export default function MobileExperienceSection() {
           </div>
         </div>
       </div>
+
+      {/* Institution details modal - similar to project modal but optimized for mobile */}
+      <AnimatePresence>
+        {activeInstitution && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.25 }}
+            className="fixed inset-0 z-[9999] overflow-y-auto bg-black/95"
+            onClick={closeInstitutionDetails}
+          >
+            <motion.div
+              initial={{ y: 50, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: 50, opacity: 0 }}
+              transition={{ type: 'spring', stiffness: 400, damping: 35 }}
+              className="relative bg-gradient-to-b from-gray-900 to-black min-h-screen w-full overflow-hidden border-0"
+              onClick={e => e.stopPropagation()}
+            >
+              {/* Close button with better styling and positioning */}
+              <button
+                className="fixed top-4 right-4 z-[10000] w-12 h-12 flex items-center justify-center rounded-full bg-black/50 backdrop-blur-md text-white shadow-lg border border-white/20 active:scale-95 transition-all hover:bg-black/70"
+                onClick={closeInstitutionDetails}
+                aria-label="Close modal"
+              >
+                <FaTimes size={20} />
+              </button>
+              
+              {/* Scrollable content container with improved layout */}
+              <div className="overflow-y-auto h-full pb-12 pt-0"> {/* Changed pt-4 to pt-0 */}
+                {/* Hero image section - removed any borders */}
+                <div className="h-48 relative w-full overflow-hidden border-0">
+                  {activeInstitution.bannerImage ? (
+                    <Image
+                      src={activeInstitution.bannerImage}
+                      alt={activeInstitution.name}
+                      fill
+                      style={{ objectFit: 'cover' }}
+                      quality={95}
+                      priority
+                      className="brightness-90"
+                    />
+                  ) : (
+                    <div className="w-full h-full bg-gradient-to-r from-purple-900 to-indigo-900 flex items-center justify-center">
+                      {activeInstitution.logo && (
+                        <div className="w-24 h-24 relative">
+                          <Image
+                            src={activeInstitution.logo}
+                            alt={activeInstitution.name}
+                            fill
+                            style={{ objectFit: 'contain' }}
+                          />
+                        </div>
+                      )}
+                    </div>
+                  )}
+                  <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/80 to-transparent"></div>
+                </div>
+                
+                {/* Company content with mobile-optimized layout */}
+                <div className="px-5 py-6 relative z-10">
+                  {/* Title section with proper background and styling */}
+                  <div className="mb-6 pb-6 border-b border-gray-800 flex flex-col">
+                    <h2
+                      className="text-3xl font-bold mb-3"
+                      style={{
+                        background: 'linear-gradient(90deg, #a64ff9 0%, #8226e3 50%, #c0392b 100%)',
+                        WebkitBackgroundClip: 'text',
+                        WebkitTextFillColor: 'transparent',
+                        backgroundClip: 'text',
+                        color: 'transparent'
+                      }}
+                    >
+                      {activeInstitution.name}
+                    </h2>
+                    
+                    {/* External link button if available */}
+                    {activeInstitution.link && (
+                      <a
+                        href={activeInstitution.link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-gray-800/80 text-white hover:bg-gray-700 transition-all duration-300 self-start"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <span>Website</span>
+                        <FaExternalLinkAlt size={12} />
+                      </a>
+                    )}
+                  </div>
+
+                  {/* Company overview */}
+                  {activeInstitution.description && (
+                    <div className="mb-6 pb-6 border-b border-gray-800">
+                      <h3 className="text-base uppercase text-gray-200 font-medium mb-3">SUMMARY</h3>
+                      <div className="bg-gray-800/30 border-l-2 border-purple-500/40 pl-4 py-3 pr-3 rounded-r-sm">
+                        <p className="text-gray-300 leading-relaxed">
+                          {activeInstitution.description}
+                        </p>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Roles section */}
+                  <div className="mb-6">
+                    <h3 className="text-base uppercase text-gray-200 font-medium mb-3">ROLES & ACHIEVEMENTS</h3>
+                    
+                    <div className="space-y-8">
+                      {activeInstitution.roles.map((role, roleIndex) => (
+                        <div key={`modal-role-${roleIndex}`} className="bg-gray-800/30 border-l-2 border-purple-500/40 pl-4 py-3 pr-3 rounded-r-sm">
+                          {/* Period and title - fixed layout for consistent positioning */}
+                          <div className="mb-3 flex justify-between items-start">
+                            <div className="flex-1 min-w-0 pr-2">
+                              <h4
+                                className="text-xl font-bold break-words"
+                                style={{
+                                  background: 'linear-gradient(90deg, #a64ff9 0%, #8226e3 50%, #c0392b 100%)',
+                                  WebkitBackgroundClip: 'text',
+                                  WebkitTextFillColor: 'transparent',
+                                  backgroundClip: 'text',
+                                  color: 'transparent'
+                                }}
+                              >
+                                {role.title}
+                              </h4>
+                            </div>
+                            <div className="text-gray-400 text-sm whitespace-nowrap flex-shrink-0">{role.period}</div>
+                          </div>
+                          
+                          {/* Add role summary in modal - NEW ADDITION */}
+                          {role.summary && (
+                            <p className="text-gray-300 mb-3 text-sm">
+                              {role.summary}
+                            </p>
+                          )}
+                          
+                          {/* Responsibilities with highlighting applied */}
+                          <ul className="space-y-1 text-gray-300">
+                            {role.responsibilities.map((responsibility, respIndex) => (
+                              <li 
+                                key={`modal-resp-${roleIndex}-${respIndex}`}
+                                className="flex transition-all duration-300 mb-1.5"
+                                style={getHighlightStyle(responsibility)}
+                              >
+                                <span className="inline-block flex-shrink-0 w-4 mr-1.5 text-center">•</span>
+                                <span className="flex-1">{responsibility}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </section>
   );
 }

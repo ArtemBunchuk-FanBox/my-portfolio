@@ -13,15 +13,17 @@ type StarProps = {
 const Star = ({ size, delay, blinkDuration, isGlowing }: StarProps) => {
   return (
     <motion.div
-      initial={{ scale: 1 }}
+      initial={{ scale: 0, opacity: 0 }}
       animate={{
         scale: isGlowing ? [1, 1.2, 2.5, 2.2, 1.5] : 1,
+        opacity: 1,
         background: isGlowing ? "#fff" : "#666",
       }}
       transition={{
         duration: blinkDuration,
         ease: "easeInOut",
         delay: delay,
+        opacity: { duration: 2.5, delay } // Slow fade in
       }}
       className="absolute z-20 rounded-full"
       style={{
@@ -33,8 +35,8 @@ const Star = ({ size, delay, blinkDuration, isGlowing }: StarProps) => {
   );
 };
 
-// Glow effect component
-const Glow = ({ delay, blinkDuration }: { delay: number; blinkDuration: number }) => {
+// Glow effect component with color variations
+const Glow = ({ delay, blinkDuration, color }: { delay: number; blinkDuration: number; color: string }) => {
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -45,7 +47,11 @@ const Glow = ({ delay, blinkDuration }: { delay: number; blinkDuration: number }
         ease: "easeInOut",
         delay: delay,
       }}
-      className="absolute left-1/2 -translate-x-1/2 z-10 h-1 w-1 rounded-full bg-blue-500 blur-[1px] shadow-2xl shadow-blue-400"
+      className="absolute left-1/2 -translate-x-1/2 z-10 h-1 w-1 rounded-full blur-[1px] shadow-2xl"
+      style={{
+        backgroundColor: color,
+        boxShadow: `0 0 12px 5px ${color}`,
+      }}
     />
   );
 };
@@ -57,17 +63,29 @@ export default function Stars() {
     size: number;
     delay: number;
     isGlowing: boolean;
+    color: string;
   }[]>([]);
+  
+  // Star colors - extracted from the project palette
+  const starColors = [
+    'rgba(139, 92, 246, 0.4)', // violet with opacity
+    'rgba(20, 184, 166, 0.4)', // teal with opacity
+    'rgba(6, 182, 212, 0.4)', // cyan with opacity
+    'rgba(37, 99, 235, 0.4)', // blue with opacity
+    'rgba(5, 150, 105, 0.4)', // emerald with opacity
+    'rgba(126, 34, 206, 0.4)', // purple with opacity
+  ];
 
   // Initialize stars on component mount
   useEffect(() => {
-    const totalStars = 200;
+    const totalStars = 300; // Increased from 500 to 600 for more density
     const newStarData = Array.from({ length: totalStars }).map(() => ({
       x: Math.random() * 100,
       y: Math.random() * 100,
-      size: Math.random() * 0.8 + 0.5, // Size between 0.5 and 1.3px
-      delay: Math.random() * 0.5,
+      size: Math.random() * 1.2 + 0.6,
+      delay: Math.random() * 2, 
       isGlowing: false,
+      color: starColors[Math.floor(Math.random() * starColors.length)],
     }));
     setStarData(newStarData);
   }, []);
@@ -80,8 +98,8 @@ export default function Stars() {
         // Reset all stars to not glowing
         newStars.forEach(star => star.isGlowing = false);
         
-        // Make random stars glow
-        for (let i = 0; i < 8; i++) {
+        // Make random stars glow (increased from 15 to 20)
+        for (let i = 0; i < 20; i++) {
           const randomIndex = Math.floor(Math.random() * newStars.length);
           newStars[randomIndex].isGlowing = true;
         }
@@ -115,6 +133,7 @@ export default function Stars() {
               <Glow
                 delay={star.delay}
                 blinkDuration={2.5}
+                color={star.color}
               />
             )}
           </AnimatePresence>

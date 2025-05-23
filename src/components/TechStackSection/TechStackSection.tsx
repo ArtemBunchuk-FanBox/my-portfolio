@@ -4,22 +4,22 @@
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import { useState, useRef, useEffect } from 'react';
-import { FaJs, FaReact, FaVuejs, FaNodeJs, FaPython, FaGitAlt, FaGithub, FaWordpress, FaDatabase } from 'react-icons/fa';
-import { SiTypescript, SiPhp, SiC, SiCplusplus, SiNextdotjs, SiIonic, SiTailwindcss, SiMongodb, SiSupabase, SiBitbucket, SiElementor, SiAdobephotoshop, SiAdobeillustrator, SiMysql, SiClerk } from 'react-icons/si';
-
-type Technology = {
-  name: string;
-  icon: React.ReactNode | string;
-  type: 'language' | 'frontend' | 'backend' | 'database' | 'versionControl' | 'design';
-};
-
-type TechType = Technology['type'];
+import { 
+  technologies, 
+  typeToColor, 
+  typeToName, 
+  getGlowColor, 
+  getTypeColor,
+  Technology, 
+  TechType 
+} from '@/data/technologies';
 
 export default function TechStackSection() {
   // Add state to track which type is being hovered and which is selected (frozen)
   const [hoveredType, setHoveredType] = useState<TechType | null>(null);
   const [selectedType, setSelectedType] = useState<TechType | null>(null);
   const sectionRef = useRef<HTMLDivElement>(null);
+  const hoverTimerRef = useRef<NodeJS.Timeout | null>(null);
   
   // Handle clicks outside of tech items to clear selection
   useEffect(() => {
@@ -38,84 +38,6 @@ export default function TechStackSection() {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
-  
-  // Define technologies with their categories
-  const technologies: Technology[] = [
-    // Programming Languages
-    { name: 'JavaScript', icon: <FaJs />, type: 'language' },
-    { name: 'TypeScript', icon: <SiTypescript />, type: 'language' },
-    { name: 'PHP', icon: <SiPhp />, type: 'language' },
-    { name: 'Python', icon: <FaPython />, type: 'language' },
-    { name: 'C', icon: <SiC />, type: 'language' },
-    { name: 'C++', icon: <SiCplusplus />, type: 'language' },
-    
-    // Frontend
-    { name: 'React', icon: <FaReact />, type: 'frontend' },
-    { name: 'Vue.JS', icon: <FaVuejs />, type: 'frontend' },
-    { name: 'Next.JS', icon: <SiNextdotjs />, type: 'frontend' },
-    { name: 'Ionic', icon: <SiIonic />, type: 'frontend' },
-    { name: 'Tailwind CSS', icon: <SiTailwindcss />, type: 'frontend' },
-    
-    // Backend
-    { name: 'Node.JS', icon: <FaNodeJs />, type: 'backend' },
-    { name: 'Clerk', icon: <SiClerk />, type: 'backend' },
-    
-    // Databases
-    { name: 'MongoDB', icon: <SiMongodb />, type: 'database' },
-    { name: 'MySQL', icon: <SiMysql />, type: 'database' },
-    { name: 'Supabase', icon: <SiSupabase />, type: 'database' },
-    
-    // Version Control
-    { name: 'Git', icon: <FaGitAlt />, type: 'versionControl' },
-    { name: 'GitHub', icon: <FaGithub />, type: 'versionControl' },
-    { name: 'BitBucket', icon: <SiBitbucket />, type: 'versionControl' },
-    
-    // Design
-    { name: 'WordPress', icon: <FaWordpress />, type: 'design' },
-    { name: 'Elementor', icon: <SiElementor />, type: 'design' },
-    { name: 'Photoshop', icon: <SiAdobephotoshop />, type: 'design' },
-    { name: 'Illustrator', icon: <SiAdobeillustrator />, type: 'design' },
-  ];
-
-  // Get appropriate color based on technology type - updated to make colors more distinct
-  const getTypeColor = (type: Technology['type']) => {
-    switch (type) {
-      case 'language':
-        return 'bg-gradient-to-r from-indigo-600 to-blue-600 text-white'; // Changed to indigo-blue
-      case 'frontend':
-        return 'bg-gradient-to-r from-teal-500 to-emerald-600 text-white'; // Tech color
-      case 'backend':
-        return 'bg-gradient-to-r from-purple-600 to-fuchsia-500 text-white'; // More purple-fuchsia
-      case 'database':
-        return 'bg-gradient-to-r from-amber-500 to-orange-600 text-white'; // Amber/orange
-      case 'versionControl':
-        return 'bg-gradient-to-r from-cyan-500 to-blue-500 text-white'; // Cyan-blue
-      case 'design':
-        return 'bg-gradient-to-r from-pink-500 to-rose-600 text-white'; // Changed back to pink-rose
-      default:
-        return 'bg-gray-600 text-white';
-    }
-  };
-
-  // Map of types to their legend colors - updated to match
-  const typeToColor = {
-    language: 'bg-gradient-to-r from-indigo-600 to-blue-600', // Changed
-    frontend: 'bg-gradient-to-r from-teal-500 to-emerald-600',
-    backend: 'bg-gradient-to-r from-purple-600 to-fuchsia-500', // Changed
-    database: 'bg-gradient-to-r from-amber-500 to-orange-600',
-    versionControl: 'bg-gradient-to-r from-cyan-500 to-blue-500',
-    design: 'bg-gradient-to-r from-pink-500 to-rose-600', // Changed
-  };
-
-  // Map of types to their display names
-  const typeToName = {
-    language: 'Programming Languages',
-    frontend: 'Frontend',
-    backend: 'Backend',
-    database: 'Databases',
-    versionControl: 'Version Control',
-    design: 'Design',
-  };
 
   // Function to determine opacity based on hover state and selected state
   const getOpacityClass = (type: Technology['type']) => {
@@ -123,16 +45,31 @@ export default function TechStackSection() {
     return (type === hoveredType || type === selectedType) ? 'opacity-100' : 'opacity-30';
   };
 
-  // Function to handle mouse enter on tech item or legend
+  // Function to handle mouse enter on tech item or legend with delay
   const handleMouseEnter = (type: Technology['type']) => {
     if (!selectedType) {
-      setHoveredType(type);
+      // Clear any existing hover timer
+      if (hoverTimerRef.current) {
+        clearTimeout(hoverTimerRef.current);
+      }
+      
+      // Set a new timer for the hover effect
+      hoverTimerRef.current = setTimeout(() => {
+        setHoveredType(type);
+      }, 200); // 200ms delay before hover effect starts
     }
   };
 
-  // Function to handle mouse leave
+  // Function to handle mouse leave with cancellation
   const handleMouseLeave = () => {
     if (!selectedType) {
+      // Clear any pending hover effect
+      if (hoverTimerRef.current) {
+        clearTimeout(hoverTimerRef.current);
+        hoverTimerRef.current = null;
+      }
+      
+      // Set the hover type to null immediately
       setHoveredType(null);
     }
   };
@@ -147,26 +84,6 @@ export default function TechStackSection() {
       // Otherwise, select this type and clear any previous selection
       setSelectedType(type);
       setHoveredType(null); // Clear hover state when selecting
-    }
-  };
-
-  // Function to get glow shadow color based on tech type
-  const getGlowColor = (type: Technology['type']) => {
-    switch(type) {
-      case 'language':
-        return '0 0 12px 2px rgba(79, 70, 229, 0.6)'; // Indigo glow
-      case 'frontend':
-        return '0 0 12px 2px rgba(20, 184, 166, 0.6)'; // Teal glow
-      case 'backend':
-        return '0 0 12px 2px rgba(147, 51, 234, 0.6)'; // Purple glow
-      case 'database':
-        return '0 0 12px 2px rgba(245, 158, 11, 0.6)'; // Amber glow
-      case 'versionControl':
-        return '0 0 12px 2px rgba(6, 182, 212, 0.6)'; // Cyan glow
-      case 'design':
-        return '0 0 12px 2px rgba(236, 72, 153, 0.6)'; // Pink glow
-      default:
-        return '0 0 12px 2px rgba(255, 255, 255, 0.4)'; // Default white glow
     }
   };
 
@@ -197,30 +114,30 @@ export default function TechStackSection() {
                   <div
                     key={tech.name}
                     className={`tech-item flex items-center gap-2 px-4 py-2 rounded-md ${getTypeColor(tech.type)} 
-                      transition-all duration-200 ${getOpacityClass(tech.type)} 
-                      hover:shadow-[0_0_10px_rgba(255,255,255,0.3)] 
-                      cursor-pointer select-none`}
+                      cursor-pointer select-none text-base font-medium`}
                     style={{
-                      boxShadow: selectedType === tech.type ? getGlowColor(tech.type) : 'none'
+                      boxShadow: selectedType === tech.type ? getGlowColor(tech.type) : 'none',
+                      opacity: (!hoveredType && !selectedType) || tech.type === hoveredType || tech.type === selectedType ? 1 : 0.3,
+                      transition: 'opacity 800ms cubic-bezier(0.4, 0, 0.2, 1)'
                     }}
                     onMouseEnter={() => handleMouseEnter(tech.type)}
                     onMouseLeave={handleMouseLeave}
                     onClick={() => handleTypeClick(tech.type)}
                   >
-                    <div className="text-2xl">
+                    <div className="text-xl">
                       {typeof tech.icon === 'string' ? (
                         <Image 
                           src={tech.icon} 
                           alt={tech.name} 
                           width={24} 
                           height={24} 
-                          className="w-6 h-6"
+                          className="w-5 h-5"
                         />
                       ) : (
                         tech.icon
                       )}
                     </div>
-                    <span className="font-medium">{tech.name}</span>
+                    <span>{tech.name}</span>
                   </div>
                 ))}
               </div>
@@ -236,23 +153,43 @@ export default function TechStackSection() {
                   return (
                     <div 
                       key={type}
-                      className={`legend-item flex items-center gap-2 cursor-pointer rounded-full px-3 py-1 
-                        transition-all duration-200 ${getOpacityClass(typedType)}
-                        ${isActive ? 'bg-gradient-to-r from-purple-700 to-pink-600' : 'bg-transparent'}
-                        select-none`}
+                      className="legend-item flex items-center gap-2 cursor-pointer rounded-full px-3 py-1 select-none relative overflow-hidden"
                       style={{
-                        boxShadow: isSelected ? getGlowColor(typedType) : 'none'
+                        boxShadow: isSelected ? getGlowColor(typedType) : 'none',
+                        opacity: (!hoveredType && !selectedType) || typedType === hoveredType || typedType === selectedType ? 1 : 0.3,
+                        transition: 'opacity 1200ms cubic-bezier(0.4, 0, 0.2, 1)'
                       }}
                       onMouseEnter={() => handleMouseEnter(typedType)}
                       onMouseLeave={handleMouseLeave}
                       onClick={() => handleTypeClick(typedType)}
                     >
-                      <div className={`w-4 h-4 rounded-full overflow-hidden`}>
-                        <div className={`w-full h-full ${typeToColor[typedType]}`}></div>
+                      {/* Background gradient overlay that animates in and out */}
+                      <div 
+                        className="absolute inset-0 z-0 rounded-full" 
+                        style={{
+                          background: 'linear-gradient(to right, rgb(109, 40, 217), rgb(219, 39, 119))',
+                          opacity: isActive ? 1 : 0,
+                          transform: isActive ? 'scaleX(1)' : 'scaleX(0)',
+                          transformOrigin: 'left center',
+                          transition: 'opacity 1200ms cubic-bezier(0.4, 0, 0.2, 1), transform 1200ms cubic-bezier(0.4, 0, 0.2, 1)'
+                        }}
+                      />
+                      
+                      {/* Content positioned above the background */}
+                      <div className="z-10 relative flex items-center gap-2">
+                        <div className={`w-4 h-4 rounded-full overflow-hidden`}>
+                          <div className={`w-full h-full ${typeToColor[typedType]}`}></div>
+                        </div>
+                        <span 
+                          className="text-base"
+                          style={{
+                            color: isActive ? '#ffffff' : '#d1d5db',
+                            transition: 'color 1200ms cubic-bezier(0.4, 0, 0.2, 1)'
+                          }}
+                        >
+                          {name}
+                        </span>
                       </div>
-                      <span className={`text-base ${isActive ? 'text-white' : 'text-gray-300'}`}>
-                        {name}
-                      </span>
                     </div>
                   );
                 })}

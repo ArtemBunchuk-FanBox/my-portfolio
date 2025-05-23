@@ -12,7 +12,7 @@ export default function ProfileImage({ profileHovered, setProfileHovered }: Prof
   const [showThugLifeGlasses, setShowThugLifeGlasses] = useState(false);
 
   return (
-    <div className="relative w-40 h-40 md:w-56 md:h-56 z-10">
+    <div className="relative w-40 h-40 md:w-56 md:h-56 z-10 select-none">
       <motion.div 
         className="w-full h-full rounded-full overflow-hidden relative"
         style={{ 

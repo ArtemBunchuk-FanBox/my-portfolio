@@ -1,26 +1,15 @@
 /* eslint-disable */
 import { useState, useEffect, useCallback } from 'react';
+import { useJobTitle } from '@/context/JobTitleContext';
 import { JobTitleData } from './types';
 
 export default function ProfileBlurb() {
-  const [highlightedWords, setHighlightedWords] = useState<string[]>([]);
-  const [highlightIntensity, setHighlightIntensity] = useState(1);
-
-  // Listen for job title changes
-  useEffect(() => {
-    const handleTitleChange = (event: Event) => {
-      const customEvent = event as CustomEvent<JobTitleData>;
-      const { highlightedWords, highlightIntensity } = customEvent.detail;
-      setHighlightedWords(highlightedWords);
-      setHighlightIntensity(highlightIntensity);
-    };
-
-    window.addEventListener('jobTitleChange', handleTitleChange as EventListener);
-    
-    return () => {
-      window.removeEventListener('jobTitleChange', handleTitleChange as EventListener);
-    };
-  }, []);
+  // Use the JobTitle context directly instead of events
+  const { 
+    highlightedWords,
+    highlightIntensity,
+    titlePinned
+  } = useJobTitle();
 
   // Function to check if a phrase should be highlighted - wrapped in useCallback
   const shouldHighlight = useCallback((phrase: string) => {
@@ -36,6 +25,9 @@ export default function ProfileBlurb() {
       return { color: baseTextColor };
     }
     
+    // When pinned, ensure highlights are fully visible
+    const effectiveIntensity = titlePinned ? 1 : highlightIntensity;
+    
     // Interpolate between the base text color and the highlight color based on intensity
     const r1 = parseInt(baseTextColor.slice(1, 3), 16);
     const g1 = parseInt(baseTextColor.slice(3, 5), 16);
@@ -45,21 +37,22 @@ export default function ProfileBlurb() {
     const g2 = parseInt(baseColor.slice(3, 5), 16);
     const b2 = parseInt(baseColor.slice(5, 7), 16);
     
-    const r = Math.round(r1 + (r2 - r1) * highlightIntensity);
-    const g = Math.round(g1 + (g2 - g1) * highlightIntensity);
-    const b = Math.round(b1 + (b2 - b1) * highlightIntensity);
+    const r = Math.round(r1 + (r2 - r1) * effectiveIntensity);
+    const g = Math.round(g1 + (g2 - g1) * effectiveIntensity);
+    const b = Math.round(b1 + (b2 - b1) * effectiveIntensity);
     
     return {
       color: `rgb(${r}, ${g}, ${b})`,
-      fontWeight: 600 // Keep this consistent
+      fontWeight: 600, // Keep this consistent
+      textShadow: titlePinned ? '0 0 1px rgba(255,255,255,0.2)' : 'none' // Add subtle glow when pinned
     };
-  }, [highlightIntensity, shouldHighlight]);
+  }, [highlightIntensity, shouldHighlight, titlePinned]);
 
   return (
     <div className="relative pl-20">
 
       
-      {/* Blurb text with highlighted phrases */}
+      {/* Blurb text with highlighted phrases - made selectable by removing select-none */}
       <p className="max-w-4xl text-base md:text-lg text-gray-300 leading-relaxed text-left">
         A dynamic leader with a strong background in {' '}
         <span 

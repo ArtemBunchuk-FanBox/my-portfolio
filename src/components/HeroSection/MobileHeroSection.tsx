@@ -15,7 +15,7 @@ export default function MobileHeroSection({ location = "" }) {
     <section className="pt-20 pb-6">
       <div className="container mx-auto px-4">
         {/* Hero section with mobile optimized components */}
-        <div className="flex flex-col items-center text-center">
+        <div className="flex flex-col items-center text-center  select-none">
           {/* Mobile Profile Image */}
           <MobileProfileImage 
             profileHovered={profileHovered}
@@ -23,13 +23,13 @@ export default function MobileHeroSection({ location = "" }) {
           />
           
           {/* Info Section */}
-          <div className="w-full">
+          <div className="w-full  select-none">
             {/* Name */}
-            <h1 className="text-2xl font-bold mb-1 text-white">Artem Bunchuk</h1>
+            <h1 className="text-2xl font-bold mb-1 text-white  select-none">Artem Bunchuk</h1>
             
             {/* Subtitle */}
-            <div className="text-lg text-gray-300 mb-1">
-              <span className="font-semibold">Meet your next:</span>
+            <div className="text-lg text-gray-300 mb-1  select-none">
+              <span className="font-semibold  select-none">Meet your next:</span>
             </div>
             
             {/* Mobile Job title component */}

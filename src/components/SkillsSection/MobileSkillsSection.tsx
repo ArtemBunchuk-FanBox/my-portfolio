@@ -1,180 +1,24 @@
 "use client";
 /* eslint-disable */
-import { useState, useEffect, useCallback } from 'react';
+import { useCallback } from 'react';
 import { motion } from 'framer-motion';
-
-type SkillCategory = {
-  category: string;
-  color: string;
-  skills: string[];
-};
-
-// Define mapping of job titles to relevant skills
-interface JobTitleSkillMap {
-  [jobTitle: string]: string[];
-}
+import { jobTitleToSkills, skillCategories } from '@/data/skills';
+import { useJobTitle } from '@/context/JobTitleContext';
 
 export default function MobileSkillsSection() {
-  const [currentJobTitle, setCurrentJobTitle] = useState<string>('');
-  const [highlightIntensity, setHighlightIntensity] = useState<number>(1);
-  const [highlightedSkills, setHighlightedSkills] = useState<string[]>([]);
-
-  // Map of job titles to relevant skills
-  const jobTitleToSkills: JobTitleSkillMap = {
-    "Strategy Director": [
-      "Project & Roadmap Management",
-      "Risk Assessment",
-      "Budget Planning",
-      "Wargaming",
-      "Crisis Management",
-      "Statistical Analysis",
-      "Data Visualization"
-    ],
-    "VP of Product": [
-      "Project & Roadmap Management",
-      "Client Management",
-      "Team Building",
-      "Programming: C#, Python, R, SQL, Rust",
-      "Data: Cloud Computing",
-      "Machine Learning",
-      "Testing & Optimization: A/B Testing",
-      "Game Design: Unity, Phaser"
-    ],
-    "Innovation Lead": [
-      "Project & Roadmap Management",
-      "Team Building",
-      "Programming: C#, Python, R, SQL, Rust",
-      "Machine Learning",
-      "Research Methods: Neuromapping",
-      "Experimental Design",
-      "Game Design: Unity, Phaser"
-    ],
-    "Head of Research": [
-      "Risk Assessment",
-      "Statistical Analysis",
-      "Data Visualization",
-      "SPSS",
-      "Research Methods: Neuromapping",
-      "Experimental Design", 
-      "Focus Group Moderation",
-      "Interviewing",
-      "Testing & Optimization: A/B Testing",
-      "Survey Design",
-      "Psychometric Design"
-    ],
-    "VP of Marketing": [
-      "Project & Roadmap Management",
-      "Client Management",
-      "Budget Planning",
-      "Data Visualization",
-      "Focus Group Moderation", 
-      "Interviewing",
-      "Content Creation: Premier Pro",
-      "Photoshop",
-      "DaVinci Resolve",
-      "After Effects",
-      "Copywriting"
-    ],
-    "Insights Director": [
-      "Data Visualization",
-      "Statistical Analysis",
-      "Machine Learning",
-      "SPSS",
-      "Research Methods: Neuromapping",
-      "Experimental Design",
-      "Focus Group Moderation", 
-      "Survey Design",
-      "Psychometric Design"
-    ],
-    "Game Master": [
-      "Team Building",
-      "Wargaming",
-      "Crisis Management",
-      "Game Design: Unity, Phaser",
-      "Content Creation: Premier Pro",
-      "Photoshop",
-      "Copywriting"
-    ]
-  };
-
-  // Define skill categories with more distinct colors
-  const skillCategories: SkillCategory[] = [
-    {
-      category: 'Leadership & Strategy',
-      color: 'from-blue-600 to-purple-700',
-      skills: [
-        'Project & Roadmap Management',
-        'Client Management',
-        'Risk Assessment',
-        'Budget Planning',
-        'Team Building',
-        'Wargaming',
-        'Crisis Management',
-      ],
-    },
-    {
-      category: 'Technical & Data Skills',
-      color: 'from-teal-500 to-emerald-600',
-      skills: [
-        'Programming: C#, Python, R, SQL, Rust',
-        'Data: Cloud Computing',
-        'Data Visualization',
-        'Statistical Analysis',
-        'Machine Learning',
-        'SPSS',
-      ],
-    },
-    {
-      category: 'Research & Analysis',
-      color: 'from-amber-500 to-orange-600',
-      skills: [
-        'Research Methods: Neuromapping',
-        'Experimental Design',
-        'Focus Group Moderation',
-        'Interviewing',
-        'Testing & Optimization: A/B Testing',
-        'Survey Design',
-        'Psychometric Design',
-      ],
-    },
-    {
-      category: 'Creative & Media',
-      color: 'from-pink-500 to-rose-600',
-      skills: [
-        'Content Creation: Premier Pro',
-        'Photoshop',
-        'DaVinci Resolve',
-        'After Effects',
-        'Copywriting',
-        'Game Design: Unity, Phaser',
-      ],
-    },
-  ];
-
-  // Listen for job title changes from HeroSection
-  useEffect(() => {
-    const handleTitleChange = (event: Event) => {
-      const customEvent = event as CustomEvent<{
-        currentTitle: string;
-        highlightedWords: string[];
-        highlightIntensity: number;
-      }>;
-
-      const { currentTitle, highlightIntensity } = customEvent.detail;
-      setCurrentJobTitle(currentTitle);
-      setHighlightIntensity(highlightIntensity);
-
-      // Get the skills to highlight for this job title
-      const skillsToHighlight = jobTitleToSkills[currentTitle] || [];
-      setHighlightedSkills(skillsToHighlight);
-    };
-
-    window.addEventListener('jobTitleChange', handleTitleChange as EventListener);
-
-    return () => {
-      window.removeEventListener('jobTitleChange', handleTitleChange as EventListener);
-    };
-  }, []);
+  // Use JobTitleContext directly instead of event listeners
+  const {
+    titleIndex,
+    jobTitles,
+    highlightIntensity,
+    titlePinned
+  } = useJobTitle();
+  
+  // Get the current job title
+  const currentJobTitle = jobTitles[titleIndex];
+  
+  // Get skills to highlight for the current job title
+  const highlightedSkills = jobTitleToSkills[currentJobTitle] || [];
 
   // Function to check if a skill should be highlighted
   const shouldHighlight = useCallback((skill: string) => {
@@ -192,13 +36,8 @@ export default function MobileSkillsSection() {
           <div className="p-4">
             {skillCategories.map((category) => (
               <div key={category.category} className="mb-6">
-                {/* Category header */}
-                <div 
-                  className="mb-3 py-2 px-3 rounded-md font-semibold text-white"
-                  style={{ 
-                    background: `linear-gradient(to right, ${category.color.replace('from-', '').replace('to-', '')})`
-                  }}
-                >
+                {/* Category header - aligned with first skill by removing left padding */}
+                <div className={`mb-3 py-2 font-bold text-xl ${category.textColor}`}>
                   {category.category}
                 </div>
                 
@@ -211,6 +50,7 @@ export default function MobileSkillsSection() {
                       gradientColor={category.color}
                       isHighlighted={shouldHighlight(skill)}
                       highlightIntensity={highlightIntensity}
+                      titlePinned={titlePinned}
                     />
                   ))}
                 </div>
@@ -223,25 +63,29 @@ export default function MobileSkillsSection() {
   );
 }
 
-// Mobile-optimized skill badge with simpler animations
+// Mobile-optimized skill badge with pinned state support
 function MobileSkillBadge({ 
   skill, 
   gradientColor, 
   isHighlighted,
-  highlightIntensity
+  highlightIntensity,
+  titlePinned
 }: { 
   skill: string; 
   gradientColor: string; 
   isHighlighted: boolean;
   highlightIntensity: number;
+  titlePinned: boolean;
 }) {
   // Base and highlight opacity values
   const baseOpacity = 0.65; // Slightly higher base opacity for better mobile readability
   const highlightedOpacity = 1.0;
   
   // Calculate the current opacity based on highlight status and intensity
+  // If pinned, use full intensity for highlighted items
+  const effectiveIntensity = titlePinned ? 1 : highlightIntensity;
   const opacity = isHighlighted 
-    ? baseOpacity + (highlightedOpacity - baseOpacity) * highlightIntensity
+    ? baseOpacity + (highlightedOpacity - baseOpacity) * effectiveIntensity
     : baseOpacity;
   
   // Extract the main color from the gradient for the glow effect

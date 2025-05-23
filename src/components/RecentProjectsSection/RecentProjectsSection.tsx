@@ -124,7 +124,7 @@ export default function RecentProjectsSection() {
                       exit={{ opacity: 0, y: -20 }}
                     >
                       {/* Project preview image without border - clickable to open details */}
-                      <div className="relative w-full overflow-hidden p-3 pt-3 cursor-pointer" onClick={() => openProjectDetails(project)}>
+                      <div className="relative w-full overflow-hidden p-3 pt-3 cursor-pointer select-none" onClick={() => openProjectDetails(project)}>
                         <div className="h-44 relative w-full overflow-hidden rounded-md">
                           <Image
                             src={project.previewImage}
@@ -132,13 +132,14 @@ export default function RecentProjectsSection() {
                             fill
                             style={{ objectFit: 'cover' }}
                             quality={90}
+                            className="select-none"
                           />
                         </div>
                       </div>
 
                       {/* Project details - using flex-col and flex-grow to ensure consistent button positioning */}
                       <div className="px-5 pb-5 flex flex-col flex-grow">
-                        {/* Title with gradient styling matching job titles */}
+                        {/* Title with gradient styling matching job titles - making it selectable */}
                         <h3
                           className="text-xl font-bold mb-2"
                           style={{
@@ -152,7 +153,7 @@ export default function RecentProjectsSection() {
                           {project.title}
                         </h3>
 
-                        {/* Full short description - no line clamping */}
+                        {/* Full short description - no line clamping - made selectable */}
                         <p className="text-gray-300 mb-4 flex-grow">{project.shortDescription}</p>
 
                         {/* Fixed height container for tech tags to ensure consistent spacing */}
@@ -177,7 +178,7 @@ export default function RecentProjectsSection() {
                         {/* Learn more button - with simpler, elegant animation */}
                         <button
                           onClick={() => openProjectDetails(project)}
-                          className="w-full px-4 py-2 rounded-md bg-gradient-to-r from-indigo-600 to-blue-600 text-white transition-all duration-300 mt-auto hover:shadow-lg hover:shadow-indigo-500/20 hover:translate-y-[-1px] active:translate-y-[1px] cursor-pointer"
+                          className="w-full px-4 py-2 rounded-md bg-gradient-to-r from-indigo-600 to-blue-600 text-white transition-all duration-300 mt-auto hover:shadow-lg hover:shadow-indigo-500/20 hover:translate-y-[-1px] active:translate-y-[1px] cursor-pointer select-none"
                           style={{
                             cursor: 'pointer' // Explicit cursor style
                           }}
@@ -194,7 +195,7 @@ export default function RecentProjectsSection() {
         </div>
       </div>
 
-      {/* Project details modal - improved positioning to center in viewport */}
+      {/* Project details modal */}
       <AnimatePresence>
         {activeProject && (
           <motion.div
@@ -233,7 +234,7 @@ export default function RecentProjectsSection() {
                   {/* Scrollable content container */}
                   <div className="max-h-[calc(100vh-80px)] overflow-y-auto">
                     {/* Project image */}
-                    <div className="h-64 relative w-full overflow-hidden">
+                    <div className="h-64 relative w-full overflow-hidden select-none">
                       <Image
                         src={activeProject.previewImage}
                         alt={activeProject.title}
@@ -241,7 +242,7 @@ export default function RecentProjectsSection() {
                         style={{ objectFit: 'cover' }}
                         quality={95}
                         priority
-                        className="brightness-90"
+                        className="brightness-90 select-none"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/80 to-transparent"></div>
                     </div>
@@ -278,9 +279,9 @@ export default function RecentProjectsSection() {
                         </div>
                       </div>
 
-                      {/* Project description with better typography */}
+                      {/* Project description with better typography - made selectable */}
                       <div className="mb-6 pb-6 border-b border-gray-800">
-                        <h3 className="text-base uppercase text-gray-200 font-medium mb-3">Overview</h3>
+                        <h3 className="text-base uppercase text-gray-200 font-medium mb-3 select-none">Overview</h3>
                         {/* Short description - styled more subtly but still distinct */}
                         <div className="mb-5 bg-gray-800/30 border-l-2 border-purple-500/40 pl-4 py-2 pr-3 rounded-r-sm">
                           <p className="text-base text-gray-300 leading-relaxed">
@@ -290,10 +291,10 @@ export default function RecentProjectsSection() {
                         
                         {/* Section divider - only show if there's a full description */}
                         {(activeProject.fullDescription || activeProject.fullDescriptionHtml) && (
-                          <h3 className="text-base uppercase text-gray-200 font-medium mb-3">Details</h3>
+                          <h3 className="text-base uppercase text-gray-200 font-medium mb-3 select-none">Details</h3>
                         )}
 
-                        {/* Full description with improved styling */}
+                        {/* Full description with improved styling - made selectable */}
                         <div className="text-gray-300 space-y-4 project-description">
                           <div className="bg-gray-800/30 border-l-2 border-purple-500/40 pl-4 py-2 pr-3 rounded-r-sm">
                             {activeProject.fullDescriptionHtml ? (
@@ -319,7 +320,7 @@ export default function RecentProjectsSection() {
                             href={activeProject.githubUrl}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="flex items-center justify-center gap-3 px-5 py-3 rounded-lg bg-gray-800/80 text-white hover:bg-gray-700 transition-all duration-300 active:opacity-90 shadow-lg border border-gray-700"
+                            className="flex items-center justify-center gap-3 px-5 py-3 rounded-lg bg-gray-800/80 text-white hover:bg-gray-700 transition-all duration-300 active:opacity-90 shadow-lg border border-gray-700 select-none"
                           >
                             <FaGithub className="text-lg" />
                             <span className="font-medium">View Source Code</span>
@@ -331,7 +332,7 @@ export default function RecentProjectsSection() {
                             href={activeProject.liveUrl}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="flex items-center justify-center gap-3 px-5 py-3 rounded-lg bg-gradient-to-r from-purple-600 to-pink-500 text-white hover:from-purple-700 hover:to-pink-600 transition-all duration-300 active:opacity-90 shadow-lg"
+                            className="flex items-center justify-center gap-3 px-5 py-3 rounded-lg bg-gradient-to-r from-purple-600 to-pink-500 text-white hover:from-purple-700 hover:to-pink-600 transition-all duration-300 active:opacity-90 shadow-lg select-none"
                           >
                             <FaExternalLinkAlt />
                             <span className="font-medium">View Live Project</span>

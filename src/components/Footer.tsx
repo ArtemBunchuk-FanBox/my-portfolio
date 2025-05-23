@@ -11,7 +11,7 @@ export default function Footer() {
       <div className="container mx-auto px-4 max-w-5xl">
         <div className="flex flex-col md:flex-row items-center justify-between">
           {/* Left side - Logo or name */}
-          <div className="mb-4 md:mb-0">
+          <div className="mb-4 md:mb-0 select-none">
             {/* F1 car logo or your custom logo */}
             <div className="flex items-center">
               <Image 
@@ -25,12 +25,12 @@ export default function Footer() {
           </div>
 
           {/* Middle - Copyright */}
-          <div className="text-gray-500 text-sm mb-4 md:mb-0">
+          <div className="text-gray-500 text-sm mb-4 md:mb-0 select-none">
             © {currentYear} Artem Bunchuk
           </div>
 
           {/* Right side - Social links */}
-          <div className="flex items-center space-x-6">
+          <div className="flex items-center space-x-6 select-none">
             <Link 
               href="https://linkedin.com/in/artem-bunchuk-4023b6143" 
               target="_blank" 
