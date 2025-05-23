@@ -28,6 +28,12 @@ html {
 }
 
 /* Adjust section padding to accommodate fixed header */
-section {
-  scroll-margin-top: 80px; /* Adjust based on your header height */
+section, 
+div[id="hero"],
+div[id="experience"],
+div[id="projects"],
+div[id="skills"],
+div[id="tech-stack"],
+div[id="contact"] {
+  scroll-margin-top: 100px;
 }

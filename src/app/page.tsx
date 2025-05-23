@@ -16,8 +16,90 @@ import { useEffect } from 'react';
 export default function Home() {
   const { isMobile } = useResponsive();
   
-  // Super simple scroll detection without side effects
+  // Restore URL fragment updating on scroll, but with a simpler approach
   useEffect(() => {
+    // Function to get the currently visible section
+    const getCurrentSection = () => {
+      // Get all sections
+      const sections = [
+        { id: 'hero', element: document.getElementById('hero') },
+        { id: 'experience', element: document.getElementById('experience') },
+        { id: 'projects', element: document.getElementById('projects') },
+        { id: 'skills', element: document.getElementById('skills') },
+        { id: 'tech-stack', element: document.getElementById('tech-stack') },
+        { id: 'contact', element: document.getElementById('contact') }
+      ].filter(({ element }) => element !== null);
+      
+      // If at the very top, treat as home/hero
+      if (window.scrollY < 100) {
+        return 'hero';
+      }
+      
+      // Find section most in view - much simpler approach
+      let mostVisibleSection = null;
+      let maxVisibleHeight = 0;
+      
+      sections.forEach(({ id, element }) => {
+        if (!element) return;
+        
+        const rect = element.getBoundingClientRect();
+        const visibleTop = Math.max(0, rect.top);
+        const visibleBottom = Math.min(window.innerHeight, rect.bottom);
+        const visibleHeight = Math.max(0, visibleBottom - visibleTop);
+        
+        if (visibleHeight > maxVisibleHeight) {
+          maxVisibleHeight = visibleHeight;
+          mostVisibleSection = id;
+        }
+      });
+      
+      return mostVisibleSection;
+    };
+    
+    // Update URL without triggering scroll
+    const updateUrl = (sectionId: string) => {
+      if (!sectionId) return;
+      
+      const url = sectionId === 'hero' 
+        ? window.location.pathname 
+        : `${window.location.pathname}#${sectionId}`;
+      
+      history.replaceState(null, '', url);
+    };
+    
+    // Handle scroll with significant debouncing to prevent performance issues
+    let scrollTimeout: string | number | NodeJS.Timeout | null | undefined = null;
+    let lastScrollTime = 0;
+    const scrollDelay = 250; // ms
+    
+    const handleScroll = () => {
+      const now = Date.now();
+      
+      // Clear any pending timeout
+      if (scrollTimeout) {
+        clearTimeout(scrollTimeout);
+      }
+      
+      // Only process if enough time has passed since the last scroll event
+      if (now - lastScrollTime > scrollDelay) {
+        const currentSection = getCurrentSection();
+        if (currentSection) {
+          updateUrl(currentSection);
+        }
+        lastScrollTime = now;
+      } else {
+        // Otherwise, set a timeout to check after the delay
+        scrollTimeout = setTimeout(() => {
+          const currentSection = getCurrentSection();
+          if (currentSection) {
+            updateUrl(currentSection);
+          }
+          lastScrollTime = Date.now();
+          scrollTimeout = null;
+        }, scrollDelay);
+      }
+    };
+    
     // Handle hash navigation on page load
     const handleInitialHash = () => {
       const hash = window.location.hash.substring(1);
@@ -35,11 +117,25 @@ export default function Home() {
       }
     };
     
-    // Run once on mount
+    // Set up event listeners
+    window.addEventListener('scroll', handleScroll);
     handleInitialHash();
     
-    // No scroll event listener to avoid any side effects
+    // Set initial URL based on current position
+    setTimeout(() => {
+      const initialSection = getCurrentSection();
+      if (initialSection) {
+        updateUrl(initialSection);
+      }
+    }, 100);
     
+    // Clean up
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      if (scrollTimeout) {
+        clearTimeout(scrollTimeout);
+      }
+    };
   }, []);
   
   return (
