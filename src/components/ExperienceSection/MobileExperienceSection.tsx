@@ -47,15 +47,37 @@ export default function MobileExperienceSection() {
 
     // If an initial role index is provided, set focus to that role after modal opens
     if (initialRoleIndex !== undefined && initialRoleIndex >= 0) {
+      // Increase timeout to ensure modal is fully rendered
       setTimeout(() => {
         const roleElement = document.getElementById(`mobile-modal-role-${initialRoleIndex}`);
         if (roleElement) {
-          roleElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          // First scroll to the element to get it in the viewport
+          roleElement.scrollIntoView({ behavior: 'auto' });
+          
+          // Then apply a more precise scroll position with offset to show from the top
+          const scrollContainer = document.querySelector('.overflow-y-auto');
+          if (scrollContainer) {
+            const modalHeader = 80; // Approximate height of the modal header/image
+            const scrollOffset = 20; // Additional offset for better positioning
+            const roleTop = roleElement.getBoundingClientRect().top;
+            const containerTop = scrollContainer.getBoundingClientRect().top;
+            const relativePosition = roleTop - containerTop;
+            
+            // Calculate the scroll position considering the container's current scroll position
+            const targetScroll = scrollContainer.scrollTop + relativePosition - modalHeader - scrollOffset;
+            
+            // Apply the scroll with smooth behavior
+            scrollContainer.scrollTo({
+              top: targetScroll,
+              behavior: 'smooth'
+            });
+          }
+          
           // Add a temporary highlight effect
           roleElement.classList.add('highlight-role-mobile');
           setTimeout(() => roleElement.classList.remove('highlight-role-mobile'), 1500);
         }
-      }, 400);
+      }, 500); // Increased from 400ms to 500ms for more reliable rendering
     }
   };
 
@@ -243,9 +265,9 @@ export default function MobileExperienceSection() {
                                 key={`${role.title}-${roleIndex}`} 
                                 className={`mb-6 ${roleIndex > 0 ? 'pt-5 border-t border-white/10' : ''}`}
                               >
-                                {/* Organization name and period - correctly fixed to keep date in place */}
-                                <div className="flex justify-between items-center mb-3">
-                                  <div className="flex-1 min-w-0 pr-2">
+                                {/* Organization name without period */}
+                                <div className="mb-3">
+                                  <div className="flex-1 min-w-0">
                                     {/* Make company name clickable to open modal */}
                                     <span 
                                       className="text-white hover:text-white/80 transition-colors text-sm font-medium cursor-pointer inline-block"
@@ -258,30 +280,41 @@ export default function MobileExperienceSection() {
                                       <FaExternalLinkAlt className="text-[10px] opacity-70 ml-1 inline-block align-baseline" />
                                     </span>
                                   </div>
-                                  <span className="text-gray-300 text-sm whitespace-nowrap flex-shrink-0">{role.period}</span>
                                 </div>
                                 
-                                {/* Title with larger font size and proper wrapping - now clickable */}
-                                <h3
-                                  className={`text-xl font-bold mb-2 break-words active:opacity-70 transition-opacity cursor-pointer`}
-                                  style={{
-                                    background: 'linear-gradient(90deg, #a64ff9 0%, #8226e3 50%, #c0392b 100%)',
-                                    WebkitBackgroundClip: 'text',
-                                    WebkitTextFillColor: 'transparent',
-                                    backgroundClip: 'text',
-                                    color: 'transparent'
-                                  }}
-                                  onClick={() => openInstitutionDetails(institution, roleIndex)}
-                                >
-                                  {role.title}
-                                  <FaExternalLinkAlt className="inline-block ml-1.5 text-[10px] opacity-50" />
-                                </h3>
+                                {/* Period above title - aligned to left */}
+                                <div className="text-gray-300 text-sm mb-1">
+                                  {role.period}
+                                </div>
+                                
+                                {/* Title with larger font size */}
+                                <div className="mb-3">
+                                  <h3
+                                    className="text-xl font-bold break-words active:opacity-70 transition-opacity cursor-pointer leading-tight"
+                                    style={{
+                                      background: 'linear-gradient(90deg, #a64ff9 0%, #8226e3 50%, #c0392b 100%)',
+                                      WebkitBackgroundClip: 'text',
+                                      WebkitTextFillColor: 'transparent',
+                                      backgroundClip: 'text',
+                                      color: 'transparent'
+                                    }}
+                                    onClick={() => openInstitutionDetails(institution, roleIndex)}
+                                  >
+                                    {role.title}
+                                    <FaExternalLinkAlt className="inline-block ml-1.5 text-[10px] opacity-50" />
+                                  </h3>
+                                </div>
                                 
                                 {/* Add role summary - NEW ADDITION */}
                                 {role.summary && (
                                   <p className="text-gray-300 text-sm mb-3 leading-relaxed">
                                     {role.summary}
                                   </p>
+                                )}
+                                
+                                {/* If no summary but has responsibilities, add less bottom margin */}
+                                {!role.summary && role.responsibilities.length > 0 && (
+                                  <div className="mb-1"></div>
                                 )}
                                 
                                 {/* Responsibilities - larger text for better readability */}
@@ -433,9 +466,9 @@ export default function MobileExperienceSection() {
                   {/* Company overview */}
                   {activeInstitution.description && (
                     <div className="mb-6 pb-6 border-b border-gray-800">
-                      <h3 className="text-base uppercase text-gray-200 font-medium mb-3">SUMMARY</h3>
+                      <h3 className="text-base uppercase text-gray-200 font-medium mb-3">BACKGROUND</h3>
                       <div className="bg-gray-800/30 border-l-2 border-purple-500/40 pl-4 py-3 pr-3 rounded-r-sm">
-                        <p className="text-gray-300 leading-relaxed">
+                        <p className="text-gray-300 text-sm leading-relaxed">
                           {activeInstitution.description}
                         </p>
                       </div>
@@ -444,7 +477,9 @@ export default function MobileExperienceSection() {
 
                   {/* Roles section */}
                   <div className="mb-6">
-                    <h3 className="text-base uppercase text-gray-200 font-medium mb-3">ROLES & ACHIEVEMENTS</h3>
+                    <h3 className="text-base uppercase text-gray-200 font-medium mb-3">
+                      {activeTab === 'work' ? 'ROLES & ACHIEVEMENTS' : 'QUALIFICATIONS & RESEARCH'}
+                    </h3>
                     
                     <div className="space-y-8">
                       {activeInstitution.roles.map((role, roleIndex) => (
@@ -453,7 +488,7 @@ export default function MobileExperienceSection() {
                           id={`mobile-modal-role-${roleIndex}`}
                           className="bg-gray-800/30 border-l-2 border-purple-500/40 pl-4 py-3 pr-3 rounded-r-sm transition-all duration-500"
                         >
-                          {/* Period and title - fixed layout for consistent positioning */}
+                          {/* Period and title - fixed layout with top alignment */}
                           <div className="mb-3 flex justify-between items-start">
                             <div className="flex-1 min-w-0 pr-2">
                               <h4
@@ -469,7 +504,9 @@ export default function MobileExperienceSection() {
                                 {role.title}
                               </h4>
                             </div>
-                            <div className="text-gray-400 text-sm whitespace-nowrap flex-shrink-0">{role.period}</div>
+                            <div className="text-gray-400 text-sm whitespace-nowrap flex-shrink-0 pt-1">
+                              {role.period}
+                            </div>
                           </div>
                           
                           {/* Add role summary in modal - NEW ADDITION */}
@@ -480,7 +517,7 @@ export default function MobileExperienceSection() {
                           )}
                           
                           {/* Responsibilities with highlighting applied */}
-                          <ul className="space-y-1 text-gray-300">
+                          <ul className="space-y-1 text-gray-300 text-sm">
                             {role.responsibilities.map((responsibility, respIndex) => (
                               <li 
                                 key={`modal-resp-${roleIndex}-${respIndex}`}

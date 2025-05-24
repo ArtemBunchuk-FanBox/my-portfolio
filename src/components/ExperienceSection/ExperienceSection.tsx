@@ -486,7 +486,7 @@ export default function ExperienceSection() {
                       {/* Company overview - made selectable */}
                       {activeInstitution.description && (
                         <div className="mb-6 pb-6 border-b border-gray-800">
-                          <h3 className="text-base uppercase text-gray-200 font-medium mb-3">SUMMARY</h3>
+                          <h3 className="text-base uppercase text-gray-200 font-medium mb-3">BACKGROUND</h3>
                           <div className="bg-gray-800/30 border-l-2 border-purple-500/40 pl-4 py-3 pr-3 rounded-r-sm">
                             <p className="text-gray-300 leading-relaxed">
                               {activeInstitution.description}
@@ -497,7 +497,9 @@ export default function ExperienceSection() {
 
                       {/* Roles section */}
                       <div className="mb-6">
-                        <h3 className="text-base uppercase text-gray-200 font-medium mb-3">ROLES & ACHIEVEMENTS</h3>
+                        <h3 className="text-base uppercase text-gray-200 font-medium mb-3">
+                          {activeTab === 'work' ? 'ROLES & ACHIEVEMENTS' : 'QUALIFICATIONS & RESEARCH'}
+                        </h3>
                         
                         <div className="space-y-8">
                           {activeInstitution.roles.map((role, roleIndex) => (
