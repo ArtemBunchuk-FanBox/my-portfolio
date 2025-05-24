@@ -9,7 +9,7 @@ const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
   title: 'Artem Bunchuk - Personal Portfolio',
-  description: 'Personal portfolio website',
+  description: 'Strategy, Research & Operations',
   icons: {
     icon: '/favicon.ico', // This assumes you've added favicon.ico to the public folder
   },
