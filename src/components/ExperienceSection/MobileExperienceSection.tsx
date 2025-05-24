@@ -17,6 +17,7 @@ import React from 'react';
 export default function MobileExperienceSection() {
   const [activeTab, setActiveTab] = useState<'work' | 'education'>('work');
   const [activeInstitution, setActiveInstitution] = useState<Institution | null>(null);
+  const [isChangingTab, setIsChangingTab] = useState(false);
   
   // Use the JobTitle context directly instead of events
   const {
@@ -30,7 +31,7 @@ export default function MobileExperienceSection() {
   const currentJobTitle = jobTitles[titleIndex];
 
   // Function to open institution details modal
-  const openInstitutionDetails = (institution: Institution) => {
+  const openInstitutionDetails = (institution: Institution, initialRoleIndex?: number) => {
     setActiveInstitution(institution);
     document.body.style.overflow = 'hidden'; // Prevent background scrolling
     
@@ -43,6 +44,19 @@ export default function MobileExperienceSection() {
     // For backward compatibility with mobile navigation
     const navElement = document.getElementById('mobile-nav');
     if (navElement) navElement.style.display = 'none';
+
+    // If an initial role index is provided, set focus to that role after modal opens
+    if (initialRoleIndex !== undefined && initialRoleIndex >= 0) {
+      setTimeout(() => {
+        const roleElement = document.getElementById(`mobile-modal-role-${initialRoleIndex}`);
+        if (roleElement) {
+          roleElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          // Add a temporary highlight effect
+          roleElement.classList.add('highlight-role-mobile');
+          setTimeout(() => roleElement.classList.remove('highlight-role-mobile'), 1500);
+        }
+      }, 400);
+    }
   };
 
   // Function to close institution details modal
@@ -119,6 +133,26 @@ export default function MobileExperienceSection() {
     }
   }, [highlightIntensity, shouldHighlight, titlePinned]);
 
+  // Enhanced tab switching with animation
+  const handleTabChange = (tab: 'work' | 'education') => {
+    if (tab === activeTab) return;
+    
+    // Store current scroll position
+    const scrollPosition = window.scrollY;
+    
+    // Set transitioning state
+    setIsChangingTab(true);
+    
+    // Delay the actual tab change for the animation
+    setTimeout(() => {
+      setActiveTab(tab);
+      setIsChangingTab(false);
+      
+      // Restore scroll position after a slight delay to ensure render is complete
+      setTimeout(() => window.scrollTo(0, scrollPosition), 50);
+    }, 300);
+  };
+
   return (
     <section className="py-6">
       <div className="container mx-auto px-4">
@@ -135,9 +169,7 @@ export default function MobileExperienceSection() {
                 className={`flex-1 py-3 px-4 font-semibold text-center relative transition-all duration-300 text-white text-base`}
                 onClick={(e) => {
                   e.preventDefault();
-                  const scrollPosition = window.scrollY;
-                  setActiveTab('work');
-                  setTimeout(() => window.scrollTo(0, scrollPosition), 0);
+                  handleTabChange('work');
                 }}
                 style={{ 
                   background: activeTab === 'work' 
@@ -152,13 +184,11 @@ export default function MobileExperienceSection() {
                 className={`flex-1 py-3 px-4 font-semibold text-center relative transition-all duration-300 text-white text-base`}
                 onClick={(e) => {
                   e.preventDefault();
-                  const scrollPosition = window.scrollY;
-                  setActiveTab('education');
-                  setTimeout(() => window.scrollTo(0, scrollPosition), 0);
+                  handleTabChange('education');
                 }}
                 style={{ 
                   background: activeTab === 'education' 
-                    ? 'linear-gradient(90deg, #a64ff9 0%, #8226e3 50%, #c0392b 100%)' 
+                    ? 'linear-gradient(270deg, #a64ff9 0%, #8226e3 50%, #c0392b 100%)' // Changed to 270deg (right to left)
                     : 'transparent',
                   boxShadow: activeTab === 'education' ? '0 4px 12px rgba(166, 79, 249, 0.4)' : 'none'
                 }}
@@ -167,127 +197,143 @@ export default function MobileExperienceSection() {
               </button>
             </div>
             
-            {/* Completely redesigned timeline content */}
-            <div className="pb-4">
-              {/* Experience items with clearer layout */}
-              <div className="space-y-10">
-                {(activeTab === 'work' ? workExperience : educationExperience).map((institution, index) => (
-                  <div key={`${institution.name}-${index}`} className="bg-gray-800/30 rounded-lg border border-purple-500/20 overflow-hidden">
-                    {/* Institution logo aligned to the left - now clickable */}
-                    <div 
-                      className="flex justify-start pl-2 pt-4 pb-2"
-                      onClick={() => openInstitutionDetails(institution)}
-                    >
-                      <div className="w-[60px] h-[60px] rounded-full overflow-hidden flex items-center justify-center border-2 border-white/70 bg-white/10 cursor-pointer hover:border-purple-500/70 transition-all duration-300">
-                        {institution.logo ? (
-                          <Image
-                            src={institution.logo}
-                            alt={institution.name}
-                            width={60}
-                            height={60}
-                            style={{ objectFit: 'contain' }}
-                          />
-                        ) : (
-                          <FaSuitcase className="w-8 h-8 text-white" />
-                        )}
-                      </div>
-                    </div>
-                    
-                    {/* List all roles with improved spacing and readability */}
-                    <div className="px-4 pb-4">
-                      {institution.roles.map((role, roleIndex) => {
-                        // Check if this role has highlighted points for the current job title
-                        const hasHighlightedPoints = jobTitleToResponsibilities[currentJobTitle]?.[institution.name]?.[role.title]?.length > 0;
-                        
-                        return (
-                          <div 
-                            key={`${role.title}-${roleIndex}`} 
-                            className={`mb-6 ${roleIndex > 0 ? 'pt-5 border-t border-white/10' : ''}`}
-                          >
-                            {/* Organization name and period - correctly fixed to keep date in place */}
-                            <div className="flex justify-between items-center mb-3">
-                              <div className="flex-1 min-w-0 pr-2">
-                                {/* Make company name clickable to open modal */}
-                                <span 
-                                  className="text-white hover:text-white/80 transition-colors text-sm font-medium cursor-pointer inline-block"
-                                  onClick={() => openInstitutionDetails(institution)}
-                                >
-                                  {institution.name}
-                                  <FaExternalLinkAlt className="text-[10px] opacity-70 ml-1 inline-block align-baseline" />
-                                </span>
-                              </div>
-                              <span className="text-gray-300 text-sm whitespace-nowrap flex-shrink-0">{role.period}</span>
-                            </div>
-                            
-                            {/* Title with larger font size and proper wrapping */}
-                            <h3
-                              className={`text-xl font-bold mb-2 break-words`}
-                              style={{
-                                background: 'linear-gradient(90deg, #a64ff9 0%, #8226e3 50%, #c0392b 100%)',
-                                WebkitBackgroundClip: 'text',
-                                WebkitTextFillColor: 'transparent',
-                                backgroundClip: 'text',
-                                color: 'transparent'
-                              }}
-                            >
-                              {role.title}
-                            </h3>
-                            
-                            {/* Add role summary - NEW ADDITION */}
-                            {role.summary && (
-                              <p className="text-gray-300 text-sm mb-3 leading-relaxed">
-                                {role.summary}
-                              </p>
-                            )}
-                            
-                            {/* Responsibilities - larger text for better readability */}
-                            {role.responsibilities.length > 0 && (
-                              <ul className="space-y-2 text-gray-200 text-sm">
-                                {role.responsibilities.map((responsibility, respIndex) => (
-                                  <li 
-                                    key={`resp-${respIndex}`}
-                                    className="flex transition-all duration-300 mb-1.5"
-                                    style={getHighlightStyle(responsibility)}
-                                  >
-                                    <span className="inline-block flex-shrink-0 w-4 mr-1.5 text-center">•</span>
-                                    <span className="flex-1">
-                                      {responsibility.bold ? (
-                                        <>
-                                          <span className="font-bold">{responsibility.bold}</span>
-                                          {responsibility.text.substring(responsibility.bold.length)}
-                                        </>
-                                      ) : (
-                                        responsibility.text
-                                      )}
-                                    </span>
-                                  </li>
-                                ))}
-                              </ul>
-                            )}
-                            
-                            {/* Project tags with improved styling */}
-                            {role.title.includes('NFTVue') && (
-                              <div className="mt-3 flex gap-2 flex-wrap">
-                                {projectTags.map((tag) => (
-                                  <a
-                                    key={tag.name}
-                                    href={tag.url}
-                                    className="px-3 py-1 text-sm border border-purple-500/30 rounded-md text-white hover:bg-purple-500/20 transition-colors inline-flex items-center gap-1 bg-gray-800/30"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                  >
-                                    <span className="mr-1">🔗</span> {tag.name}
-                                  </a>
-                                ))}
-                              </div>
+            {/* Completely redesigned timeline content with improved transitions */}
+            <div className="pb-4 min-h-[200px]"> {/* Added min-height to prevent layout shift */}
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={activeTab}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ duration: 0.3 }}
+                  className={`${isChangingTab ? 'pointer-events-none' : ''}`}
+                >
+                  {/* Experience items with clearer layout */}
+                  <div className="space-y-10">
+                    {(activeTab === 'work' ? workExperience : educationExperience).map((institution, index) => (
+                      <div key={`${institution.name}-${index}`} className="bg-gray-800/30 rounded-lg border border-purple-500/20 overflow-hidden">
+                        {/* Institution logo aligned to the left - now clickable */}
+                        <div 
+                          className="flex justify-start pl-2 pt-4 pb-2"
+                          onClick={() => openInstitutionDetails(institution)}
+                        >
+                          <div className="w-[60px] h-[60px] rounded-full overflow-hidden flex items-center justify-center border-2 border-white/70 bg-white/10 cursor-pointer hover:border-purple-500/70 transition-all duration-300">
+                            {institution.logo ? (
+                              <Image
+                                src={institution.logo}
+                                alt={institution.name}
+                                width={60}
+                                height={60}
+                                style={{ objectFit: 'contain' }}
+                              />
+                            ) : (
+                              <FaSuitcase className="w-8 h-8 text-white" />
                             )}
                           </div>
-                        );
-                      })}
-                    </div>
+                        </div>
+                        
+                        {/* List all roles with improved spacing and readability */}
+                        <div className="px-4 pb-4">
+                          {institution.roles.map((role, roleIndex) => {
+                            // Check if this role has highlighted points for the current job title
+                            const hasHighlightedPoints = jobTitleToResponsibilities[currentJobTitle]?.[institution.name]?.[role.title]?.length > 0;
+                            
+                            return (
+                              <div 
+                                key={`${role.title}-${roleIndex}`} 
+                                className={`mb-6 ${roleIndex > 0 ? 'pt-5 border-t border-white/10' : ''}`}
+                              >
+                                {/* Organization name and period - correctly fixed to keep date in place */}
+                                <div className="flex justify-between items-center mb-3">
+                                  <div className="flex-1 min-w-0 pr-2">
+                                    {/* Make company name clickable to open modal */}
+                                    <span 
+                                      className="text-white hover:text-white/80 transition-colors text-sm font-medium cursor-pointer inline-block"
+                                      onClick={() => roleIndex === 0 
+                                        ? openInstitutionDetails(institution) // First role - open modal without scrolling
+                                        : openInstitutionDetails(institution, roleIndex) // Other roles - scroll to specific role
+                                      }
+                                    >
+                                      {institution.name}
+                                      <FaExternalLinkAlt className="text-[10px] opacity-70 ml-1 inline-block align-baseline" />
+                                    </span>
+                                  </div>
+                                  <span className="text-gray-300 text-sm whitespace-nowrap flex-shrink-0">{role.period}</span>
+                                </div>
+                                
+                                {/* Title with larger font size and proper wrapping - now clickable */}
+                                <h3
+                                  className={`text-xl font-bold mb-2 break-words active:opacity-70 transition-opacity cursor-pointer`}
+                                  style={{
+                                    background: 'linear-gradient(90deg, #a64ff9 0%, #8226e3 50%, #c0392b 100%)',
+                                    WebkitBackgroundClip: 'text',
+                                    WebkitTextFillColor: 'transparent',
+                                    backgroundClip: 'text',
+                                    color: 'transparent'
+                                  }}
+                                  onClick={() => openInstitutionDetails(institution, roleIndex)}
+                                >
+                                  {role.title}
+                                  <FaExternalLinkAlt className="inline-block ml-1.5 text-[10px] opacity-50" />
+                                </h3>
+                                
+                                {/* Add role summary - NEW ADDITION */}
+                                {role.summary && (
+                                  <p className="text-gray-300 text-sm mb-3 leading-relaxed">
+                                    {role.summary}
+                                  </p>
+                                )}
+                                
+                                {/* Responsibilities - larger text for better readability */}
+                                {role.responsibilities.length > 0 && (
+                                  <ul className="space-y-2 text-gray-200 text-sm">
+                                    {role.responsibilities.map((responsibility, respIndex) => (
+                                      <li 
+                                        key={`resp-${respIndex}`}
+                                        className="flex transition-all duration-300 mb-1.5"
+                                        style={getHighlightStyle(responsibility)}
+                                      >
+                                        <span className="inline-block flex-shrink-0 w-4 mr-1.5 text-center">•</span>
+                                        <span className="flex-1">
+                                          {responsibility.bold ? (
+                                            <>
+                                              <span className="font-bold">{responsibility.bold}</span>
+                                              {responsibility.text.substring(responsibility.bold.length)}
+                                            </>
+                                          ) : (
+                                            responsibility.text
+                                          )}
+                                        </span>
+                                      </li>
+                                    ))}
+                                  </ul>
+                                )}
+                                
+                                {/* Project tags with improved styling */}
+                                {role.title.includes('NFTVue') && (
+                                  <div className="mt-3 flex gap-2 flex-wrap">
+                                    {projectTags.map((tag) => (
+                                      <a
+                                        key={tag.name}
+                                        href={tag.url}
+                                        className="px-3 py-1 text-sm border border-purple-500/30 rounded-md text-white hover:bg-purple-500/20 transition-colors inline-flex items-center gap-1 bg-gray-800/30"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                      >
+                                        <span className="mr-1">🔗</span> {tag.name}
+                                      </a>
+                                    ))}
+                                  </div>
+                                )}
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    ))}
                   </div>
-                ))}
-              </div>
+                </motion.div>
+              </AnimatePresence>
             </div>
           </div>
         </div>
@@ -402,7 +448,11 @@ export default function MobileExperienceSection() {
                     
                     <div className="space-y-8">
                       {activeInstitution.roles.map((role, roleIndex) => (
-                        <div key={`modal-role-${roleIndex}`} className="bg-gray-800/30 border-l-2 border-purple-500/40 pl-4 py-3 pr-3 rounded-r-sm">
+                        <div 
+                          key={`mobile-modal-role-${roleIndex}`} 
+                          id={`mobile-modal-role-${roleIndex}`}
+                          className="bg-gray-800/30 border-l-2 border-purple-500/40 pl-4 py-3 pr-3 rounded-r-sm transition-all duration-500"
+                        >
                           {/* Period and title - fixed layout for consistent positioning */}
                           <div className="mb-3 flex justify-between items-start">
                             <div className="flex-1 min-w-0 pr-2">
@@ -461,6 +511,34 @@ export default function MobileExperienceSection() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Enhanced style tag with transition effects */}
+      <style jsx global>{`
+        .highlight-role-mobile {
+          box-shadow: 0 0 0 2px rgba(166, 79, 249, 0.5);
+          background-color: rgba(130, 38, 227, 0.15) !important;
+          transition: all 0.5s ease-in-out;
+        }
+        
+        /* Add smooth transition for tab content */
+        .tab-transition-enter {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        .tab-transition-enter-active {
+          opacity: 1;
+          transform: translateY(0);
+          transition: opacity 300ms, transform 300ms;
+        }
+        .tab-transition-exit {
+          opacity: 1;
+        }
+        .tab-transition-exit-active {
+          opacity: 0;
+          transform: translateY(-10px);
+          transition: opacity 300ms, transform 300ms;
+        }
+      `}</style>
     </section>
   );
 }

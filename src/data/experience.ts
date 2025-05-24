@@ -256,7 +256,7 @@ export const educationExperience: Institution[] = [
     roles: [
       {
         title: 'MSc. Advanced Neuroimaging',
-        period: '2015 - 2016',
+        period: 'Sep 2015 - Aug 2016',
         summary: "The program provided me with foundational knowledge in neuroimaging, which I used to explore deeper questions about brain function and cognition. I focused my research on neuropsychology, particularly studying how brain stimulation affects cognitive performance.",
         responsibilities: [
           {
@@ -289,7 +289,7 @@ export const educationExperience: Institution[] = [
     roles: [
       {
         title: 'BSc Physics with Philosophy',
-        period: '2012 - 2015',
+        period: 'Sep 2012 - Aug 2015',
         summary: "My physics-focused degree provided a robust scientific foundation, with around 80% of modules taken in the physics department while still allowing exploration of the philosophical underpinnings of scientific inquiry. The program combined rigorous scientific training with critical philosophical thinking.",
         responsibilities: [
           {

@@ -139,62 +139,65 @@ export default function Home() {
   }, []);
   
   return (
-    <main className="min-h-screen bg-gray-900 text-white relative">
-      {/* Background with stars and clouds */}
+    <main className="min-h-screen bg-transparent text-white relative">
+      {/* Background with stars and clouds - now fixed position */}
       <Sky />
       
       {/* Wrap the entire content with JobTitleProvider so NavMenu can access it */}
       <JobTitleProvider>
-        {/* Responsive Navigation */}
-        <ResponsiveWrapper 
-          mobileComponent={<MobileNavMenu />}
-          desktopComponent={<NavMenu />}
-        />
-        
-        {/* Main Content - conditionally apply desktop styling */}
-        <div className={`relative z-10 ${!isMobile ? 'pt-24' : ''}`}>
-          {/* Hero Section */}
-          <div id="hero">
-            <ResponsiveWrapper
-              mobileComponent={<MobileHeroSection />}
-              desktopComponent={<DesktopHeroSection />}
-            />
-          </div>
+        {/* Content with higher z-index to appear above sky */}
+        <div className="relative z-10">
+          {/* Responsive Navigation */}
+          <ResponsiveWrapper 
+            mobileComponent={<MobileNavMenu />}
+            desktopComponent={<NavMenu />}
+          />
           
-          {/* Experience Section */}
-          <div id="experience">
-            <ResponsiveWrapper
-              mobileComponent={<MobileExperienceSection />}
-              desktopComponent={<DesktopExperienceSection />}
-            />
-          </div>
-          
-          {/* Recent Projects Section */}
-          <div id="projects">
-            <ResponsiveWrapper
-              mobileComponent={<MobileRecentProjectsSection />}
-              desktopComponent={<DesktopRecentProjectsSection />}
-            />
-          </div>
-          
-          {/* Skills Section */}
-          <div id="skills">
-            <ResponsiveWrapper
-              mobileComponent={<MobileSkillsSection />}
-              desktopComponent={<DesktopSkillsSection />}
-            />
-          </div>
-          
-          {/* Tech Stack Section */}
-          <div id="tech-stack">
-            <ResponsiveWrapper
-              mobileComponent={<MobileTechStackSection />}
-              desktopComponent={<DesktopTechStackSection />}
-            />
-          </div>
-          
-          <div id="contact">
-            <Footer />
+          {/* Main Content - conditionally apply desktop styling */}
+          <div className={`${!isMobile ? 'pt-24' : ''}`}>
+            {/* Hero Section */}
+            <div id="hero">
+              <ResponsiveWrapper
+                mobileComponent={<MobileHeroSection />}
+                desktopComponent={<DesktopHeroSection />}
+              />
+            </div>
+            
+            {/* Experience Section */}
+            <div id="experience">
+              <ResponsiveWrapper
+                mobileComponent={<MobileExperienceSection />}
+                desktopComponent={<DesktopExperienceSection />}
+              />
+            </div>
+            
+            {/* Recent Projects Section */}
+            <div id="projects">
+              <ResponsiveWrapper
+                mobileComponent={<MobileRecentProjectsSection />}
+                desktopComponent={<DesktopRecentProjectsSection />}
+              />
+            </div>
+            
+            {/* Skills Section */}
+            <div id="skills">
+              <ResponsiveWrapper
+                mobileComponent={<MobileSkillsSection />}
+                desktopComponent={<DesktopSkillsSection />}
+              />
+            </div>
+            
+            {/* Tech Stack Section */}
+            <div id="tech-stack">
+              <ResponsiveWrapper
+                mobileComponent={<MobileTechStackSection />}
+                desktopComponent={<DesktopTechStackSection />}
+              />
+            </div>
+            
+            <div id="contact">
+              <Footer />
+            </div>
           </div>
         </div>
       </JobTitleProvider>

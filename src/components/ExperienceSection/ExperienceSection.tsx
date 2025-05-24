@@ -18,6 +18,7 @@ import React from 'react';
 export default function ExperienceSection() {
   const [activeTab, setActiveTab] = useState<'work' | 'education'>('work');
   const [activeInstitution, setActiveInstitution] = useState<Institution | null>(null);
+  const [isChangingTab, setIsChangingTab] = useState(false);
 
   // Use the JobTitle context directly instead of events
   const {
@@ -30,8 +31,8 @@ export default function ExperienceSection() {
   // Get the current job title
   const currentJobTitle = jobTitles[titleIndex];
 
-  // Function to open institution details modal
-  const openInstitutionDetails = (institution: Institution) => {
+  // Function to open institution details modal with optional initial role index
+  const openInstitutionDetails = (institution: Institution, initialRoleIndex?: number) => {
     setActiveInstitution(institution);
     document.body.style.overflow = 'hidden'; // Prevent background scrolling
     
@@ -40,6 +41,19 @@ export default function ExperienceSection() {
       detail: { isOpen: true } 
     });
     window.dispatchEvent(event);
+
+    // If an initial role index is provided, set focus to that role after modal opens
+    if (initialRoleIndex !== undefined && initialRoleIndex >= 0) {
+      setTimeout(() => {
+        const roleElement = document.getElementById(`modal-role-${initialRoleIndex}`);
+        if (roleElement) {
+          roleElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          // Add a temporary highlight effect
+          roleElement.classList.add('highlight-role');
+          setTimeout(() => roleElement.classList.remove('highlight-role'), 1500);
+        }
+      }, 400);
+    }
   };
 
   // Function to close institution details modal
@@ -112,6 +126,30 @@ export default function ExperienceSection() {
     }
   }, [highlightIntensity, shouldHighlight, titlePinned]);
 
+  // Enhanced tab switching with animation - revised to keep vertical line always visible
+  const handleTabChange = (tab: 'work' | 'education') => {
+    if (tab === activeTab) return;
+    
+    // Store current scroll position
+    const scrollPosition = window.scrollY;
+    
+    // Set changing tab state for other effects (not for the vertical line)
+    setIsChangingTab(true);
+    
+    // Wait for content to animate out, then change tab
+    setTimeout(() => {
+      setActiveTab(tab);
+      
+      // Wait for the new content to fully appear, then restore interaction
+      setTimeout(() => {
+        setIsChangingTab(false);
+        
+        // Restore scroll position after everything is complete
+        setTimeout(() => window.scrollTo(0, scrollPosition), 50);
+      }, 400);
+    }, 300);
+  };
+
   return (
     <section className="py-8 overflow-visible">
       <div className="container mx-auto px-4 max-w-5xl">
@@ -122,14 +160,17 @@ export default function ExperienceSection() {
           
           {/* Tabs - now inside the border */}
           <div className="px-6 pt-6 relative overflow-visible">
-            {/* Vertical line with overflow visible to extend beyond container */}
+            {/* Vertical line with overflow visible to extend beyond container - ALWAYS visible */}
             <div 
               className="absolute w-0.5 bg-white" 
               style={{
                 left: "36px",
-                top: "-1px",
+                top: "1px",
                 bottom: "-65px", // Extremely long value to ensure it reaches
-                zIndex: "1"
+                zIndex: "0", // Decreased z-index
+                pointerEvents: "none", // Ensure clicks pass through
+                opacity: 1, // Always fully visible
+                // No transitions
               }}
             ></div>
             
@@ -139,16 +180,14 @@ export default function ExperienceSection() {
                 className={`flex-1 py-3 px-6 font-medium text-center relative transition-all duration-300 text-white rounded-full select-none`}
                 onClick={(e) => {
                   e.preventDefault();
-                  const scrollPosition = window.scrollY;
-                  setActiveTab('work');
-                  setTimeout(() => window.scrollTo(0, scrollPosition), 0);
+                  handleTabChange('work');
                 }}
                 style={{ 
                   background: activeTab === 'work' 
                     ? 'linear-gradient(90deg, #a64ff9 0%, #8226e3 50%, #c0392b 100%)' 
                     : 'transparent',
                   boxShadow: activeTab === 'work' ? '0 4px 12px rgba(166, 79, 249, 0.4)' : 'none',
-                  cursor: 'pointer' // Add custom cursor style
+                  cursor: 'pointer'
                 }}
               >
                 Work
@@ -157,164 +196,187 @@ export default function ExperienceSection() {
                 className={`flex-1 py-3 px-6 font-medium text-center relative transition-all duration-300 text-white rounded-full select-none cursor-pointer`}
                 onClick={(e) => {
                   e.preventDefault();
-                  const scrollPosition = window.scrollY;
-                  setActiveTab('education');
-                  setTimeout(() => window.scrollTo(0, scrollPosition), 0);
+                  handleTabChange('education');
                 }}
                 style={{ 
                   background: activeTab === 'education' 
-                    ? 'linear-gradient(90deg, #a64ff9 0%, #8226e3 50%, #c0392b 100%)' 
+                    ? 'linear-gradient(270deg, #a64ff9 0%, #8226e3 50%, #c0392b 100%)' // Changed to 270deg (right to left)
                     : 'transparent',
                   boxShadow: activeTab === 'education' ? '0 4px 12px rgba(166, 79, 249, 0.4)' : 'none',
-                  cursor: 'pointer' // Add custom cursor style
+                  cursor: 'pointer'
                 }}
               >
                 Education
               </button>
             </div>
             
-            {/* Timeline content without its own vertical line */}
-            <div className="relative pb-0">
-              {/* Experience items with reduced bottom margin */}
-              <div className="space-y-16 mb-6">
-                {(activeTab === 'work' ? workExperience : educationExperience).map((institution, index) => (
-                  <div key={`${institution.name}-${index}`} className="relative pl-22">
-                    {/* Horizontal line extension from vertical timeline to logo - for all institutions */}
-                    <div 
-                      className="absolute w-4 h-0.5 bg-white" 
-                      style={{
-                        left: "0", // Start from the main vertical line
-                        top: "37px", // Center of the logo
-                        zIndex: "2"
-                      }}
-                    ></div>
-                    
-                    {/* Logo - now clickable to open modal and non-selectable */}
-                    <div className="absolute left-0 z-10">
-                      <div 
-                        className="w-[75px] h-[75px] rounded-full overflow-hidden flex items-center justify-center border-2 border-white bg-transparent relative p-0 cursor-pointer hover:border-purple-500/70 transition-all duration-300 select-none"
-                        onClick={() => openInstitutionDetails(institution)}
-                      >
-                        {institution.logo ? (
-                          <Image
-                            src={institution.logo}
-                            alt={institution.name}
-                            width={75}
-                            height={75}
-                            style={{ objectFit: 'contain', width: '75px', height: '75px' }}
-                            className="select-none"
-                          />
-                        ) : (
-                          <FaSuitcase className="w-8 h-8 text-gray-800" />
-                        )}
-                      </div>
-                    </div>
-                    
-                    {/* Content with updated font sizes */}
-                    <div>
-                      <div className="text-gray-400 text-base mb-1">{institution.period}</div>
-                      {/* Company name now clickable to open modal - made selectable */}
-                      <span 
-                        className="text-xl md:text-2xl font-bold text-white hover:text-purple-400 transition-colors flex items-center gap-1 cursor-pointer"
-                        onClick={() => openInstitutionDetails(institution)}
-                      >
-                        {institution.name}
-                        <FaExternalLinkAlt className="text-xs opacity-70" />
-                      </span>
-                      
-                      {/* List all roles for this institution */}
-                      <div className="mt-2 space-y-6">
-                        {institution.roles.map((role, roleIndex) => {
-                          // Check if this role has highlighted points for the current job title
-                          const hasHighlightedPoints = jobTitleToResponsibilities[currentJobTitle]?.[institution.name]?.[role.title]?.length > 0;
+            {/* Timeline content with improved transitions */}
+            <div className="relative pb-0 min-h-[300px]"> {/* Added min-height to prevent layout shift */}
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={activeTab}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ duration: 0.3 }}
+                  className={`${isChangingTab ? 'pointer-events-none' : ''} relative z-5`} // Added z-index to ensure proper stacking order
+                >
+                  {/* Experience items with reduced bottom margin */}
+                  <div className="space-y-16 mb-6">
+                    {(activeTab === 'work' ? workExperience : educationExperience).map((institution, index) => (
+                      <div key={`${institution.name}-${index}`} className="relative pl-22">
+                        {/* Horizontal line extension from vertical timeline to logo - for all institutions */}
+                        <div 
+                          className="absolute w-4 h-0.5 bg-white" 
+                          style={{
+                            left: "0", // Start from the main vertical line
+                            top: "37px", // Center of the logo
+                            zIndex: "2"
+                          }}
+                        ></div>
+                        
+                        {/* Logo - now clickable to open modal and non-selectable */}
+                        <div className="absolute left-0 z-10">
+                          <div 
+                            className="w-[75px] h-[75px] rounded-full overflow-hidden flex items-center justify-center border-2 border-white bg-transparent relative p-0 cursor-pointer hover:border-purple-500/70 transition-all duration-300 select-none logo-container-circle"
+                            onClick={() => openInstitutionDetails(institution)}
+                          >
+                            <div className="absolute inset-0 rounded-full bg-black/90"></div> {/* Background circle */}
+                            
+                            {institution.logo ? (
+                              <div className="relative z-10 w-[75px] h-[75px] logo-image-container">
+                                <Image
+                                  src={institution.logo}
+                                  alt={institution.name}
+                                  width={75}
+                                  height={75}
+                                  style={{ objectFit: 'contain', width: '75px', height: '75px' }}
+                                  className="select-none"
+                                />
+                              </div>
+                            ) : (
+                              <FaSuitcase className="w-8 h-8 text-gray-800" />
+                            )}
+                          </div>
+                        </div>
+                        
+                        {/* Content with updated font sizes */}
+                        <div>
+                          <div className="text-gray-400 text-base mb-1">{institution.period}</div>
+                          {/* Company name now clickable to open modal - made selectable */}
+                          <span 
+                            className="text-xl md:text-2xl font-bold text-white hover:text-purple-400 transition-colors flex items-center gap-1 cursor-pointer"
+                            onClick={() => openInstitutionDetails(institution)}
+                          >
+                            {institution.name}
+                            <FaExternalLinkAlt className="text-xs opacity-70" />
+                          </span>
                           
-                          return (
-                            <div key={`${role.title}-${roleIndex}`} className="relative">
-                              {/* Horizontal line for ALL roles, including the first one */}
-                              <div 
-                                className="absolute h-0.5 bg-white" 
-                                style={{
-                                  left: "-76px",
-                                  width: "52px",
-                                  top: "0.8em",
-                                  zIndex: "2"
-                                }}
-                              ></div>
+                          {/* List all roles for this institution */}
+                          <div className="mt-2 space-y-6">
+                            {institution.roles.map((role, roleIndex) => {
+                              // Check if this role has highlighted points for the current job title
+                              const hasHighlightedPoints = jobTitleToResponsibilities[currentJobTitle]?.[institution.name]?.[role.title]?.length > 0;
                               
-                              {/* Period moved above title */}
-                              <div className="text-gray-400 text-base mb-1">{role.period}</div>
-                              
-                              {/* Title now comes after period - made selectable */}
-                              <span
-                                className={`text-2xl md:text-3xl font-bold`}
-                                style={{
-                                  background: 'linear-gradient(90deg, #a64ff9 0%, #8226e3 50%, #c0392b 100%)',
-                                  WebkitBackgroundClip: 'text',
-                                  WebkitTextFillColor: 'transparent',
-                                  backgroundClip: 'text',
-                                  color: 'transparent'
-                                }}
-                              >
-                                {role.title}
-                              </span>
-                              
-                              {/* Add summary before the bullet points - NEW ADDITION */}
-                              {role.summary && (
-                                <p className="mt-3 text-base md:text-lg text-gray-300 mb-4">
-                                  {role.summary}
-                                </p>
-                              )}
-                              
-                              {/* Modified bullet points with proper text alignment for all lines - improved for mobile */}
-                              <ul className="mt-3 text-base md:text-lg text-gray-300">
-                                {role.responsibilities.map((responsibility, respIndex) => (
-                                  <li 
-                                    key={`resp-${respIndex}`}
-                                    className="flex transition-all duration-300 mb-2"
-                                    style={getHighlightStyle(responsibility)}
+                              return (
+                                <div key={`${role.title}-${roleIndex}`} className="relative">
+                                  {/* Horizontal line for ALL roles, including the first one */}
+                                  <div 
+                                    className="absolute h-0.5 bg-white" 
+                                    style={{
+                                      left: "-76px",
+                                      width: "52px",
+                                      top: "0.8em",
+                                      zIndex: "2"
+                                    }}
+                                  ></div>
+                                  
+                                  {/* Period moved above title */}
+                                  <div className="text-gray-400 text-base mb-1">{role.period}</div>
+                                  
+                                  {/* Title now comes after period - made selectable and clickable with improved hover transitions */}
+                                  <span
+                                    className={`text-2xl md:text-3xl font-bold cursor-pointer inline-block role-title-hover`}
+                                    onClick={() => openInstitutionDetails(institution, roleIndex)}
+                                    style={{
+                                      background: 'linear-gradient(90deg, #a64ff9 0%, #8226e3 50%, #c0392b 100%)',
+                                      WebkitBackgroundClip: 'text',
+                                      WebkitTextFillColor: 'transparent',
+                                      backgroundClip: 'text',
+                                      color: 'transparent',
+                                      position: 'relative',
+                                      transition: 'text-shadow 0.5s ease'
+                                    }}
                                   >
-                                    <span className="inline-block flex-shrink-0 w-4 md:w-5 mr-1.5 md:mr-2 text-center">•</span>
-                                    <span className="flex-1">
-                                      {responsibility.bold ? (
-                                        <>
-                                          <span className="font-bold">{responsibility.bold}</span>
-                                          {responsibility.text.substring(responsibility.bold.length)}
-                                        </>
-                                      ) : (
-                                        responsibility.text
-                                      )}
-                                    </span>
-                                  </li>
-                                ))}
-                              </ul>
-                              
-                              {/* Project tags */}
-                              {role.title.includes('NFTVue') && (
-                                <div className="mt-3 flex gap-2">
-                                  {projectTags.map((tag) => (
-                                    <a
-                                      key={tag.name}
-                                      href={tag.url}
-                                      className="px- py-1 text-sm border border-gray-600 rounded-md text-gray-300 hover:bg-gray-700 transition-colors inline-flex items-center gap-1"
-                                      target="_blank"
-                                      rel="noopener noreferrer"
-                                    >
-                                      <span className="mr-1">🔗</span> {tag.name}
-                                    </a>
-                                  ))}
+                                    {role.title}
+                                    <FaExternalLinkAlt 
+                                      className="inline-block ml-2 text-xs opacity-0 transition-opacity duration-500" 
+                                      style={{
+                                        verticalAlign: 'super',
+                                        fontSize: '0.6em'
+                                      }}
+                                    />
+                                  </span>
+                                  
+                                  {/* Add summary before the bullet points - NEW ADDITION */}
+                                  {role.summary && (
+                                    <p className="mt-3 text-base md:text-lg text-gray-300 mb-4">
+                                      {role.summary}
+                                    </p>
+                                  )}
+                                  
+                                  {/* Modified bullet points with proper text alignment for all lines - improved for mobile */}
+                                  <ul className="mt-3 text-base md:text-lg text-gray-300">
+                                    {role.responsibilities.map((responsibility, respIndex) => (
+                                      <li 
+                                        key={`resp-${respIndex}`}
+                                        className="flex transition-all duration-300 mb-2"
+                                        style={getHighlightStyle(responsibility)}
+                                      >
+                                        <span className="inline-block flex-shrink-0 w-4 md:w-5 mr-1.5 md:mr-2 text-center">•</span>
+                                        <span className="flex-1">
+                                          {responsibility.bold ? (
+                                            <>
+                                              <span className="font-bold">{responsibility.bold}</span>
+                                              {responsibility.text.substring(responsibility.bold.length)}
+                                            </>
+                                          ) : (
+                                            responsibility.text
+                                          )}
+                                        </span>
+                                      </li>
+                                    ))}
+                                  </ul>
+                                  
+                                  {/* Project tags */}
+                                  {role.title.includes('NFTVue') && (
+                                    <div className="mt-3 flex gap-2">
+                                      {projectTags.map((tag) => (
+                                        <a
+                                          key={tag.name}
+                                          href={tag.url}
+                                          className="px- py-1 text-sm border border-gray-600 rounded-md text-gray-300 hover:bg-gray-700 transition-colors inline-flex items-center gap-1"
+                                          target="_blank"
+                                          rel="noopener noreferrer"
+                                        >
+                                          <span className="mr-1">🔗</span> {tag.name}
+                                        </a>
+                                      ))}
+                                    </div>
+                                  )}
                                 </div>
-                              )}
-                            </div>
-                          );
-                        })}
+                              );
+                            })}
+                          </div>
+                        </div>
                       </div>
-                    </div>
+                    ))}
                   </div>
-                ))}
-              </div>
-              
-              {/* Smaller empty space at bottom */}
-              <div className="h-3"></div>
+                  
+                  {/* Smaller empty space at bottom */}
+                  <div className="h-3"></div>
+                </motion.div>
+              </AnimatePresence>
             </div>
           </div>
         </div>
@@ -439,7 +501,11 @@ export default function ExperienceSection() {
                         
                         <div className="space-y-8">
                           {activeInstitution.roles.map((role, roleIndex) => (
-                            <div key={`modal-role-${roleIndex}`} className="bg-gray-800/30 border-l-2 border-purple-500/40 pl-4 py-3 pr-3 rounded-r-sm">
+                            <div 
+                              key={`modal-role-${roleIndex}`} 
+                              id={`modal-role-${roleIndex}`}
+                              className="bg-gray-800/30 border-l-2 border-purple-500/40 pl-4 py-3 pr-3 rounded-r-sm transition-all duration-500"
+                            >
                               {/* Period and title - made selectable */}
                               <div className="mb-3">
                                 <div className="text-gray-400 text-sm mb-1">{role.period}</div>
@@ -498,6 +564,89 @@ export default function ExperienceSection() {
           </motion.div>
         )}
       </AnimatePresence>
+      
+      {/* Enhanced style tag with transition effects */}
+      <style jsx global>{`
+        .highlight-role {
+          box-shadow: 0 0 0 2px rgba(166, 79, 249, 0.5);
+          background-color: rgba(130, 38, 227, 0.15) !important;
+          transition: all 0.5s ease-in-out;
+        }
+        
+        /* Gradual hover effect for role titles */
+        .role-title-hover {
+          text-shadow: 0 0 0px rgba(166, 79, 249, 0);
+          transition: text-shadow 0.5s ease-in-out;
+        }
+        
+        .role-title-hover:hover {
+          text-shadow: 0 0 10px rgba(166, 79, 249, 0.5);
+        }
+        
+        .role-title-hover:hover .inline-block {
+          opacity: 0.7;
+        }
+        
+        @keyframes roleGlow {
+          0% { text-shadow: 0 0 5px rgba(166, 79, 249, 0); }
+          50% { text-shadow: 0 0 10px rgba(166, 79, 249, 0.5); }
+          100% { text-shadow: 0 0 5px rgba(166, 79, 249, 0); }
+        }
+        
+        /* Add smooth transition for tab content */
+        .tab-transition-enter {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        .tab-transition-enter-active {
+          opacity: 1;
+          transform: translateY(0);
+          transition: opacity 300ms, transform 300ms;
+        }
+        .tab-transition-exit {
+          opacity: 1;
+        }
+        .tab-transition-exit-active {
+          opacity: 0;
+          transform: translateY(-10px);
+          transition: opacity 300ms, transform 300ms;
+        }
+
+        /* Prevent logo from appearing behind vertical line during animations */
+        .logo-container-circle {
+          z-index: 50 !important; /* Significantly increased z-index to ensure it's always above everything */
+          position: relative;
+          background: black; /* Ensure opaque background */
+        }
+
+        /* Ensure elements are properly layered during transitions */
+        .experience-item {
+          position: relative;
+          z-index: 5; /* Lower than the line but higher than default */
+        }
+
+        /* Ensure horizontal lines appear above the content but below the vertical line */
+        .horizontal-line {
+          z-index: 8 !important;
+        }
+
+        /* Remove the ::before pseudo-element that was causing issues */
+        .logo-container-circle::before {
+          content: none;
+        }
+
+        /* Ensure logo image is always on top */
+        .logo-container-circle img {
+          position: relative;
+          z-index: 60 !important; /* Significantly increased to ensure it's always visible */
+        }
+
+        /* Add specific style for the logo container */
+        .logo-image-container {
+          z-index: 55 !important; /* Also increased */
+          position: relative;
+        }
+      `}</style>
     </section>
   );
 }
