@@ -27,7 +27,7 @@ export default function SocialButtons({
       {/* Resume button - larger size */}
       <div className="relative">
         <motion.a 
-          href="/Artem Bunchuk CV.pdf" 
+          href="/Artem_Bunchuk_CV.pdf" 
           download
           className="bg-gray-800/70 text-gray-300 px-5 py-2.5 text-lg rounded-md flex items-center gap-2 overflow-hidden relative"
           onMouseEnter={() => {

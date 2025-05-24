@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Artem Bunchuk - CV</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.4;
+            color: #333;
+            background-color: #f5f5f5;
+            font-size: 11px;
+        }
+
+        .container {
+            max-width: 8.5in;
+            margin: 20px auto;
+            background: transparent;
+            box-shadow: none;
+            display: block; /* Change from flex to block */
+            border-radius: 0;
+            overflow: visible;
+        }
+
+        .page {
+            margin-bottom: 30px;
+            background: white;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .page-inner {
+            display: flex;
+            min-height: 11in;
+        }
+
+        .sidebar {
+            width: 250px;
+            background: #2c3e50;
+            color: white;
+            padding: 30px 20px;
+            flex-shrink: 0;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 30px 25px;
+            background: white;
+        }
+
+        .header {
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .header .subtitle {
+            font-size: 12px;
+            color: #bdc3c7;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid #34495e;
+            padding-bottom: 8px;
+            margin-bottom: 20px;
+        }
+
+        .sidebar-section {
+            margin-bottom: 25px;
+        }
+
+        .sidebar-title {
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+            color: white;
+            border-bottom: 2px solid #34495e;
+            padding-bottom: 8px;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+            font-size: 10px; /* Should already be 10px, ensuring consistency */
+        }
+
+        .contact-item::before {
+            content: "●";
+            margin-right: 8px;
+            color: #3498db;
+        }
+
+        .education-item {
+            margin-bottom: 15px;
+        }
+
+        .education-year {
+            font-size: 10px;
+            color: #3498db;
+            font-weight: 600;
+            margin-bottom: 3px;
+        }
+
+        .education-school {
+            font-size: 10px; /* Reduced from 11px */
+            font-weight: normal; /* Changed from 600 to normal */
+            margin-bottom: 2px;
+            color: #bdc3c7; /* Changed to lighter color */
+        }
+
+        .education-degree {
+            font-size: 11px; /* Increased from 10px */
+            color: #ffffff; /* Changed to white for more brightness */
+            font-weight: 600; /* Made it bold */
+            margin-bottom: 3px;
+        }
+
+        .skill-category {
+            margin-bottom: 15px;
+        }
+
+        .skill-category h4 {
+            font-size: 11px; /* Increased from 10px */
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: #3498db;
+        }
+
+        .skill-items {
+            font-size: 10px; /* Increased from 9px */
+            color: #bdc3c7;
+            line-height: 1.4; /* Slightly increased line height */
+        }
+
+        .tech-category {
+            margin-bottom: 15px;
+        }
+
+        .tech-category h4 {
+            font-size: 11px; /* Increased from 10px */
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: #3498db;
+        }
+
+        .tech-items {
+            font-size: 10px; /* Increased from 9px */
+            color: #bdc3c7;
+            line-height: 1.4; /* Slightly increased line height */
+        }
+
+        .main-section {
+            margin-bottom: 25px;
+        }
+
+        .main-title {
+            font-size: 14px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            border-bottom: none; /* Remove the solid border */
+            padding-bottom: 5px;
+        }
+
+        .main-title::after {
+            content: "";
+            display: block;
+            height: 2px;
+            background: linear-gradient(90deg, #3498db 60%, transparent 100%);
+            margin-top: 5px;
+            opacity: 0.7;
+        }
+
+        .job {
+            margin-bottom: 20px;
+        }
+
+        .job-header {
+            margin-bottom: 8px;
+        }
+
+        .company {
+            font-size: 13px; /* Reverted from 14px back to 13px */
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 2px;
+        }
+
+        .job-title {
+            font-size: 12px; /* Reverted from 13px back to 12px */
+            font-weight: 600;
+            color: #3498db;
+            margin-bottom: 2px;
+        }
+
+        .job-dates {
+            font-size: 10px; /* Reverted from 11px back to 10px */
+            color: #7f8c8d;
+            font-style: italic;
+        }
+
+        .job-content ul {
+            margin-left: 15px;
+            margin-top: 6px;
+        }
+
+        .job-content li {
+            margin-bottom: 4px;
+            text-align: left;
+            font-size: 10px; /* Reverted from 11px back to 10px */
+        }
+
+        strong {
+            color: #2c3e50;
+            font-weight: 600;
+        }
+
+        .page-break {
+            page-break-before: always;
+        }
+
+        /* Enhanced styling for better PDF appearance */
+        @media print {
+            body {
+                background: white;
+            }
+            
+            .container {
+                box-shadow: none;
+                margin: 0;
+                max-width: none;
+            }
+            
+            .page {
+                page-break-after: always;
+                min-height: 10.5in;
+            }
+            
+            .page:last-child {
+                page-break-after: avoid;
+            }
+            
+            .section-divider {
+                break-inside: avoid;
+            }
+            
+            .page-number {
+                bottom: 0.3in;
+            }
+        }
+        
+        /* Section separators */
+        .section-divider {
+            display: none;
+        }
+        
+        /* Page specific styling */
+        .page {
+            position: relative;
+        }
+        
+        .page-number {
+            position: absolute;
+            bottom: 15px;
+            right: 25px;
+            font-size: 9px;
+            color: #95a5a6;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Page 1 -->
+        <div class="page">
+            <div class="page-inner">
+                <!-- Sidebar -->
+                <div class="sidebar">
+                    <div class="header">
+                        <h1>Artem<br>Bunchuk</h1>
+                        <div class="subtitle">Strategy, Research & Operations</div>
+                    </div>
+
+                    <div class="sidebar-section">
+                        <h3 class="sidebar-title">Contact</h3>
+                        <div class="contact-item">07500888836</div>
+                        <div class="contact-item">artem.cheshire@gmail.com</div>
+                        <div class="contact-item">57a The Ridgeway, London, NW11 8QL</div>
+                    </div>
+
+                    <div class="sidebar-section">
+                        <h3 class="sidebar-title">Education</h3>
+                        <div class="education-item">
+                            <div class="education-year">2015 - 2016</div>
+                            <div class="education-degree">MSc. ADVANCED NEUROIMAGING</div>
+                            <div class="education-school">University College London</div>
+                        </div>
+                        <div class="education-item">
+                            <div class="education-year">2012 - 2015</div>
+                            <div class="education-degree">BSc. PHYSICS WITH PHILOSOPHY</div>
+                            <div class="education-school">University of Manchester</div>
+                        </div>
+                    </div>
+
+                    <div class="sidebar-section">
+                        <h3 class="sidebar-title">Skills</h3>
+                        <div class="skill-category">
+                            <h4>Leadership & Strategy</h4>
+                            <div class="skill-items">
+                                Team Building &bull; Stakeholder Management &bull; Project Roadmapping &bull; Data-Driven Decision Making &bull; Budget Planning &bull; Risk &amp; Resilience &bull; Go-to-Market Planning &bull; Business Development
+                            </div>
+                        </div>
+                        <div class="skill-category">
+                            <h4>Marketing & Media</h4>
+                            <div class="skill-items">
+                                Brand Strategy &bull; Content Strategy &bull; Media Planning &bull; Influencer Marketing &bull; B2B &amp; B2C Campaigns
+                            </div>
+                        </div>
+                        <div class="skill-category">
+                            <h4>Research & Analysis</h4>
+                            <div class="skill-items">
+                                Market Research &bull; Mixed-Method Research &bull; Consumer Insights &bull; A/B Testing &bull; Survey Design &bull; Focus Group Moderation &bull; Data Visualization
+                            </div>
+                        </div>
+                        <div class="skill-category">
+                            <h4>Communication</h4>
+                            <div class="skill-items">
+                                Stakeholder Presentations &bull; Client Workshops &bull; Executive Reporting &bull; Cross-Functional Collaboration &bull; Negotiation
+                            </div>
+                        </div>
+                        <div class="skill-category">
+                            <h4>Development & Technical</h4>
+                            <div class="skill-items">
+                                AI Integration &bull; Automation &bull; API Integration &bull; Machine Learning &bull; Technical Project Management &bull; Platform Innovation
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Main Content -->
+                <div class="main-content">
+                    <!-- Profile Section -->
+                    <div class="main-section">
+                        <h2 class="main-title">Profile</h2>
+                        <p style="font-size: 11px; text-align: justify; color: #555;">
+                            Over six years at FanBox, I've grown with the company and led teams across research, insights, creative content, and operations. I started in an analysis-focused role during the company's first major growth phase and quickly moved into managing flagship entertainment accounts. From there, I evolved into a strategic leadership position where I built our insights and audience activation function, developed products, and designed research methodologies from the ground up. Most recently, I've taken on the operational side of the business, focusing on scaling systems, shaping company direction, developing content strategies, and ensuring teams and individuals have what they need to deliver exceptional work.
+                        </p>
+                    </div>
+
+                    <!-- Work Experience Section -->
+                    <div class="main-section">
+                        <h2 class="main-title">Work Experience</h2>
+
+                        <div class="job">
+                            <div class="job-header">
+                                <div class="company">FANBOX</div>
+                                <div class="job-title">Head of Operations</div>
+                                <div class="job-dates">2023 - PRESENT</div>
+                            </div>
+                            <div class="job-content">
+                                <ul>
+                                    <li><strong>Led day-to-day operations and strategic planning</strong> for a 30-person workforce across multiple departments, including full-time, part-time, and freelance staff.</li>
+                                    <li><strong>Spearheaded AI integration</strong> across consumer-facing products and internal productivity tools, driving both user engagement and operational efficiency.</li>
+                                    <li><strong>Introduced automation workflows</strong> across analytics, invoicing, and reporting, cutting repetitive admin time and streamlining freelancer payments, achieving a 4x efficiency gain in key operational processes.</li>
+                                    <li><strong>Designed pricing frameworks</strong> and cost models across consumer products and client deliverables, balancing engagement, scalability, and profitability.</li>
+                                    <li><strong>Founded and led the Content Department</strong>, overseeing B2B and B2C strategy across social channels</li>
+                                    <li><strong>Conducted risk assessments</strong> and implemented contingency plans, strengthening company resilience and ensuring business continuity.</li>
+                                    <li><strong>Partnered directly with founders</strong> to shape company direction, identify new business opportunities, and translate vision into actionable roadmaps.</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="job">
+                            <div class="job-header">
+                                <div class="job-title">Head of Research, Insights & Audience Activation</div>
+                                <div class="job-dates">2021 - 2023</div>
+                            </div>
+                            <div class="job-content">
+                                <ul>
+                                    <li><strong>Led an interdisciplinary team</strong> of psychologists, driving audience growth, mixed-method innovation and insights delivery.</li>
+                                    <li><strong>Directed R&D initiatives</strong> exploring dynamically adapted content and AI-modified media for creative testing.</li>
+                                    <li><strong>Developed the 'Movie Dimensions' taxonomy</strong> from 13+ million film reviews to support content and audience profiling and power the platform's recommendation generator.</li>
+                                    <li><strong>Scaled the platform's reach</strong> through an influencer-driven audience acquisition strategy, growing the subscriber base from 5,000 to over 120,000.</li>
+                                    <li><strong>Integrated data from multiple third-party APIs</strong> with 120,000 Fanbox behavioral profiles into an automated database, improving audience targeting and content personalization.</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="job">
+                            <div class="job-header">
+                                <div class="job-title">Head of Project Delivery -- Universal Pictures</div>
+                                <div class="job-dates">2020 - 2021</div>
+                            </div>
+                            <div class="job-content">
+                                <ul>
+                                    <li><strong>Managed Fanbox's largest client, Universal Pictures ($2M account), overseeing the full research lifecycle.</strong></li>
+                                    <li><strong>Negotiated scope and deliverables</strong> to align client needs with internal capacity, protecting margins and maintaining long-term account growth.</li>
+                                    <li><strong>Conducted creative asset testing</strong> to optimize campaign performance and boost audience engagement across major film releases.</li>
+                                    <li><strong>Developed detailed audience profiles</strong> for major film IPs, identifying key psychographic and demographic segments, optimal media channels, and core appeal drivers.</li>
+                                    <li><strong>Provided data-driven insights</strong> to inform decisions around release timing and media planning, directly shaping marketing strategy for major film campaigns.</li>
+                                    <li><strong>Facilitated workshops with client stakeholders</strong> that reshaped internal approaches to audience research and campaign planning.</li>
+                                    <li><strong>Led broader market research projects</strong> focused on film industry trends, genre performance, and audience segments to support client strategy, positioning, and long-term planning.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="page-number">1</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Page 2 -->
+        <div class="page">
+            <div class="page-inner">
+                <!-- Sidebar - Page 2 (repeat necessary elements) -->
+                <div class="sidebar">
+                    <div class="header">
+                        <h1>Artem<br>Bunchuk</h1>
+                    </div>
+                    
+                    <div class="sidebar-section" style="margin-top: 30px;">
+                        <h3 class="sidebar-title">Tech Stack</h3>
+                        <div class="tech-category">
+                            <h4>Programming</h4>
+                            <div class="tech-items">JavaScript, TypeScript, Python, C#, Rust</div>
+                        </div>
+                        <div class="tech-category">
+                            <h4>Frontend</h4>
+                            <div class="tech-items">React, Next.JS, HTML, CSS</div>
+                        </div>
+                        <div class="tech-category">
+                            <h4>Backend & Databases</h4>
+                            <div class="tech-items">Node.JS, MongoDB, MySQL, PostgreSQL</div>
+                        </div>
+                        <div class="tech-category">
+                            <h4>Cloud & DevOps</h4>
+                            <div class="tech-items">AWS, Microsoft Azure, Git, GitHub</div>
+                        </div>
+                        <div class="tech-category">
+                            <h4>Data Science</h4>
+                            <div class="tech-items">R, MATLAB, Excel, SPSS, Tableau</div>
+                        </div>
+                        <div class="tech-category">
+                            <h4>Design & AI</h4>
+                            <div class="tech-items">Photoshop, Illustrator, Premier Pro, After Effects, OpenAI API, Anthropic API</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Main Content - Page 2 -->
+                <div class="main-content">
+                    <!-- Previous Experience Section -->
+                    <div class="main-section">
+                        <h2 class="main-title">Additional Experience</h2>
+                        
+                        <!-- Move Strategy Consultant to be first on page 2 -->
+                        <div class="job">
+                            <div class="job-header">
+                                <div class="company">FANBOX</div>
+                                <div class="job-title">Strategy Consultant</div>
+                                <div class="job-dates">2019 - 2020</div>
+                            </div>
+                            <div class="job-content">
+                                <ul>
+                                    <li><strong>Analyzed results from psychometric research</strong> and translated them into strategic insights for clients in banking, hospitality, music, and film.</li>
+                                    <li><strong>Conducted qualitative research</strong> including focus groups, interviews, and specialized studies to uncover behavioral and psychological insights.</li>
+                                    <li><strong>Led R&D initiatives</strong> focused on platform innovation, including early experimentation with machine learning-based features such as automated face-swapping and rotoscoping.</li>
+                                    <li><strong>Contributed to a pro-bono product</strong> for NHS Foundation Trusts during the COVID-19 pandemic, delivering insights into frontline healthcare professionals' wellbeing and team dynamics.</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="job">
+                            <div class="job-header">
+                                <div class="company">Foundation for Integrity & Sports</div>
+                                <div class="job-title">Freelance Lead Research Consultant</div>
+                                <div class="job-dates">2018 - 2019</div>
+                            </div>
+                            <div class="job-content">
+                                <ul>
+                                    <li><strong>Led a team of five researchers</strong> investigating FIFA corruption and human rights violations linked to Qatar's 2022 World Cup bid.</li>
+                                    <li><strong>Conducted primary and secondary research</strong> including interviews, financial document analysis, and evidence gathering.</li>
+                                    <li><strong>Produced briefing papers and content</strong> commentary, and public-facing social media content.</li>
+                                    <li><strong>Assisted with conference organization</strong> including speaker coordination, guest management, and event logistics.</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="job">
+                            <div class="job-header">
+                                <div class="company">Qatar Global Security & Stability Conference</div>
+                                <div class="job-title">Freelance Research Consultant</div>
+                                <div class="job-dates">2018</div>
+                            </div>
+                            <div class="job-content">
+                                <ul>
+                                    <li><strong>Conducted independent research and interviews</strong> related to Gulf region security and geopolitical stability for international conference.</li>
+                                    <li><strong>Contributed to briefing materials and talking points</strong> for speakers, and assisted in the selection and coordination of panelists and VIP guests.</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="job">
+                            <div class="job-header">
+                                <div class="company">VAKTEC</div>
+                                <div class="job-title">International Business Development Director</div>
+                                <div class="job-dates">2016 - 2018</div>
+                            </div>
+                            <div class="job-content">
+                                <ul>
+                                    <li><strong>Led international operations and supplier partnerships</strong>, managing relationships with global manufacturers and technology partners to support industrial modernization and expansion.</li>
+                                    <li><strong>Developed and executed market entry strategies</strong> across the CIS, Eastern Europe, and Asia, establishing new distribution channels and regional partnerships.</li>
+                                    <li><strong>Negotiated exclusive distribution agreements</strong> with leading OEMs, including MAZAK and OPS-INGERSOLL, significantly expanding the product portfolio.</li>
+                                    <li><strong>Collaborated with clients' engineering teams</strong> to adapt advanced manufacturing solutions to local market requirements.</li>
+                                    <li><strong>Represented VAKTEC at global trade shows</strong> and industry events, building brand presence and generating commercial leads.</li>
+                                    <li><strong>Played a key role in technology transfer project</strong> that enabled VAKTEC to become the first CIS-based manufacturer of carbide blank inserts.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="page-number">2</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

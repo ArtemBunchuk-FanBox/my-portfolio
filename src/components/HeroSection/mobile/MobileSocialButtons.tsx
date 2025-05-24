@@ -19,7 +19,7 @@ export default function MobileSocialButtons({
     <div className="flex flex-wrap gap-3 justify-center mb-6">
       {/* Resume button */}
 <motion.a 
-  href="/Artem Bunchuk CV.pdf" 
+  href="/Artem_Bunchuk_CV.pdf" 
   download
   className="bg-gray-800/70 text-white px-3 py-2 text-sm rounded-md flex items-center gap-1"
   whileTap={{ scale: 0.95 }}

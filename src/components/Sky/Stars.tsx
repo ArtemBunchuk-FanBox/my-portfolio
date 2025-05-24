@@ -78,7 +78,7 @@ export default function Stars() {
 
   // Initialize stars on component mount
   useEffect(() => {
-    const totalStars = 300; // Increased from 500 to 600 for more density
+    const totalStars = 500; // Increased from 500 to 600 for more density
     const newStarData = Array.from({ length: totalStars }).map(() => ({
       x: Math.random() * 100,
       y: Math.random() * 100,
