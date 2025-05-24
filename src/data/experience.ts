@@ -65,10 +65,6 @@ export const workExperience: Institution[] = [
           {
             text: 'Launched \'Tech Grooming Tuesdays,\' reducing development backlog by 22% and increasing issue resolution speed by 28%.',
             bold: 'Launched \'Tech Grooming Tuesdays\''
-          },
-          {
-            text: 'Established an evaluation framework for emerging technologies, assessing business impact and compatibility with existing infrastructure.',
-            bold: 'Established an evaluation framework'
           }
         ]
       },
@@ -100,7 +96,7 @@ export const workExperience: Institution[] = [
         ]
       },
       {
-        title: 'Head of Project Delivery – Universal Pictures (UP)',
+        title: 'Head of Project Delivery – Universal Pictures',
         period: 'Jul 2020 - Jul 2021',
         summary: "Managed Fanbox's largest client, Universal Pictures ($2M account), overseeing the full research lifecycle from design and implementation to analysis, insight development, and client presentation, while coordinating cross-departmental stakeholders to ensure seamless delivery.",
         responsibilities: [
@@ -235,7 +231,7 @@ export const workExperience: Institution[] = [
           },
           {
             text: 'Played a key role in a $5M technology transfer project that enabled VAKTEC to become the first CIS-based manufacturer of carbide blank inserts.',
-            bold: 'Played a key role in technology transfer project'
+            bold: 'Played a key role in a $5M technology transfer project'
           }
         ]
       }
@@ -334,14 +330,13 @@ export const jobTitleToResponsibilities: JobTitleResponsibilityMap = {
       "Head of Operations": [
         "Spearheaded AI integration across consumer-facing products and internal productivity tools, driving both user engagement and operational efficiency.",
         "Designed pricing frameworks and cost models across consumer products and client deliverables, balancing engagement, scalability, and profitability.",
-        "Founded and led the Content Department, overseeing B2B and B2C strategy across social channels.",
-        "Established an evaluation framework for emerging technologies, assessing business impact and compatibility with existing infrastructure."
+        "Founded and led the Content Department, overseeing B2B and B2C strategy across social channels."
       ],
       "Head of Research, Insights & Audience Activation": [
         "Directed R&D initiatives exploring dynamically adapted content and AI-modified media for creative testing.",
         "Scaled the platform's reach through an influencer-driven audience acquisition strategy, growing the subscriber base from 5,000 to over 120,000."
       ],
-      "Head of Project Delivery – Universal Pictures (UP)": [
+      "Head of Project Delivery – Universal Pictures": [
         "Negotiated scope and deliverables to align client needs with internal capacity, protecting margins and maintaining long-term account growth.",
         "Developed detailed audience profiles for major film IPs, identifying key psychographic and demographic segments, optimal media channels, and core appeal drivers.",
         "Provided data-driven insights to inform decisions around release timing and media planning, directly shaping marketing strategy for major film campaigns.",
@@ -380,8 +375,7 @@ export const jobTitleToResponsibilities: JobTitleResponsibilityMap = {
         "Introduced automation workflows across analytics, invoicing, and reporting, cutting repetitive admin time and streamlining freelancer payments.",
         "Designed pricing frameworks and cost models across consumer products and client deliverables, balancing engagement, scalability, and profitability.",
         "Conducted risk assessments and implemented contingency plans, strengthening company resilience and ensuring business continuity.",
-        "Launched 'Tech Grooming Tuesdays,' reducing development backlog by 22% and increasing issue resolution speed by 28%.",
-        "Established an evaluation framework for emerging technologies, assessing business impact and compatibility with existing infrastructure."
+        "Launched 'Tech Grooming Tuesdays,' reducing development backlog by 22% and increasing issue resolution speed by 28%."
       ],
       "Head of Research, Insights & Audience Activation": [
         "Directed R&D initiatives exploring dynamically adapted content and AI-modified media for creative testing.",
@@ -389,7 +383,7 @@ export const jobTitleToResponsibilities: JobTitleResponsibilityMap = {
         "Integrated data from multiple third-party APIs with 120,000 Fanbox behavioral profiles into an automated database, improving audience targeting and content personalization.",
         "Developed a framework to grow a COPPA compliant parent–child research panel and designed child-friendly methodologies to support effective testing of family-focused products."
       ],
-      "Head of Project Delivery – Universal Pictures (UP)": [
+      "Head of Project Delivery – Universal Pictures": [
         "Negotiated scope and deliverables to align client needs with internal capacity, protecting margins and maintaining long-term account growth.",
         "Facilitated workshops with client stakeholders that reshaped internal approaches to audience research and campaign planning."
       ],
@@ -411,15 +405,14 @@ export const jobTitleToResponsibilities: JobTitleResponsibilityMap = {
       "Head of Operations": [
         "Spearheaded AI integration across consumer-facing products and internal productivity tools, driving both user engagement and operational efficiency.",
         "Introduced automation workflows across analytics, invoicing, and reporting, cutting repetitive admin time and streamlining freelancer payments.",
-        "Launched 'Tech Grooming Tuesdays,' reducing development backlog by 22% and increasing issue resolution speed by 28%.",
-        "Established an evaluation framework for emerging technologies, assessing business impact and compatibility with existing infrastructure."
+        "Launched 'Tech Grooming Tuesdays,' reducing development backlog by 22% and increasing issue resolution speed by 28%."
       ],
       "Head of Research, Insights & Audience Activation": [
         "Directed R&D initiatives exploring dynamically adapted content and AI-modified media for creative testing.",
         "Developed the 'Movie Dimensions' taxonomy from 13+ million film reviews to support content and audience profiling and power the platform's recommendation generator.",
         "Integrated data from multiple third-party APIs with 120,000 Fanbox behavioral profiles into an automated database, improving audience targeting and content personalization."
       ],
-      "Head of Project Delivery – Universal Pictures (UP)": [
+      "Head of Project Delivery – Universal Pictures": [
         "Facilitated workshops with client stakeholders that reshaped internal approaches to audience research and campaign planning."
       ],
       "Strategy Consultant": [
@@ -446,7 +439,7 @@ export const jobTitleToResponsibilities: JobTitleResponsibilityMap = {
         "Scaled the platform's reach through an influencer-driven audience acquisition strategy, growing the subscriber base from 5,000 to over 120,000.",
         "Developed a framework to grow a COPPA compliant parent–child research panel and designed child-friendly methodologies to support effective testing of family-focused products."
       ],
-      "Head of Project Delivery – Universal Pictures (UP)": [
+      "Head of Project Delivery – Universal Pictures": [
         "Negotiated scope and deliverables to align client needs with internal capacity, protecting margins and maintaining long-term account growth.",
         "Facilitated workshops with client stakeholders that reshaped internal approaches to audience research and campaign planning."
       ],
@@ -474,8 +467,7 @@ export const jobTitleToResponsibilities: JobTitleResponsibilityMap = {
   "Head of Research": {
     "Fanbox": {
       "Head of Operations": [
-        "Spearheaded AI integration across consumer-facing products and internal productivity tools, driving both user engagement and operational efficiency.",
-        "Established an evaluation framework for emerging technologies, assessing business impact and compatibility with existing infrastructure."
+        "Spearheaded AI integration across consumer-facing products and internal productivity tools, driving both user engagement and operational efficiency."
       ],
       "Head of Research, Insights & Audience Activation": [
         "Directed R&D initiatives exploring dynamically adapted content and AI-modified media for creative testing.",
@@ -483,7 +475,7 @@ export const jobTitleToResponsibilities: JobTitleResponsibilityMap = {
         "Integrated data from multiple third-party APIs with 120,000 Fanbox behavioral profiles into an automated database, improving audience targeting and content personalization.",
         "Developed a framework to grow a COPPA compliant parent–child research panel and designed child-friendly methodologies to support effective testing of family-focused products."
       ],
-      "Head of Project Delivery – Universal Pictures (UP)": [
+      "Head of Project Delivery – Universal Pictures": [
         "Conducted creative asset testing to optimize campaign performance and boost audience engagement across major film releases.",
         "Developed detailed audience profiles for major film IPs, identifying key psychographic and demographic segments, optimal media channels, and core appeal drivers.",
         "Provided data-driven insights to inform decisions around release timing and media planning, directly shaping marketing strategy for major film campaigns.",
@@ -516,7 +508,7 @@ export const jobTitleToResponsibilities: JobTitleResponsibilityMap = {
       "Head of Research, Insights & Audience Activation": [
         "Scaled the platform's reach through an influencer-driven audience acquisition strategy, growing the subscriber base from 5,000 to over 120,000."
       ],
-      "Head of Project Delivery – Universal Pictures (UP)": [
+      "Head of Project Delivery – Universal Pictures": [
         "Conducted creative asset testing to optimize campaign performance and boost audience engagement across major film releases.",
         "Developed detailed audience profiles for major film IPs, identifying key psychographic and demographic segments, optimal media channels, and core appeal drivers.",
         "Provided data-driven insights to inform decisions around release timing and media planning, directly shaping marketing strategy for major film campaigns."
@@ -546,7 +538,7 @@ export const jobTitleToResponsibilities: JobTitleResponsibilityMap = {
         "Integrated data from multiple third-party APIs with 120,000 Fanbox behavioral profiles into an automated database, improving audience targeting and content personalization.",
         "Developed a framework to grow a COPPA compliant parent–child research panel and designed child-friendly methodologies to support effective testing of family-focused products."
       ],
-      "Head of Project Delivery – Universal Pictures (UP)": [
+      "Head of Project Delivery – Universal Pictures": [
         "Conducted creative asset testing to optimize campaign performance and boost audience engagement across major film releases.",
         "Developed detailed audience profiles for major film IPs, identifying key psychographic and demographic segments, optimal media channels, and core appeal drivers.",
         "Provided data-driven insights to inform decisions around release timing and media planning, directly shaping marketing strategy for major film campaigns.",
