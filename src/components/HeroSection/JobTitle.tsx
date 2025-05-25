@@ -188,26 +188,24 @@ export default function JobTitle() {
                       {title}
                     </span>
                     
-                    {/* Show pin icon only when this is the current title or the item is hovered */}
-                    {(index === titleIndex || hoveredItemIndex === index) && (
-                      <motion.div
-                        onClick={(e) => handlePinToggle(index, e)}
-                        initial={{ opacity: 0, scale: 0.8 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        whileHover={{ scale: 1.2 }}
-                        whileTap={{ scale: 0.9 }}
-                        title={index === titleIndex && titlePinned ? "Unpin this title" : "Pin this title"}
-                      >
-                        <FaThumbtack 
-                          size={12} 
-                          className={`transition-all duration-300 ${
-                            index === titleIndex && titlePinned 
-                              ? "text-yellow-400 rotate-0" 
-                              : "text-gray-400 rotate-45 hover:text-gray-200"
-                          }`}
-                        />
-                      </motion.div>
-                    )}
+                    {/* Show pin icon for all items, not just during hover or for current */}
+                    <motion.div
+                      onClick={(e) => handlePinToggle(index, e)}
+                      initial={{ opacity: 0.7, scale: 1 }}
+                      animate={{ opacity: index === titleIndex || hoveredItemIndex === index ? 1 : 0.7, scale: 1 }}
+                      whileHover={{ scale: 1.2 }}
+                      whileTap={{ scale: 0.9 }}
+                      title={index === titleIndex && titlePinned ? "Unpin this title" : "Pin this title"}
+                    >
+                      <FaThumbtack 
+                        size={12} 
+                        className={`transition-all duration-300 ${
+                          index === titleIndex && titlePinned 
+                            ? "text-yellow-400 rotate-0" 
+                            : "text-gray-400 rotate-45 hover:text-gray-200"
+                        }`}
+                      />
+                    </motion.div>
                   </motion.div>
                 ))}
               </div>
