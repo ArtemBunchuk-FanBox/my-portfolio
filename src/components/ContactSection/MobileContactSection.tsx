@@ -80,7 +80,7 @@ export default function MobileContactSection() {
             </h3>
             
             <p className="text-gray-300 text-sm mb-4">
-              Let's grab a coffee or something stronger.
+              Let&apos;s grab a coffee or something stronger.
             </p>
             
             {/* Quick contact buttons */}
@@ -120,7 +120,7 @@ export default function MobileContactSection() {
                     <FaCheck className="text-green-400 text-lg" />
                   </div>
                   <h4 className="text-lg font-bold text-white mb-2">Message Sent!</h4>
-                  <p className="text-gray-300 text-sm">I'll get back to you shortly.</p>
+                  <p className="text-gray-300 text-sm">I&apos;ll get back to you shortly.</p>
                 </div>
               ) : (
                 <form onSubmit={handleSubmit} className="space-y-3">

@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
 import { FaEnvelope, FaLinkedinIn, FaCheck } from 'react-icons/fa';
 import { MdSend } from 'react-icons/md';
 
@@ -62,12 +61,6 @@ export default function DesktopContactSection() {
     }
   };
 
-  // Create non-animated variants for server-side rendering
-  const staticProps = {
-    initial: {},
-    animate: {}
-  };
-
   return (
     <section className="py-8 relative overflow-hidden">
       {/* Subtle gradient background effect */}
@@ -90,7 +83,7 @@ export default function DesktopContactSection() {
                 
                 {/* Message repositioned below as requested */}
                 <p className="text-gray-300 text-base mb-8">
-                  Let's grab a coffee or something stronger.
+                  Let&apos;s grab a coffee or something stronger.
                 </p>
                 
                 {/* Quick contact methods */}
@@ -129,18 +122,13 @@ export default function DesktopContactSection() {
                 <h3 className="text-xl font-bold mb-6 text-white">Drop me a line.</h3>
                 
                 {mounted && formStatus === 'success' ? (
-                  <motion.div 
-                    className="flex flex-col items-center justify-center text-center py-8"
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ duration: 0.3 }}
-                  >
+                  <div className="flex flex-col items-center justify-center text-center py-8">
                     <div className="w-14 h-14 bg-green-500/20 rounded-full flex items-center justify-center mb-4">
                       <FaCheck className="text-green-400 text-xl" />
                     </div>
                     <h4 className="text-xl font-bold text-white mb-2">Message Sent!</h4>
-                    <p className="text-gray-300">I'll get back to you shortly.</p>
-                  </motion.div>
+                    <p className="text-gray-300">I&apos;ll get back to you shortly.</p>
+                  </div>
                 ) : (
                   <form onSubmit={handleSubmit} className="space-y-4">
                     {/* Form fields with minimal labels */}
