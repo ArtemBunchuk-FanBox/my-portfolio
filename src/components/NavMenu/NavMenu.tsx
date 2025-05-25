@@ -247,14 +247,27 @@ export default function NavMenu() {
     setHoveredItem(null);
   };
 
-  // Also update the pin toggle function
+  // Updated function to handle pin toggle properly
   const handlePinToggleAndSelect = (e: React.MouseEvent, index: number) => {
     e.stopPropagation();
-    selectRole(index);
-    toggleTitlePin();
+    
+    // If selecting a different role
+    if (index !== titleIndex) {
+      // Select the new role
+      handleTitleSelect(index);
+      
+      // If not already pinned, pin it immediately 
+      if (!titlePinned) {
+        toggleTitlePin();
+      }
+    } else {
+      // For the same role, just toggle pin state
+      toggleTitlePin();
+    }
+    
     setHoveredItem(null);
   };
-
+  
   // Split handlers for role selector
   const handleRoleSelectorClick = () => {
     // Normal click behavior - always opens the dropdown
@@ -354,23 +367,23 @@ export default function NavMenu() {
                         </span>
                       </div>
                       
-                      {/* Pin button - always visible */}
-                      <div 
-                        className={`ml-2 p-1.5 rounded-full transition-all duration-300 flex-shrink-0 cursor-pointer ${
-                          titlePinned ? 'bg-amber-500/20 hover:bg-amber-500/40' : 'hover:bg-white/10'
-                        }`}
+                      {/* Pin button - always visible with more subtle hover effect */}
+                      <motion.div 
+                        className="ml-2 flex-shrink-0 cursor-pointer"
                         onClick={handlePinButtonClick}
                         title={titlePinned ? "Unpin this role" : "Pin current role"}
+                        whileHover={{ scale: 1.15, opacity: titlePinned ? 1 : 0.9 }}
+                        whileTap={{ scale: 0.9 }}
                       >
                         <FaThumbtack 
                           size={10} 
                           className={`transition-all duration-300 ${
                             titlePinned 
                               ? "text-amber-300 rotate-0" 
-                              : "text-gray-400 rotate-45"
+                              : "text-gray-400 rotate-45 hover:text-gray-200"
                           }`}
                         />
-                      </div>
+                      </motion.div>
                     </div>
 
                     {/* Role Dropdown - fixed hover highlight to extend under the text and pin */}
@@ -398,9 +411,14 @@ export default function NavMenu() {
                                 >
                                   {role}
                                 </button>
-                                <button
+                                <motion.button
                                   onClick={(e) => handlePinToggleAndSelect(e, index)}
-                                  className="p-2 hover:bg-white/10 rounded mr-1 transition-colors cursor-pointer"
+                                  className="cursor-pointer p-2"
+                                  whileHover={{ 
+                                    scale: 1.15, 
+                                    opacity: index === titleIndex && titlePinned ? 1 : 0.9
+                                  }}
+                                  whileTap={{ scale: 0.9 }}
                                   title="Pin this role"
                                 >
                                   <FaThumbtack 
@@ -408,10 +426,10 @@ export default function NavMenu() {
                                     className={`transition-all duration-300 ${
                                       index === titleIndex && titlePinned 
                                         ? "text-yellow-400 rotate-0" 
-                                        : "text-gray-400 rotate-45"
+                                        : "text-gray-400 rotate-45 hover:text-gray-200"
                                     }`}
                                   />
-                                </button>
+                                </motion.button>
                               </div>
                             </div>
                           ))}

@@ -13,6 +13,7 @@ export default function MobileNavMenu() {
   const menuRef = useRef<HTMLDivElement>(null);
   const [textScale, setTextScale] = useState(1);
   const titleContainerRef = useRef<HTMLDivElement>(null);
+  const [hideNavigation, setHideNavigation] = useState(false);
   
   // Use the complete job title context - adding back the animation-related properties
   const { 
@@ -111,7 +112,7 @@ export default function MobileNavMenu() {
     };
   }, [currentTitle, displayedText]);
 
-  // Listen for custom events to hide/show the navigation
+  // Listen for custom events to hide/show only the navigation menu
   useEffect(() => {
     const handleProjectModalStateChange = (event: CustomEvent) => {
       const isModalOpen = event.detail.isOpen;
@@ -119,6 +120,9 @@ export default function MobileNavMenu() {
       if (isModalOpen) {
         setIsOpen(false);
         setRoleDropdownOpen(false);
+        setHideNavigation(true);
+      } else {
+        setHideNavigation(false);
       }
     };
 
@@ -225,7 +229,7 @@ export default function MobileNavMenu() {
   const showCursor = isTyping || (!titlePinned && showRoleSelector);
 
   return (
-    <div className="fixed top-0 left-0 w-full z-50" id="mobile-nav">
+    <div className="fixed top-0 left-0 w-full z-[10001]" id="mobile-nav">
       <div className="flex justify-between items-center p-4">
         {/* Title area with improved animations and alignment */}
         <AnimatePresence mode="wait">
@@ -388,62 +392,64 @@ export default function MobileNavMenu() {
           )}
         </AnimatePresence>
 
-        {/* Mobile menu button - with same height and alignment */}
-        <div className="ml-auto">
-          <motion.button 
-            onClick={() => setIsOpen(!isOpen)}
-            whileHover={{ scale: 1.05, boxShadow: '0 0 8px rgba(139, 92, 246, 0.5)' }}
-            whileTap={{ scale: 0.95 }}
-            className={`rounded-full text-white transition-all duration-300 border border-purple-500/30 backdrop-blur-sm ${
-              isOpen ? 'bg-gray-900/70' : 'bg-gray-900/60'
-            }`}
-            aria-label="Toggle navigation menu"
-            style={{
-              width: '42px',
-              height: '42px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              boxShadow: isOpen ? '0 0 15px rgba(166, 79, 249, 0.4)' : 'none'
-            }}
-          >
-            {isOpen ? <FaTimes size={18} /> : <FaBars size={18} />}
-          </motion.button>
-          
-          {/* Mobile menu dropdown */}
-          <AnimatePresence>
-            {isOpen && (
-              <motion.div
-                ref={menuRef}
-                initial={{ opacity: 0, y: -10, scale: 0.95 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, y: -10, scale: 0.95 }}
-                transition={{ duration: 0.3, ease: "easeOut" }}
-                className="absolute top-full right-4 mt-2 bg-gray-900/80 border border-purple-500/30 rounded-md shadow-lg backdrop-blur-md overflow-hidden w-48"
-              >
-                <div className="p-1">
-                  {navLinks.map((link) => (
-                    <motion.a
-                      key={link.name}
-                      href={link.href}
-                      onClick={(e) => {
-                        if (!link.isEmail) {
-                          e.preventDefault();
-                        }
-                        handleNavigation(link.href, link.id, link.isEmail);
-                      }}
-                      whileHover={{ backgroundColor: 'rgba(139, 92, 246, 0.2)' }}
-                      transition={{ duration: 0.2 }}
-                      className="block py-2.5 px-4 text-white rounded-md transition-colors font-medium text-sm"
-                    >
-                      {link.name}
-                    </motion.a>
-                  ))}
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
+        {/* Mobile menu button - with same height and alignment - conditionally hidden */}
+        {!hideNavigation && (
+          <div className="ml-auto">
+            <motion.button 
+              onClick={() => setIsOpen(!isOpen)}
+              whileHover={{ scale: 1.05, boxShadow: '0 0 8px rgba(139, 92, 246, 0.5)' }}
+              whileTap={{ scale: 0.95 }}
+              className={`rounded-full text-white transition-all duration-300 border border-purple-500/30 backdrop-blur-sm ${
+                isOpen ? 'bg-gray-900/70' : 'bg-gray-900/60'
+              }`}
+              aria-label="Toggle navigation menu"
+              style={{
+                width: '42px',
+                height: '42px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                boxShadow: isOpen ? '0 0 15px rgba(166, 79, 249, 0.4)' : 'none'
+              }}
+            >
+              {isOpen ? <FaTimes size={18} /> : <FaBars size={18} />}
+            </motion.button>
+            
+            {/* Mobile menu dropdown */}
+            <AnimatePresence>
+              {isOpen && (
+                <motion.div
+                  ref={menuRef}
+                  initial={{ opacity: 0, y: -10, scale: 0.95 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: -10, scale: 0.95 }}
+                  transition={{ duration: 0.3, ease: "easeOut" }}
+                  className="absolute top-full right-4 mt-2 bg-gray-900/80 border border-purple-500/30 rounded-md shadow-lg backdrop-blur-md overflow-hidden w-48"
+                >
+                  <div className="p-1">
+                    {navLinks.map((link) => (
+                      <motion.a
+                        key={link.name}
+                        href={link.href}
+                        onClick={(e) => {
+                          if (!link.isEmail) {
+                            e.preventDefault();
+                          }
+                          handleNavigation(link.href, link.id, link.isEmail);
+                        }}
+                        whileHover={{ backgroundColor: 'rgba(139, 92, 246, 0.2)' }}
+                        transition={{ duration: 0.2 }}
+                        className="block py-2.5 px-4 text-white rounded-md transition-colors font-medium text-sm"
+                      >
+                        {link.name}
+                      </motion.a>
+                    ))}
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        )}
       </div>
     </div>
   );

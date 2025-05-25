@@ -232,6 +232,10 @@ export const workExperience: Institution[] = [
           {
             text: 'Played a key role in a $5M technology transfer project that enabled VAKTEC to become the first CIS-based manufacturer of carbide blank inserts.',
             bold: 'Played a key role in technology transfer project'
+          },
+          {
+            text: 'Secured sponsorships that made VAKTEC the first and only Russian member of the European Association of Machine Tool Merchants.',
+            bold: 'Secured sponsorships'
           }
         ]
       }
@@ -355,7 +359,8 @@ export const jobTitleToResponsibilities: JobTitleResponsibilityMap = {
         "Negotiated exclusive distribution agreements with leading OEMs, including MAZAK and OPS-INGERSOLL, significantly expanding the product portfolio.",
         "Collaborated with clients' engineering teams to adapt advanced manufacturing solutions to local market requirements.",
         "Represented VAKTEC at global trade shows and industry events, building brand presence and generating commercial leads.",
-        "Played a key role in a $5M technology transfer project that enabled VAKTEC to become the first CIS-based manufacturer of carbide blank inserts."
+        "Played a key role in a $5M technology transfer project that enabled VAKTEC to become the first CIS-based manufacturer of carbide blank inserts.",
+        "Secured sponsorships that made VAKTEC the first and only Russian member of the European Association of Machine Tool Merchants."
       ]
     },
     "Foundation for Integrity & Sports": {
@@ -396,7 +401,8 @@ export const jobTitleToResponsibilities: JobTitleResponsibilityMap = {
       "International Business Development Director": [
         "Negotiated exclusive distribution agreements with leading OEMs, including MAZAK and OPS-INGERSOLL, significantly expanding the product portfolio.",
         "Collaborated with clients' engineering teams to adapt advanced manufacturing solutions to local market requirements.",
-        "Played a key role in a $5M technology transfer project that enabled VAKTEC to become the first CIS-based manufacturer of carbide blank inserts."
+        "Played a key role in a $5M technology transfer project that enabled VAKTEC to become the first CIS-based manufacturer of carbide blank inserts.",
+        "Secured sponsorships that made VAKTEC the first and only Russian member of the European Association of Machine Tool Merchants."
       ]
     }
   },
@@ -452,7 +458,8 @@ export const jobTitleToResponsibilities: JobTitleResponsibilityMap = {
       "International Business Development Director": [
         "Developed and executed market entry strategies across the CIS, Eastern Europe, and Asia, establishing new distribution channels and regional partnerships.",
         "Represented VAKTEC at global trade shows and industry events, building brand presence and generating commercial leads.",
-        "Played a key role in a $5M technology transfer project that enabled VAKTEC to become the first CIS-based manufacturer of carbide blank inserts."
+        "Played a key role in a $5M technology transfer project that enabled VAKTEC to become the first CIS-based manufacturer of carbide blank inserts.",
+        "Secured sponsorships that made VAKTEC the first and only Russian member of the European Association of Machine Tool Merchants."
       ]
     },
     "Foundation for Integrity & Sports": {
@@ -517,6 +524,12 @@ export const jobTitleToResponsibilities: JobTitleResponsibilityMap = {
         "Conducted primary and secondary research including interviews, financial document analysis, and evidence gathering.",
         "Produced briefing papers, conference commentary, and public-facing social media content.",
         "Assisted with conference organization including speaker coordination, guest management, and event logistics."
+      ]
+    },
+    "VAKTEC": {
+      "International Business Development Director": [
+        "Represented VAKTEC at global trade shows and industry events, building brand presence and generating commercial leads.",
+        "Secured sponsorships that made VAKTEC the first and only Russian member of the European Association of Machine Tool Merchants."
       ]
     },
     "Foundation for Integrity & Sports": {

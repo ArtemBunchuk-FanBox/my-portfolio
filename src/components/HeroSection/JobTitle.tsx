@@ -33,6 +33,25 @@ export default function JobTitle() {
     setTitleHovered(true);
   };
 
+  // Handle the pin toggle with improved logic for different roles
+  const handlePinToggle = (index: number, e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent triggering parent click
+    
+    // If selecting a different role
+    if (index !== titleIndex) {
+      // Select the new role
+      handleTitleSelect(index);
+      
+      // If not already pinned, pin it immediately
+      if (!titlePinned) {
+        toggleTitlePin();
+      }
+    } else {
+      // For the same role, just toggle pin state
+      toggleTitlePin();
+    }
+  };
+
   return (
     <div className="mb-4 h-12 relative select-none">
       <div className="font-bold text-3xl md:text-5xl relative">
@@ -49,7 +68,7 @@ export default function JobTitle() {
           <div className="w-full h-full"></div>
         </div>
         
-        {/* Pin button */}
+        {/* Pin button with motion animation instead of box-like hover */}
         <motion.button
           className="absolute -right-8 top-1/2 transform -translate-y-1/2 bg-transparent border-none cursor-pointer z-30"
           style={{ right: "18rem" }}
@@ -61,7 +80,7 @@ export default function JobTitle() {
         >
           <FaThumbtack 
             size={16} 
-            className={`transition-all duration-300 ${titlePinned ? "text-yellow-400 rotate-0" : "text-gray-500 rotate-45"}`}
+            className={`transition-all duration-300 ${titlePinned ? "text-yellow-400 rotate-0" : "text-gray-500 rotate-45 hover:text-gray-300"}`}
           />
         </motion.button>
         
@@ -172,18 +191,7 @@ export default function JobTitle() {
                     {/* Show pin icon only when this is the current title or the item is hovered */}
                     {(index === titleIndex || hoveredItemIndex === index) && (
                       <motion.div
-                        className="ml-2 p-1 hover:bg-gray-600"
-                        onClick={(e) => {
-                          e.stopPropagation(); // Prevent triggering parent click
-                          if (index === titleIndex) {
-                            // Toggle pin state if this is the current title
-                            toggleTitlePin();
-                          } else {
-                            // Select and pin if this is a different title
-                            handleTitleSelect(index);
-                            toggleTitlePin();
-                          }
-                        }}
+                        onClick={(e) => handlePinToggle(index, e)}
                         initial={{ opacity: 0, scale: 0.8 }}
                         animate={{ opacity: 1, scale: 1 }}
                         whileHover={{ scale: 1.2 }}
@@ -195,7 +203,7 @@ export default function JobTitle() {
                           className={`transition-all duration-300 ${
                             index === titleIndex && titlePinned 
                               ? "text-yellow-400 rotate-0" 
-                              : "text-gray-400 rotate-45"
+                              : "text-gray-400 rotate-45 hover:text-gray-200"
                           }`}
                         />
                       </motion.div>

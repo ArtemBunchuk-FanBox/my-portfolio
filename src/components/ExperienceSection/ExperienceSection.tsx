@@ -1,9 +1,9 @@
 /* eslint-disable */
 "use client";
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import Image from 'next/image';
-import { FaSuitcase, FaExternalLinkAlt, FaTimes } from 'react-icons/fa';
+import { FaSuitcase, FaExternalLinkAlt, FaTimes, FaThumbtack } from 'react-icons/fa';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   workExperience, 
@@ -19,13 +19,20 @@ export default function ExperienceSection() {
   const [activeTab, setActiveTab] = useState<'work' | 'education'>('work');
   const [activeInstitution, setActiveInstitution] = useState<Institution | null>(null);
   const [isChangingTab, setIsChangingTab] = useState(false);
-
+  const [roleDropdownOpen, setRoleDropdownOpen] = useState(false);
+  const [textScale, setTextScale] = useState(1);
+  const titleContainerRef = useRef<HTMLDivElement>(null);
+  
   // Use the JobTitle context directly instead of events
   const {
     titleIndex,
     jobTitles,
     highlightIntensity,
-    titlePinned
+    titlePinned,
+    toggleTitlePin,
+    handleTitleSelect,
+    isTyping,
+    displayedText
   } = useJobTitle();
   
   // Get the current job title
@@ -149,6 +156,123 @@ export default function ExperienceSection() {
       }, 400);
     }, 300);
   };
+
+  // Calculate text scale based on title length for modal job title
+  useEffect(() => {
+    if (titleContainerRef.current && activeInstitution) {
+      const container = titleContainerRef.current;
+      const containerWidth = container.clientWidth;
+      
+      // Create a temporary span to measure text width
+      const tempSpan = document.createElement('span');
+      tempSpan.style.visibility = 'hidden';
+      tempSpan.style.position = 'absolute';
+      tempSpan.style.whiteSpace = 'nowrap';
+      tempSpan.style.fontSize = '14px';
+      tempSpan.style.fontWeight = '500';
+      tempSpan.innerText = currentJobTitle;
+      
+      document.body.appendChild(tempSpan);
+      const textWidth = tempSpan.getBoundingClientRect().width;
+      document.body.removeChild(tempSpan);
+      
+      // Calculate scale with fixed width constraints - adjusted for wider container
+      const availableWidth = containerWidth - 2; // Increased padding for better text display
+      
+      if (textWidth > availableWidth) {
+        const newScale = availableWidth / textWidth;
+        setTextScale(Math.max(newScale, 0.7)); // Minimum scale of 0.7
+      } else {
+        setTextScale(1);
+      }
+    }
+  }, [currentJobTitle, activeInstitution, displayedText]);
+  
+  // Remove state for hover tracking
+  const [isHoveringOnDropdownArea, setIsHoveringOnDropdownArea] = useState(false);
+  // Add timeout ref like in NavMenu
+  const closeTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  
+  // Function to clear any pending close timeout
+  const clearCloseTimeout = () => {
+    if (closeTimeoutRef.current) {
+      clearTimeout(closeTimeoutRef.current);
+      closeTimeoutRef.current = null;
+    }
+  };
+  
+  // Modified to open dropdown on hover regardless of pin state
+  const handleRoleDropdownEnter = () => {
+    clearCloseTimeout();
+    // Always open dropdown on hover, even if pinned
+    setRoleDropdownOpen(true);
+  };
+  
+  const handleRoleDropdownLeave = () => {
+    // Set a delayed timeout to close the menu
+    clearCloseTimeout();
+    closeTimeoutRef.current = setTimeout(() => {
+      setRoleDropdownOpen(false);
+    }, 150);
+  };
+  
+  // Same pattern for dropdown
+  const handleDropdownEnter = () => {
+    clearCloseTimeout();
+  };
+  
+  const handleDropdownLeave = () => {
+    // Set a delayed timeout to close the menu
+    clearCloseTimeout();
+    closeTimeoutRef.current = setTimeout(() => {
+      setRoleDropdownOpen(false);
+    }, 150);
+  };
+  
+  // Cleanup timeouts when unmounting
+  useEffect(() => {
+    return () => clearCloseTimeout();
+  }, []);
+  
+  // Handle role selection from dropdown
+  const selectRole = (index: number) => {
+    handleTitleSelect(index);
+    setRoleDropdownOpen(false);
+  };
+
+  // Handle separate pin/unpin toggling for any role
+  const handleRolePinToggle = (e: React.MouseEvent, index: number) => {
+    e.stopPropagation(); // Prevent modal close
+    
+    // If we're selecting a different role
+    if (index !== titleIndex) {
+      // First switch to this role
+      handleTitleSelect(index); 
+      
+      // If not already pinned, pin it immediately
+      if (!titlePinned) {
+        toggleTitlePin();
+      }
+    } else {
+      // For the same role, just toggle the pin
+      toggleTitlePin();
+    }
+  };
+  
+  // Handle pin button click in the main button (separate from dropdown)
+  const handlePinButtonClick = (e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent modal close
+    toggleTitlePin();
+  };
+  
+  // Toggle dropdown when title area is clicked - allows opening when pinned
+  const handleTitleAreaClick = (e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent modal close
+    setRoleDropdownOpen(!roleDropdownOpen); // Toggle dropdown regardless of pin state
+  };
+  
+  // Determine if we should show the typing cursor
+  const showCursor = isTyping && !titlePinned;
 
   return (
     <section className="py-8 overflow-visible">
@@ -394,20 +518,137 @@ export default function ExperienceSection() {
           >
             <div className="min-h-screen w-full overflow-y-auto bg-black/95 flex items-center justify-center pt-12 pb-10">
               <div className="relative max-w-4xl w-full mx-4">
-                {/* Close button - positioned outside and to the right of the modal */}
-                <button
-                  className="absolute -right-16 top-4 z-[110] w-12 h-12 flex items-center justify-center rounded-full bg-black/60 backdrop-blur-md text-white shadow-lg border border-white/20 active:scale-95 transition-all hover:bg-black/70 cursor-pointer"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    closeInstitutionDetails();
-                  }}
-                  style={{ cursor: 'pointer' }}
-                  aria-label="Close modal"
-                >
-                  <div className="p-3 w-full h-full flex items-center justify-center">
-                    <FaTimes size={20} />
+                {/* Modal header with close button and job title selector */}
+                <div className="absolute -right-4 sm:-right-16 top-4 z-[110] flex items-center gap-3">
+                  {/* Job Title Selector - with improved hover behavior */}
+                  <div 
+                    className="relative dropdown-container"
+                    onClick={(e) => e.stopPropagation()} // Prevent modal close
+                  >
+                    <div 
+                      ref={titleContainerRef}
+                      className={`job-title-button h-12 w-[223px] rounded-full cursor-pointer flex items-center transition-all duration-300 ${
+                        titlePinned 
+                          ? 'bg-black/60 backdrop-blur-md border border-amber-400/50 shadow-[0_0_6px_rgba(251,191,36,0.3)]' 
+                          : roleDropdownOpen
+                            ? 'bg-black/60 backdrop-blur-md border border-purple-500/40 shadow-[0_0_6px_rgba(139,92,246,0.3)] bg-gradient-to-r from-purple-900/30 to-pink-900/30' 
+                            : 'bg-black/60 backdrop-blur-md border border-white/20 hover:border-purple-500/30 hover:bg-gradient-to-r hover:from-purple-900/20 hover:to-pink-900/20'
+                      }`}
+                      onMouseEnter={handleRoleDropdownEnter}
+                      onMouseLeave={handleRoleDropdownLeave}
+                    >
+                      {/* Text area - now clickable to toggle dropdown regardless of pin state */}
+                      <div 
+                        className="flex-1 pl-6 pr-2 flex items-center overflow-hidden cursor-pointer"
+                        onClick={handleTitleAreaClick}
+                      >
+                        <span 
+                          className="truncate text-white text-base"
+                          style={{
+                            transform: `scale(${textScale})`,
+                            transformOrigin: 'left center',
+                          }}
+                        >
+                          {displayedText}
+                          {showCursor && (
+                            <motion.span 
+                              animate={{ opacity: [0, 1, 0] }}
+                              transition={{ repeat: Infinity, duration: 0.8 }}
+                              className="inline-block"
+                            >
+                              |
+                            </motion.span>
+                          )}
+                        </span>
+                      </div>
+                      <motion.div 
+                        className="flex items-center justify-center h-12 w-12 rounded-full transition-colors duration-300 flex-shrink-0"
+                        whileHover={{ 
+                          scale: 1.08, 
+                          opacity: titlePinned ? 1 : 0.9,
+                        }}
+                        whileTap={{ scale: 0.95 }}
+                        onClick={handlePinButtonClick}
+                      >
+                        <FaThumbtack 
+                          size={12} 
+                          className={`transition-all duration-300 ${
+                            titlePinned 
+                              ? "text-amber-300 rotate-0" 
+                              : "text-gray-400 rotate-45 hover:text-gray-200"
+                          }`}
+                        />
+                      </motion.div>
+                    </div>
+                    
+                    {/* Role Dropdown - now with improved hover handling and matching width */}
+                    <AnimatePresence>
+                      {roleDropdownOpen && (
+                        <motion.div
+                          id="role-dropdown-menu"
+                          initial={{ opacity: 0, y: -10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: -10 }}
+                          className="absolute top-full right-0 mt-2 bg-gray-900/95 border border-purple-500/30 rounded-lg shadow-xl overflow-hidden z-10"
+                          style={{ width: '223px' }}
+                          onClick={(e) => e.stopPropagation()} // Prevent modal close
+                          onMouseEnter={handleDropdownEnter}
+                          onMouseLeave={handleDropdownLeave}
+                        >
+                          {jobTitles.map((role, index) => (
+                            <div
+                              key={role}
+                              className="hover:bg-purple-900/30 transition-colors cursor-pointer"
+                            >
+                              <div className="flex items-center justify-between w-full px-2">
+                                <button
+                                  onClick={(e) => {
+                                    e.stopPropagation(); // Prevent modal close
+                                    selectRole(index);
+                                  }}
+                                  className="flex-1 text-left px-4 py-3 text-base text-white hover:text-purple-300 cursor-pointer"
+                                >
+                                  {role}
+                                </button>
+                                <motion.button
+                                  onClick={(e) => handleRolePinToggle(e, index)}
+                                  className="p-2 transition-colors"
+                                  whileHover={{ 
+                                    scale: 1.15, 
+                                    opacity: index === titleIndex && titlePinned ? 1 : 0.9,
+                                  }}
+                                  whileTap={{ scale: 0.95 }}
+                                >
+                                  <FaThumbtack 
+                                    size={12} 
+                                    className={`transition-all duration-300 ${
+                                      index === titleIndex && titlePinned 
+                                        ? "text-yellow-400 rotate-0" 
+                                        : "text-gray-400 rotate-45 hover:text-gray-200"
+                                    }`}
+                                  />
+                                </motion.button>
+                              </div>
+                            </div>
+                          ))}
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
                   </div>
-                </button>
+                  
+                  {/* Close button - Now with consistent dimensions matching nav menu */}
+                  <button
+                    className="w-12 h-12 flex items-center justify-center rounded-full bg-black/60 backdrop-blur-md text-white shadow-lg border border-white/20 active:scale-95 transition-all hover:bg-black/70 cursor-pointer"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      closeInstitutionDetails();
+                    }}
+                    style={{ cursor: 'pointer' }}
+                    aria-label="Close modal"
+                  >
+                    <FaTimes size={20} />
+                  </button>
+                </div>
               
                 <motion.div
                   initial={{ y: 20, opacity: 0 }}
@@ -567,7 +808,7 @@ export default function ExperienceSection() {
         )}
       </AnimatePresence>
       
-      {/* Enhanced style tag with transition effects */}
+      {/* Enhanced style tag - removed box hover styles */}
       <style jsx global>{`
         .highlight-role {
           box-shadow: 0 0 0 2px rgba(166, 79, 249, 0.5);
@@ -647,6 +888,34 @@ export default function ExperienceSection() {
         .logo-image-container {
           z-index: 55 !important; /* Also increased */
           position: relative;
+        }
+
+        /* Add styles for dropdown behavior - removed box-like hover effects */
+        .dropdown-container {
+          position: relative;
+        }
+
+        /* Create an invisible overlap area between button and dropdown */
+        .job-title-button::after {
+          content: '';
+          position: absolute;
+          bottom: -10px;
+          left: 0;
+          right: 0;
+          height: 15px;
+          z-index: 8;
+          pointer-events: none;
+        }
+
+        #role-dropdown-menu::before {
+          content: '';
+          position: absolute;
+          top: -15px;
+          left: 0;
+          right: 0;
+          height: 15px;
+          z-index: 8;
+          pointer-events: auto;
         }
       `}</style>
     </section>

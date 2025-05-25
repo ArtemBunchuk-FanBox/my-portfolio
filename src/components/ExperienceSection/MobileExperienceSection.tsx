@@ -35,16 +35,13 @@ export default function MobileExperienceSection() {
     setActiveInstitution(institution);
     document.body.style.overflow = 'hidden'; // Prevent background scrolling
     
-    // Dispatch custom event to hide navigation
-    const event = new CustomEvent('modalStateChange', { 
+    // Use projectModalStateChange event instead of direct DOM manipulation
+    // This will let the job title remain visible
+    const event = new CustomEvent('projectModalStateChange', { 
       detail: { isOpen: true } 
     });
-    window.dispatchEvent(event);
+    document.dispatchEvent(event);
     
-    // For backward compatibility with mobile navigation
-    const navElement = document.getElementById('mobile-nav');
-    if (navElement) navElement.style.display = 'none';
-
     // If an initial role index is provided, set focus to that role after modal opens
     if (initialRoleIndex !== undefined && initialRoleIndex >= 0) {
       // Increase timeout to ensure modal is fully rendered
@@ -86,15 +83,11 @@ export default function MobileExperienceSection() {
     setActiveInstitution(null);
     document.body.style.overflow = 'auto'; // Restore scrolling
     
-    // Dispatch custom event to show navigation again
-    const event = new CustomEvent('modalStateChange', { 
+    // Use projectModalStateChange event to show navigation again
+    const event = new CustomEvent('projectModalStateChange', { 
       detail: { isOpen: false } 
     });
-    window.dispatchEvent(event);
-    
-    // For backward compatibility with mobile navigation
-    const navElement = document.getElementById('mobile-nav');
-    if (navElement) navElement.style.display = '';
+    document.dispatchEvent(event);
   };
 
   // Gather all the responsibility points that should be highlighted for this job title
@@ -372,7 +365,7 @@ export default function MobileExperienceSection() {
         </div>
       </div>
 
-      {/* Institution details modal - similar to project modal but optimized for mobile */}
+      {/* Institution details modal - with proper scrolling enabled */}
       <AnimatePresence>
         {activeInstitution && (
           <motion.div
@@ -380,7 +373,7 @@ export default function MobileExperienceSection() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.25 }}
-            className="fixed inset-0 z-[9999] overflow-y-auto bg-black/95"
+            className="fixed inset-0 z-[9999] overflow-y-auto bg-black/95" // Changed overflow-hidden back to overflow-y-auto
             onClick={closeInstitutionDetails}
           >
             <motion.div
@@ -388,159 +381,158 @@ export default function MobileExperienceSection() {
               animate={{ y: 0, opacity: 1 }}
               exit={{ y: 50, opacity: 0 }}
               transition={{ type: 'spring', stiffness: 400, damping: 35 }}
-              className="relative bg-gradient-to-b from-gray-900 to-black min-h-screen w-full overflow-hidden border-0"
+              className="relative bg-gradient-to-b from-gray-900 to-black min-h-screen w-full border-0 pt-16" // Removed overflow-hidden
               onClick={e => e.stopPropagation()}
             >
-              {/* Close button with better styling and positioning */}
-              <button
-                className="fixed top-4 right-4 z-[10000] w-12 h-12 flex items-center justify-center rounded-full bg-black/50 backdrop-blur-md text-white shadow-lg border border-white/20 active:scale-95 transition-all hover:bg-black/70"
+              {/* Close button matched to job title button size and styling */}
+              <motion.button
+                className="fixed top-4 right-4 z-[10000] w-[42px] h-[42px] flex items-center justify-center rounded-full bg-black/70 backdrop-blur-sm text-white shadow-lg border border-purple-500/30 active:scale-95 transition-all hover:bg-black/80"
                 onClick={closeInstitutionDetails}
+                whileHover={{ scale: 1.05, boxShadow: '0 0 8px rgba(139, 92, 246, 0.5)' }}
+                whileTap={{ scale: 0.95 }}
                 aria-label="Close modal"
               >
-                <FaTimes size={20} />
-              </button>
+                <FaTimes size={18} />
+              </motion.button>
               
-              {/* Scrollable content container with improved layout */}
-              <div className="overflow-y-auto h-full pb-12 pt-0"> {/* Changed pt-4 to pt-0 */}
-                {/* Hero image section - removed any borders */}
-                <div className="h-48 relative w-full overflow-hidden border-0">
-                  {activeInstitution.bannerImage ? (
-                    <Image
-                      src={activeInstitution.bannerImage}
-                      alt={activeInstitution.name}
-                      fill
-                      style={{ objectFit: 'cover' }}
-                      quality={95}
-                      priority
-                      className="brightness-90"
-                    />
-                  ) : (
-                    <div className="w-full h-full bg-gradient-to-r from-purple-900 to-indigo-900 flex items-center justify-center">
-                      {activeInstitution.logo && (
-                        <div className="w-24 h-24 relative">
-                          <Image
-                            src={activeInstitution.logo}
-                            alt={activeInstitution.name}
-                            fill
-                            style={{ objectFit: 'contain' }}
-                          />
-                        </div>
-                      )}
-                    </div>
-                  )}
-                  <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/80 to-transparent"></div>
-                </div>
-                
-                {/* Company content with mobile-optimized layout */}
-                <div className="px-5 py-6 relative z-10">
-                  {/* Title section with proper background and styling */}
-                  <div className="mb-6 pb-6 border-b border-gray-800 flex flex-col">
-                    <h2
-                      className="text-3xl font-bold mb-3"
-                      style={{
-                        background: 'linear-gradient(90deg, #a64ff9 0%, #8226e3 50%, #c0392b 100%)',
-                        WebkitBackgroundClip: 'text',
-                        WebkitTextFillColor: 'transparent',
-                        backgroundClip: 'text',
-                        color: 'transparent'
-                      }}
-                    >
-                      {activeInstitution.name}
-                    </h2>
-                    
-                    {/* External link button if available */}
-                    {activeInstitution.link && (
-                      <a
-                        href={activeInstitution.link}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-gray-800/80 text-white hover:bg-gray-700 transition-all duration-300 self-start"
-                        onClick={(e) => e.stopPropagation()}
-                      >
-                        <span>Website</span>
-                        <FaExternalLinkAlt size={12} />
-                      </a>
+              {/* Hero image section - moved up to eliminate gap */}
+              <div className="h-48 relative w-full overflow-hidden border-0 -mt-16"> {/* Added negative margin to pull up */}
+                {activeInstitution.bannerImage ? (
+                  <Image
+                    src={activeInstitution.bannerImage}
+                    alt={activeInstitution.name}
+                    fill
+                    style={{ objectFit: 'cover' }}
+                    quality={95}
+                    priority
+                    className="brightness-90"
+                  />
+                ) : (
+                  <div className="w-full h-full bg-gradient-to-r from-purple-900 to-indigo-900 flex items-center justify-center">
+                    {activeInstitution.logo && (
+                      <div className="w-24 h-24 relative">
+                        <Image
+                          src={activeInstitution.logo}
+                          alt={activeInstitution.name}
+                          fill
+                          style={{ objectFit: 'contain' }}
+                        />
+                      </div>
                     )}
                   </div>
-
-                  {/* Company overview */}
-                  {activeInstitution.description && (
-                    <div className="mb-6 pb-6 border-b border-gray-800">
-                      <h3 className="text-base uppercase text-gray-200 font-medium mb-3">BACKGROUND</h3>
-                      <div className="bg-gray-800/30 border-l-2 border-purple-500/40 pl-4 py-3 pr-3 rounded-r-sm">
-                        <p className="text-gray-300 text-sm leading-relaxed">
-                          {activeInstitution.description}
-                        </p>
-                      </div>
-                    </div>
+                )}
+                <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/80 to-transparent"></div>
+              </div>
+              
+              {/* Company content with mobile-optimized layout */}
+              <div className="px-5 py-6 relative z-10 pb-24"> {/* Added more bottom padding */}
+                {/* Title section with proper background and styling */}
+                <div className="mb-6 pb-6 border-b border-gray-800 flex flex-col">
+                  <h2
+                    className="text-3xl font-bold mb-3"
+                    style={{
+                      background: 'linear-gradient(90deg, #a64ff9 0%, #8226e3 50%, #c0392b 100%)',
+                      WebkitBackgroundClip: 'text',
+                      WebkitTextFillColor: 'transparent',
+                      backgroundClip: 'text',
+                      color: 'transparent'
+                    }}
+                  >
+                    {activeInstitution.name}
+                  </h2>
+                  
+                  {/* External link button if available */}
+                  {activeInstitution.link && (
+                    <a
+                      href={activeInstitution.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-gray-800/80 text-white hover:bg-gray-700 transition-all duration-300 self-start"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <span>Website</span>
+                      <FaExternalLinkAlt size={12} />
+                    </a>
                   )}
+                </div>
 
-                  {/* Roles section */}
-                  <div className="mb-6">
-                    <h3 className="text-base uppercase text-gray-200 font-medium mb-3">
-                      {activeTab === 'work' ? 'ROLES & ACHIEVEMENTS' : 'QUALIFICATIONS & RESEARCH'}
-                    </h3>
-                    
-                    <div className="space-y-8">
-                      {activeInstitution.roles.map((role, roleIndex) => (
-                        <div 
-                          key={`mobile-modal-role-${roleIndex}`} 
-                          id={`mobile-modal-role-${roleIndex}`}
-                          className="bg-gray-800/30 border-l-2 border-purple-500/40 pl-4 py-3 pr-3 rounded-r-sm transition-all duration-500"
-                        >
-                          {/* Period and title - fixed layout with top alignment */}
-                          <div className="mb-3 flex justify-between items-start">
-                            <div className="flex-1 min-w-0 pr-2">
-                              <h4
-                                className="text-xl font-bold break-words"
-                                style={{
-                                  background: 'linear-gradient(90deg, #a64ff9 0%, #8226e3 50%, #c0392b 100%)',
-                                  WebkitBackgroundClip: 'text',
-                                  WebkitTextFillColor: 'transparent',
-                                  backgroundClip: 'text',
-                                  color: 'transparent'
-                                }}
-                              >
-                                {role.title}
-                              </h4>
-                            </div>
-                            <div className="text-gray-400 text-sm whitespace-nowrap flex-shrink-0 pt-1">
-                              {role.period}
-                            </div>
-                          </div>
-                          
-                          {/* Add role summary in modal - NEW ADDITION */}
-                          {role.summary && (
-                            <p className="text-gray-300 mb-3 text-sm">
-                              {role.summary}
-                            </p>
-                          )}
-                          
-                          {/* Responsibilities with highlighting applied */}
-                          <ul className="space-y-1 text-gray-300 text-sm">
-                            {role.responsibilities.map((responsibility, respIndex) => (
-                              <li 
-                                key={`modal-resp-${roleIndex}-${respIndex}`}
-                                className="flex transition-all duration-300 mb-1.5"
-                                style={getHighlightStyle(responsibility)}
-                              >
-                                <span className="inline-block flex-shrink-0 w-4 mr-1.5 text-center">•</span>
-                                <span className="flex-1">
-                                  {responsibility.bold ? (
-                                    <>
-                                      <span className="font-bold">{responsibility.bold}</span>
-                                      {responsibility.text.substring(responsibility.bold.length)}
-                                    </>
-                                  ) : (
-                                    responsibility.text
-                                  )}
-                                </span>
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      ))}
+                {/* Company overview */}
+                {activeInstitution.description && (
+                  <div className="mb-6 pb-6 border-b border-gray-800">
+                    <h3 className="text-base uppercase text-gray-200 font-medium mb-3">BACKGROUND</h3>
+                    <div className="bg-gray-800/30 border-l-2 border-purple-500/40 pl-4 py-3 pr-3 rounded-r-sm">
+                      <p className="text-gray-300 text-sm leading-relaxed">
+                        {activeInstitution.description}
+                      </p>
                     </div>
+                  </div>
+                )}
+
+                {/* Roles section */}
+                <div className="mb-6">
+                  <h3 className="text-base uppercase text-gray-200 font-medium mb-3">
+                    {activeTab === 'work' ? 'ROLES & ACHIEVEMENTS' : 'QUALIFICATIONS & RESEARCH'}
+                  </h3>
+                  
+                  <div className="space-y-8">
+                    {activeInstitution.roles.map((role, roleIndex) => (
+                      <div 
+                        key={`mobile-modal-role-${roleIndex}`} 
+                        id={`mobile-modal-role-${roleIndex}`}
+                        className="bg-gray-800/30 border-l-2 border-purple-500/40 pl-4 py-3 pr-3 rounded-r-sm transition-all duration-500"
+                      >
+                        {/* Period and title - fixed layout with top alignment */}
+                        <div className="mb-3 flex justify-between items-start">
+                          <div className="flex-1 min-w-0 pr-2">
+                            <h4
+                              className="text-xl font-bold break-words"
+                              style={{
+                                background: 'linear-gradient(90deg, #a64ff9 0%, #8226e3 50%, #c0392b 100%)',
+                                WebkitBackgroundClip: 'text',
+                                WebkitTextFillColor: 'transparent',
+                                backgroundClip: 'text',
+                                color: 'transparent'
+                              }}
+                            >
+                              {role.title}
+                            </h4>
+                          </div>
+                          <div className="text-gray-400 text-sm whitespace-nowrap flex-shrink-0 pt-1">
+                            {role.period}
+                          </div>
+                        </div>
+                        
+                        {/* Add role summary in modal - NEW ADDITION */}
+                        {role.summary && (
+                          <p className="text-gray-300 mb-3 text-sm">
+                            {role.summary}
+                          </p>
+                        )}
+                        
+                        {/* Responsibilities with highlighting applied */}
+                        <ul className="space-y-1 text-gray-300 text-sm">
+                          {role.responsibilities.map((responsibility, respIndex) => (
+                            <li 
+                              key={`modal-resp-${roleIndex}-${respIndex}`}
+                              className="flex transition-all duration-300 mb-1.5"
+                              style={getHighlightStyle(responsibility)}
+                            >
+                              <span className="inline-block flex-shrink-0 w-4 mr-1.5 text-center">•</span>
+                              <span className="flex-1">
+                                {responsibility.bold ? (
+                                  <>
+                                    <span className="font-bold">{responsibility.bold}</span>
+                                    {responsibility.text.substring(responsibility.bold.length)}
+                                  </>
+                                ) : (
+                                  responsibility.text
+                                )}
+                              </span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    ))}
                   </div>
                 </div>
               </div>
