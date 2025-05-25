@@ -30,14 +30,14 @@ export default function MobileNavMenu() {
   // Get the current title from the index
   const currentTitle = jobTitles[titleIndex];
 
-  // Navigation links with updated formatting
+  // Navigation links - updated Contact to use fragment URL instead of email
   const navLinks = [
     { name: 'Home', href: '#top', id: 'top', isEmail: false },
     { name: 'Experience', href: '#experience', id: 'experience', isEmail: false },
     { name: 'Projects', href: '#projects', id: 'projects', isEmail: false },
     { name: 'Skills', href: '#skills', id: 'skills', isEmail: false },
     { name: 'Tech Stack', href: '#tech-stack', id: 'tech-stack', isEmail: false },
-    { name: 'Contact', href: 'mailto:artem.ceshire@gmail.com', id: 'contact', isEmail: true }
+    { name: 'Contact', href: '#contact', id: 'contact', isEmail: false } // Changed from email to fragment URL
   ];
 
   // Handle click outside to close menu
@@ -153,7 +153,14 @@ export default function MobileNavMenu() {
     const element = document.getElementById(id);
     if (element) {
       setTimeout(() => {
-        element.scrollIntoView({ behavior: 'smooth' });
+        // Improved scrolling with better positioning
+        const offset = 80; // Adjust offset as needed
+        const elementTop = element.getBoundingClientRect().top + window.pageYOffset - offset;
+        window.scrollTo({
+          top: elementTop,
+          behavior: 'smooth'
+        });
+        
         // Update URL hash without jumping
         if (window.history && window.history.pushState) {
           window.history.pushState(null, '', href);

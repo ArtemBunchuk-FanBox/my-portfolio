@@ -55,14 +55,14 @@ export default function NavMenu() {
     textShadow: '0 0 8px rgba(166, 79, 249, 0.3)'
   };
 
-  // Navigation items
+  // Navigation items - updated Contact to not be an email link
   const navItems: NavItem[] = [
-    { id: 'home', label: 'Home', isHome: true },
+    { id: 'hero', label: 'Home', isHome: true },
     { id: 'experience', label: 'Experience' },
     { id: 'projects', label: 'Projects' },
     { id: 'skills', label: 'Skills' },
     { id: 'tech-stack', label: 'Tech Stack' },
-    { id: 'contact', label: 'Contact', isEmail: true, email: 'artem.ceshire@gmail.com' }
+    { id: 'contact', label: 'Contact' } // Removed isEmail and email properties
   ];
 
   // Updated navigation click handler with hash support

@@ -88,22 +88,34 @@ export default function TechStackSection() {
   };
 
   return (
-    <section className="py-8 select-none" ref={sectionRef}>
+    <section className="py-8 select-none overflow-visible" ref={sectionRef}>
       <div className="container mx-auto px-4 max-w-5xl select-none">
-        <div className="rounded-md border border-white overflow-hidden select-none">
+        <div className="rounded-md border border-white overflow-visible">
           <h2 className="text-3xl font-bold py-4 px-6 border-b border-white text-white bg-gray-800/50">
             Tech Stack
           </h2>
           
           <div className="p-6 relative">
-            {/* Vertical line with extended bottom to reach the next section */}
+            {/* Vertical line with EXTENDED bottom to reach the next Contact section */}
             <div 
               className="absolute w-0.5 bg-white" 
               style={{
                 left: "36px",
                 top: "-1px",
-                bottom: "-80px",
-                zIndex: "1"
+                bottom: "-65px", // Increased to reach further down to the Contact section
+                zIndex: "1",
+                pointerEvents: "none" // Ensure clicks pass through
+              }}
+            ></div>
+            
+            {/* Horizontal line extension for the section */}
+            <div 
+              className="absolute h-0.5 bg-white" 
+              style={{
+                left: "6px", // Starting point
+                width: "30px", // Width of horizontal line
+                top: "30px", // Positioned near the top to connect with section title
+                zIndex: "2"
               }}
             ></div>
             
@@ -198,6 +210,13 @@ export default function TechStackSection() {
           </div>
         </div>
       </div>
+
+      {/* Add a CSS utility class to ensure overflow is visible */}
+      <style jsx>{`
+        section {
+          overflow: visible !important;
+        }
+      `}</style>
     </section>
   );
 }

@@ -9,6 +9,7 @@ import { DesktopExperienceSection, MobileExperienceSection } from '@/components/
 import { DesktopSkillsSection, MobileSkillsSection } from '@/components/SkillsSection';
 import { DesktopTechStackSection, MobileTechStackSection } from '@/components/TechStackSection';
 import { DesktopRecentProjectsSection, MobileRecentProjectsSection } from '@/components/RecentProjectsSection';
+import { DesktopContactSection, MobileContactSection } from '@/components/ContactSection';
 import Footer from '@/components/Footer';
 import { JobTitleProvider } from '@/context/JobTitleContext';
 import { useEffect } from 'react';
@@ -195,9 +196,15 @@ export default function Home() {
               />
             </div>
             
+            {/* Contact Section - now fully responsive */}
             <div id="contact">
-              <Footer />
+              <ResponsiveWrapper
+                mobileComponent={<MobileContactSection />}
+                desktopComponent={<DesktopContactSection />}
+              />
             </div>
+            
+            <Footer />
           </div>
         </div>
       </JobTitleProvider>
