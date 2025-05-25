@@ -231,7 +231,7 @@ export const workExperience: Institution[] = [
           },
           {
             text: 'Played a key role in a $5M technology transfer project that enabled VAKTEC to become the first CIS-based manufacturer of carbide blank inserts.',
-            bold: 'Played a key role in technology transfer project'
+            bold: 'Played a key role in a $5M technology transfer project'
           },
           {
             text: 'Secured sponsorships that made VAKTEC the first and only Russian member of the European Association of Machine Tool Merchants.',
