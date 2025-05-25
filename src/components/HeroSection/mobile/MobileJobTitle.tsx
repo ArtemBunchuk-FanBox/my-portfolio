@@ -35,10 +35,24 @@ export default function MobileJobTitle() {
     setShowMenu(false);
   };
   
-  // Toggle pin and close menu
-  const handleTogglePin = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    toggleTitlePin();
+  // Handle pin toggle with improved logic for different roles
+  const handlePinToggle = (index: number, e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent triggering parent click
+    
+    // If selecting a different role
+    if (index !== titleIndex) {
+      // Select the new role
+      handleTitleSelect(index);
+      
+      // If not already pinned, pin it immediately
+      if (!titlePinned) {
+        toggleTitlePin();
+      }
+    } else {
+      // For the same role, just toggle pin state
+      toggleTitlePin();
+    }
+    
     setShowMenu(false);
   };
 
@@ -46,15 +60,16 @@ export default function MobileJobTitle() {
     <div className="relative mb-4">
       {/* Main title display with fixed layout */}
       <div className="flex items-center relative">
-        {/* Pin button - positioned above and slightly to the left */}
+        {/* Pin button with motion animation instead of box-like hover */}
         <motion.button
           className="absolute right-8 top-0 transform -translate-y-5 bg-transparent border-none cursor-pointer"
-          onClick={handleTogglePin}
+          onClick={toggleTitlePin}
+          whileHover={{ scale: 1.2 }}
           whileTap={{ scale: 0.9 }}
         >
           <FaThumbtack 
             size={16} 
-            className={`transition-all duration-300 ${titlePinned ? "text-yellow-400 rotate-0" : "text-gray-500 rotate-45"}`}
+            className={`transition-all duration-300 ${titlePinned ? "text-yellow-400 rotate-0" : "text-gray-500 rotate-45 hover:text-gray-300"}`}
           />
         </motion.button>
         
@@ -109,23 +124,21 @@ export default function MobileJobTitle() {
                     {title}
                   </span>
                   
-                  {index === titleIndex && (
-                    <motion.div
-                      className="ml-2 p-1"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        toggleTitlePin();
-                      }}
-                      whileTap={{ scale: 0.9 }}
-                    >
-                      <FaThumbtack 
-                        size={12} 
-                        className={`transition-all duration-300 ${
-                          titlePinned ? "text-yellow-400 rotate-0" : "text-gray-400 rotate-45"
-                        }`}
-                      />
-                    </motion.div>
-                  )}
+                  {/* Show pin icon for all items, not just the current index */}
+                  <motion.div
+                    onClick={(e) => handlePinToggle(index, e)}
+                    whileHover={{ scale: 1.2 }}
+                    whileTap={{ scale: 0.9 }}
+                  >
+                    <FaThumbtack 
+                      size={12} 
+                      className={`transition-all duration-300 ${
+                        index === titleIndex && titlePinned 
+                          ? "text-yellow-400 rotate-0" 
+                          : "text-gray-400 rotate-45 hover:text-gray-300"
+                      }`}
+                    />
+                  </motion.div>
                 </motion.div>
               ))}
             </div>

@@ -200,17 +200,26 @@ export default function MobileNavMenu() {
     }
   };
   
-  // Handle pin toggle with specific role
+  // Handle pin toggle with specific role - updated with improved logic
   const handlePinToggle = (role: string, e: React.MouseEvent) => {
     e.stopPropagation();
     
     const index = jobTitles.indexOf(role);
     if (index !== -1) {
+      // If selecting a different role
       if (index !== titleIndex) {
+        // Select the new role
         handleTitleSelect(index);
+        
+        // If not already pinned, pin it immediately
+        if (!titlePinned) {
+          toggleTitlePin();
+        }
+      } else {
+        // For the same role, just toggle the pin
+        toggleTitlePin();
       }
       
-      toggleTitlePin();
       setRoleDropdownOpen(false);
     }
   };
@@ -220,7 +229,7 @@ export default function MobileNavMenu() {
     return titlePinned && role === currentTitle;
   };
 
-  // Handle title area click to toggle dropdown
+  // Handle title area click to toggle dropdown - always works even when pinned
   const handleTitleClick = () => {
     setRoleDropdownOpen(!roleDropdownOpen);
   };
@@ -290,7 +299,7 @@ export default function MobileNavMenu() {
                   </span>
                 </div>
                 
-                {/* Pin button at the end - with animation */}
+                {/* Pin button at the end - with improved animation */}
                 <div className="w-[42px] h-[42px] flex-shrink-0 flex items-center justify-center">
                   <motion.button
                     onClick={(e) => {
@@ -354,7 +363,7 @@ export default function MobileNavMenu() {
                             {role}
                           </button>
                           
-                          {/* Pin button for each role */}
+                          {/* Pin button for each role - with improved hover effect */}
                           <div className="w-10 flex-shrink-0 flex items-center justify-center">
                             <motion.button
                               onClick={(e) => handlePinToggle(role, e)}
@@ -365,11 +374,7 @@ export default function MobileNavMenu() {
                                   : 'rgba(255, 255, 255, 0.15)'
                               }}
                               whileTap={{ scale: 0.95 }}
-                              className={`p-2 rounded-full transition-colors ${
-                                isRolePinned(role) 
-                                  ? 'bg-amber-500/20' 
-                                  : 'bg-transparent'
-                              }`}
+                              className="p-2 rounded-full transition-colors bg-transparent"
                               aria-label={isRolePinned(role) ? `Unpin ${role}` : `Pin ${role}`}
                             >
                               <FaThumbtack 
@@ -377,7 +382,7 @@ export default function MobileNavMenu() {
                                 className={`transition-all duration-300 ${
                                   isRolePinned(role)
                                     ? "text-amber-300 rotate-0" 
-                                    : "text-gray-400 rotate-45"
+                                    : "text-gray-400 rotate-45 hover:text-gray-200"
                                 }`}
                               />
                             </motion.button>
