@@ -14,8 +14,9 @@ export default function MobileNavMenu() {
   const [textScale, setTextScale] = useState(1);
   const titleContainerRef = useRef<HTMLDivElement>(null);
   const [hideNavigation, setHideNavigation] = useState(false);
+  const jobSelectorRef = useRef<HTMLDivElement>(null);
   
-  // Use the complete job title context - adding back the animation-related properties
+  // Use the complete job title context
   const { 
     titleIndex,
     jobTitles,
@@ -30,21 +31,16 @@ export default function MobileNavMenu() {
   // Get the current title from the index
   const currentTitle = jobTitles[titleIndex];
 
-  // Navigation links - updated Contact to use fragment URL instead of email
-  const navLinks = [
-    { name: 'Home', href: '#top', id: 'top', isEmail: false },
-    { name: 'Experience', href: '#experience', id: 'experience', isEmail: false },
-    { name: 'Projects', href: '#projects', id: 'projects', isEmail: false },
-    { name: 'Skills', href: '#skills', id: 'skills', isEmail: false },
-    { name: 'Tech Stack', href: '#tech-stack', id: 'tech-stack', isEmail: false },
-    { name: 'Contact', href: '#contact', id: 'contact', isEmail: false } // Changed from email to fragment URL
-  ];
-
-  // Handle click outside to close menu
+  // Handle click outside to close both menus
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
-      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+      // Close navigation menu when clicking outside
+      if (menuRef.current && !menuRef.current.contains(event.target as Node) && isOpen) {
         setIsOpen(false);
+      }
+      
+      // Close job selector dropdown when clicking outside
+      if (jobSelectorRef.current && !jobSelectorRef.current.contains(event.target as Node) && roleDropdownOpen) {
         setRoleDropdownOpen(false);
       }
     }
@@ -53,7 +49,7 @@ export default function MobileNavMenu() {
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, []);
+  }, [isOpen, roleDropdownOpen]);
 
   // Show role selector after scrolling
   useEffect(() => {
@@ -241,6 +237,12 @@ export default function MobileNavMenu() {
     setRoleDropdownOpen(!roleDropdownOpen);
   };
 
+  // Toggle dropdown when title area is clicked
+  const handleTitleAreaClick = (e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent modal close
+    setRoleDropdownOpen(!roleDropdownOpen); // Toggle dropdown regardless of pin state
+  };
+
   // Determine if we should show the typing cursor - copied from desktop
   const showCursor = isTyping || (!titlePinned && showRoleSelector);
 
@@ -251,6 +253,7 @@ export default function MobileNavMenu() {
         <AnimatePresence mode="wait">
           {showRoleSelector && (
             <motion.div 
+              ref={jobSelectorRef}
               initial={{ opacity: 0, y: -20, scale: 0.9 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: -10, scale: 0.95 }}
@@ -404,7 +407,7 @@ export default function MobileNavMenu() {
           )}
         </AnimatePresence>
 
-        {/* Mobile menu button - with same height and alignment - conditionally hidden */}
+        {/* Mobile menu button - conditionally hidden */}
         {!hideNavigation && (
           <div className="ml-auto">
             <motion.button 

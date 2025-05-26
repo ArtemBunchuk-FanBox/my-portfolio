@@ -1,13 +1,14 @@
 /* eslint-disable */
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { FaThumbtack } from 'react-icons/fa';
 import { useJobTitle } from '@/context/JobTitleContext';
 
 export default function MobileJobTitle() {
   const [showMenu, setShowMenu] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
   
-  // Use the shared JobTitle context instead of local state
+  // Use the shared JobTitle context
   const {
     jobTitles,
     titleIndex,
@@ -28,6 +29,20 @@ export default function MobileJobTitle() {
     color: 'transparent',
     textShadow: '0 0 8px rgba(166, 79, 249, 0.3)'
   };
+  
+  // Handle click outside to close the menu
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node) && showMenu) {
+        setShowMenu(false);
+      }
+    }
+    
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showMenu]);
   
   // Select a title and close the menu
   const selectTitle = (index: number) => {
@@ -101,6 +116,7 @@ export default function MobileJobTitle() {
         {/* Dropdown menu - mobile optimized */}
         {showMenu && (
           <motion.div 
+            ref={menuRef}
             className="absolute left-1/2 transform -translate-x-1/2 mt-2 w-64 bg-gray-900/95 border border-gray-700 rounded-md shadow-xl z-30"
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
