@@ -8,7 +8,7 @@ export default function MobileJobTitle() {
   const [showMenu, setShowMenu] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   
-  // Use the shared JobTitle context
+  // Use the shared JobTitle context instead of local state
   const {
     jobTitles,
     titleIndex,
@@ -29,20 +29,6 @@ export default function MobileJobTitle() {
     color: 'transparent',
     textShadow: '0 0 8px rgba(166, 79, 249, 0.3)'
   };
-  
-  // Handle click outside to close the menu
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (menuRef.current && !menuRef.current.contains(event.target as Node) && showMenu) {
-        setShowMenu(false);
-      }
-    }
-    
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [showMenu]);
   
   // Select a title and close the menu
   const selectTitle = (index: number) => {
@@ -70,6 +56,24 @@ export default function MobileJobTitle() {
     
     setShowMenu(false);
   };
+  
+  // Add effect to handle clicks outside of the menu
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setShowMenu(false);
+      }
+    }
+    
+    // Only add the listener if menu is open
+    if (showMenu) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+    
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showMenu]);
 
   return (
     <div className="relative mb-4">
@@ -113,7 +117,7 @@ export default function MobileJobTitle() {
           </span>
         </div>
         
-        {/* Dropdown menu - mobile optimized */}
+        {/* Dropdown menu - mobile optimized, with ref for outside click detection */}
         {showMenu && (
           <motion.div 
             ref={menuRef}

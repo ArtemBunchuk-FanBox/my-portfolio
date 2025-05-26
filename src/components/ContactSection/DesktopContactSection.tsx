@@ -10,10 +10,15 @@ export default function DesktopContactSection() {
   const [message, setMessage] = useState('');
   const [formStatus, setFormStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
   const [mounted, setMounted] = useState(false);
+  const [isFormReady, setIsFormReady] = useState(false);
   
-  // Set mounted to true after component mounts (client-side only)
+  // Set mounted to true when component mounts (client-side only)
   useEffect(() => {
     setMounted(true);
+    // Delay form rendering slightly to avoid hydration mismatch with browser extensions
+    setTimeout(() => {
+      setIsFormReady(true);
+    }, 0);
   }, []);
   
   // Updated submit form handler to use Formspree
@@ -118,7 +123,6 @@ export default function DesktopContactSection() {
               <div className="absolute -bottom-20 -left-20 w-40 h-40 bg-blue-600/20 rounded-full blur-3xl"></div>
               
               <div className="relative z-10">
-                {/* "Drop me a line" placed where "Send me a message" was */}
                 <h3 className="text-xl font-bold mb-6 text-white">Drop me a line.</h3>
                 
                 {mounted && formStatus === 'success' ? (
@@ -130,69 +134,87 @@ export default function DesktopContactSection() {
                     <p className="text-gray-300">I&apos;ll get back to you shortly.</p>
                   </div>
                 ) : (
-                  <form onSubmit={handleSubmit} className="space-y-4">
-                    {/* Form fields with minimal labels */}
-                    <div>
-                      <input
-                        type="text"
-                        id="name"
-                        name="name"
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                        className="w-full px-3 py-2 bg-gray-800/50 border border-gray-700 rounded-md focus:outline-none focus:ring-1 focus:ring-purple-500 text-white text-sm"
-                        placeholder="Your name"
-                        required
-                      />
-                    </div>
-                    
-                    <div>
-                      <input
-                        type="email"
-                        id="email"
-                        name="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        className="w-full px-3 py-2 bg-gray-800/50 border border-gray-700 rounded-md focus:outline-none focus:ring-1 focus:ring-purple-500 text-white text-sm"
-                        placeholder="Email address"
-                        required
-                      />
-                    </div>
-                    
-                    <div>
-                      <textarea
-                        id="message"
-                        name="message"
-                        value={message}
-                        onChange={(e) => setMessage(e.target.value)}
-                        rows={4}
-                        className="w-full px-3 py-2 bg-gray-800/50 border border-gray-700 rounded-md focus:outline-none focus:ring-1 focus:ring-purple-500 text-white resize-none text-sm"
-                        placeholder="Your message"
-                        required
-                      ></textarea>
-                    </div>
-                    
-                    <button
-                      type="submit"
-                      className="w-full flex items-center justify-center gap-2 py-2 px-4 bg-gradient-to-r from-indigo-600 to-blue-600 text-white font-medium rounded-md transition-all text-sm hover:from-indigo-700 hover:to-blue-700"
-                      disabled={formStatus === 'submitting'}
-                    >
-                      {mounted && formStatus === 'submitting' ? (
-                        <>
-                          <span className="animate-spin rounded-full h-4 w-4 border-t-2 border-white"></span>
-                          <span>Sending...</span>
-                        </>
-                      ) : (
-                        <>
-                          <MdSend className="text-lg" />
-                          <span>Send</span>
-                        </>
-                      )}
-                    </button>
-                    
-                    {mounted && formStatus === 'error' && (
-                      <p className="text-red-400 text-center mt-2 text-sm">Something went wrong. Please try again.</p>
+                  <>
+                    {/* Show form placeholder during initial render to avoid hydration errors */}
+                    {!isFormReady && (
+                      <div className="opacity-0 pointer-events-none">
+                        <div className="w-full h-10 bg-gray-800/50 rounded-md mb-4"></div>
+                        <div className="w-full h-10 bg-gray-800/50 rounded-md mb-4"></div>
+                        <div className="w-full h-32 bg-gray-800/50 rounded-md mb-4"></div>
+                        <div className="w-full h-10 bg-gradient-to-r from-indigo-600 to-blue-600 rounded-md"></div>
+                      </div>
                     )}
-                  </form>
+                    
+                    {/* Only show actual form after component is mounted and ready */}
+                    {isFormReady && (
+                      <form 
+                        onSubmit={handleSubmit} 
+                        className="space-y-4"
+                        autoComplete="off" // Discourage browser extensions from modifying
+                      >
+                        <div>
+                          <input
+                            type="text"
+                            id="name-desktop"
+                            name="name"
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
+                            className="w-full px-3 py-2 bg-gray-800/50 border border-gray-700 rounded-md focus:outline-none focus:ring-1 focus:ring-purple-500 text-white text-sm"
+                            placeholder="Your name"
+                            required
+                          />
+                        </div>
+                        
+                        <div>
+                          <input
+                            type="email"
+                            id="email-desktop"
+                            name="email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            className="w-full px-3 py-2 bg-gray-800/50 border border-gray-700 rounded-md focus:outline-none focus:ring-1 focus:ring-purple-500 text-white text-sm"
+                            placeholder="Email address"
+                            required
+                          />
+                        </div>
+                        
+                        <div>
+                          <textarea
+                            id="message-desktop"
+                            name="message"
+                            value={message}
+                            onChange={(e) => setMessage(e.target.value)}
+                            rows={4}
+                            className="w-full px-3 py-2 bg-gray-800/50 border border-gray-700 rounded-md focus:outline-none focus:ring-1 focus:ring-purple-500 text-white resize-none text-sm"
+                            placeholder="Your message"
+                            required
+                          />
+                        </div>
+                        
+                        <button
+                          type="submit"
+                          className="w-full flex items-center justify-center gap-2 py-2 px-4 bg-gradient-to-r from-indigo-600 to-blue-600 text-white font-medium rounded-md transition-all text-sm hover:from-indigo-700 hover:to-blue-700"
+                          disabled={formStatus === 'submitting'}
+                        >
+                          {formStatus === 'submitting' ? (
+                            <>
+                              <span className="animate-spin rounded-full h-4 w-4 border-t-2 border-white"></span>
+                              <span>Sending...</span>
+                            </>
+                          ) : (
+                            <>
+                              <MdSend className="text-lg" />
+                              <span>Send</span>
+                            </>
+                          )}
+                        </button>
+                        
+                        {formStatus === 'error' && (
+                          <p className="text-red-400 text-center mt-2 text-sm">Something went wrong. Please try again.</p>
+                        )}
+                      </form>
+                    )}
+                  </>
                 )}
               </div>
             </div>

@@ -14,9 +14,8 @@ export default function MobileNavMenu() {
   const [textScale, setTextScale] = useState(1);
   const titleContainerRef = useRef<HTMLDivElement>(null);
   const [hideNavigation, setHideNavigation] = useState(false);
-  const jobSelectorRef = useRef<HTMLDivElement>(null);
   
-  // Use the complete job title context
+  // Use the complete job title context - adding back the animation-related properties
   const { 
     titleIndex,
     jobTitles,
@@ -31,25 +30,43 @@ export default function MobileNavMenu() {
   // Get the current title from the index
   const currentTitle = jobTitles[titleIndex];
 
-  // Handle click outside to close both menus
+  // Navigation links with updated formatting
+  const navLinks = [
+    { name: 'Home', href: '#top', id: 'top', isEmail: false },
+    { name: 'Experience', href: '#experience', id: 'experience', isEmail: false },
+    { name: 'Projects', href: '#projects', id: 'projects', isEmail: false },
+    { name: 'Skills', href: '#skills', id: 'skills', isEmail: false },
+    { name: 'Tech Stack', href: '#tech-stack', id: 'tech-stack', isEmail: false },
+    { name: 'Contact', href: '#contact', id: 'contact', isEmail: false }
+  ];
+
+  // Enhanced handle click outside to close menu
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
-      // Close navigation menu when clicking outside
-      if (menuRef.current && !menuRef.current.contains(event.target as Node) && isOpen) {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
         setIsOpen(false);
       }
       
-      // Close job selector dropdown when clicking outside
-      if (jobSelectorRef.current && !jobSelectorRef.current.contains(event.target as Node) && roleDropdownOpen) {
-        setRoleDropdownOpen(false);
+      // Close the role dropdown too when clicking outside
+      if (roleDropdownOpen) {
+        const roleDropdown = document.getElementById('mobile-role-dropdown');
+        const roleButton = document.querySelector('.role-dropdown-button');
+        
+        if (roleDropdown && 
+            roleButton && 
+            !(roleDropdown.contains(event.target as Node) || 
+              roleButton.contains(event.target as Node))) {
+          setRoleDropdownOpen(false);
+        }
       }
     }
 
+    // Add the click event listener to the document
     document.addEventListener('mousedown', handleClickOutside);
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [isOpen, roleDropdownOpen]);
+  }, [roleDropdownOpen]);
 
   // Show role selector after scrolling
   useEffect(() => {
@@ -194,7 +211,12 @@ export default function MobileNavMenu() {
     };
   }, []);
 
-  // Handle role selection
+  // Toggle dropdown when title area is clicked
+  const handleTitleAreaClick = () => {
+    setRoleDropdownOpen(!roleDropdownOpen);
+  };
+
+  // Handle role selection from dropdown
   const selectRole = (role: string) => {
     const index = jobTitles.indexOf(role);
     if (index !== -1) {
@@ -237,12 +259,6 @@ export default function MobileNavMenu() {
     setRoleDropdownOpen(!roleDropdownOpen);
   };
 
-  // Toggle dropdown when title area is clicked
-  const handleTitleAreaClick = (e: React.MouseEvent) => {
-    e.stopPropagation(); // Prevent modal close
-    setRoleDropdownOpen(!roleDropdownOpen); // Toggle dropdown regardless of pin state
-  };
-
   // Determine if we should show the typing cursor - copied from desktop
   const showCursor = isTyping || (!titlePinned && showRoleSelector);
 
@@ -253,7 +269,6 @@ export default function MobileNavMenu() {
         <AnimatePresence mode="wait">
           {showRoleSelector && (
             <motion.div 
-              ref={jobSelectorRef}
               initial={{ opacity: 0, y: -20, scale: 0.9 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: -10, scale: 0.95 }}
@@ -265,14 +280,14 @@ export default function MobileNavMenu() {
               className="absolute left-1/2 transform -translate-x-1/2 top-4 w-[60%] max-w-[250px]"
             >
               <div 
-                className={`flex items-center border rounded-full transition-all duration-500 cursor-pointer h-[42px] ${
+                className={`role-dropdown-button flex items-center border rounded-full transition-all duration-500 cursor-pointer h-[42px] ${
                   titlePinned 
                     ? 'bg-gray-900/80 backdrop-blur-sm border-amber-400/50 shadow-[0_0_8px_rgba(251,191,36,0.3)]' 
                     : roleDropdownOpen
                       ? 'bg-gray-900/80 backdrop-blur-sm border-purple-500/50 shadow-[0_0_8px_rgba(139,92,246,0.3)]'
                       : 'bg-gray-900/80 backdrop-blur-sm border-purple-500/30'
                 }`}
-                onClick={handleTitleClick}
+                onClick={handleTitleAreaClick}
               >
                 {/* User icon at the start - with animation */}
                 <motion.div 
@@ -344,6 +359,7 @@ export default function MobileNavMenu() {
               <AnimatePresence>
                 {roleDropdownOpen && (
                   <motion.div
+                    id="mobile-role-dropdown"
                     initial={{ opacity: 0, height: 0, y: -5 }}
                     animate={{ opacity: 1, height: 'auto', y: 0 }}
                     exit={{ opacity: 0, height: 0, y: -5 }}
@@ -407,7 +423,7 @@ export default function MobileNavMenu() {
           )}
         </AnimatePresence>
 
-        {/* Mobile menu button - conditionally hidden */}
+        {/* Mobile menu button - with same height and alignment - conditionally hidden */}
         {!hideNavigation && (
           <div className="ml-auto">
             <motion.button 
@@ -430,7 +446,7 @@ export default function MobileNavMenu() {
               {isOpen ? <FaTimes size={18} /> : <FaBars size={18} />}
             </motion.button>
             
-            {/* Mobile menu dropdown */}
+            {/* Mobile menu dropdown with ref for outside click detection */}
             <AnimatePresence>
               {isOpen && (
                 <motion.div
