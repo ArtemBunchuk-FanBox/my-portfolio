@@ -1,12 +1,17 @@
 /* eslint-disable */
 "use client";
 
-import { useCallback } from 'react';
+import { useState, useCallback, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { jobTitleToSkills, skillCategories } from '@/data/skills';
 import { useJobTitle } from '@/context/JobTitleContext';
+import { FaChevronDown, FaChevronUp } from 'react-icons/fa';
 
 export default function SkillsSection() {
+  // Add state for expanded skills view
+  const [expandedSkills, setExpandedSkills] = useState(false);
+  const sectionRef = useRef<HTMLElement>(null);
+  
   // Use JobTitleContext directly instead of event listeners
   const {
     titleIndex,
@@ -26,8 +31,47 @@ export default function SkillsSection() {
     return highlightedSkills.includes(skill);
   }, [highlightedSkills]);
 
+  // Function to toggle expanded skills view with scrolling
+  const toggleExpandedSkills = () => {
+    const wasExpanded = expandedSkills;
+    setExpandedSkills(prev => !prev);
+    
+    // If we're collapsing the skills, scroll back to the top of the section
+    if (wasExpanded) {
+      setTimeout(() => {
+        if (sectionRef.current) {
+          sectionRef.current.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+          });
+        }
+      }, 100);
+    }
+  };
+
+  // Determine how many skills to show per category
+  const getVisibleSkills = (skills: string[], category: string) => {
+    if (expandedSkills) {
+      return skills; // Show all when expanded
+    }
+    
+    // Customize number of visible skills based on category
+    if (category === "Languages") return skills.slice(0, 4);
+    if (category === "Frameworks") return skills.slice(0, 3);
+    if (category === "Tools") return skills.slice(0, 3);
+    return skills.slice(0, 4); // Default for other categories
+  };
+
+  // Check if any category has hidden skills
+  const hasHiddenSkills = skillCategories.some(category => {
+    if (category.category === "Languages") return category.skills.length > 4;
+    if (category.category === "Frameworks") return category.skills.length > 3;
+    if (category.category === "Tools") return category.skills.length > 3;
+    return category.skills.length > 4;
+  });
+
   return (
-    <section className="py-8 overflow-visible select-none">
+    <section className="py-8 overflow-visible select-none" ref={sectionRef}>
       <div className="container mx-auto px-4 max-w-5xl select-none">
         <div className="rounded-md border border-white overflow-visible">
           <h2 className="text-3xl font-bold py-4 px-6 border-b border-white text-white bg-gray-800/50 select-none">
@@ -66,7 +110,7 @@ export default function SkillsSection() {
                   </h3>
                   
                   <div className="flex flex-wrap gap-3 select-none">
-                    {category.skills.map((skill) => (
+                    {getVisibleSkills(category.skills, category.category).map((skill) => (
                       <SkillBadge 
                         key={skill} 
                         skill={skill} 
@@ -76,9 +120,57 @@ export default function SkillsSection() {
                         titlePinned={titlePinned}
                       />
                     ))}
+                    
+                    {/* Show "+" indicator with count of hidden skills */}
+                    {!expandedSkills && category.skills.length > 
+                      (category.category === "Languages" ? 4 : 
+                       category.category === "Frameworks" ? 3 : 
+                       category.category === "Tools" ? 3 : 4) && (
+                      <motion.div 
+                        className="px-3 py-2 rounded-md bg-gray-700/80 text-white opacity-80 text-sm font-medium cursor-pointer hover:bg-gray-600/80 transition-colors"
+                        onClick={toggleExpandedSkills}
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.98 }}
+                      >
+                        +{category.skills.length - 
+                          (category.category === "Languages" ? 4 : 
+                           category.category === "Frameworks" ? 3 : 
+                           category.category === "Tools" ? 3 : 4)} more
+                      </motion.div>
+                    )}
                   </div>
                 </div>
               ))}
+              
+              {/* See More/Less Button - Only shown if there are skills to hide/show */}
+              {hasHiddenSkills && (
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.4 }}
+                  className="flex justify-center mt-2 mb-4"
+                >
+                  <motion.button
+                    onClick={toggleExpandedSkills}
+                    className="flex items-center gap-3 px-4 py-2 rounded-full bg-gradient-to-r from-purple-600 to-pink-500 text-white hover:opacity-90 transition-all duration-300 select-none cursor-pointer"
+                    whileTap={{ scale: 0.98 }}
+                  >
+                    <span className="select-none">
+                      {expandedSkills ? "Show Less" : "Show All Skills"}
+                    </span>
+                    <motion.div
+                      animate={{ y: expandedSkills ? [0, -2, 0] : [0, 2, 0] }}
+                      transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut" }}
+                    >
+                      {expandedSkills ? (
+                        <FaChevronUp className="text-sm" />
+                      ) : (
+                        <FaChevronDown className="text-sm" />
+                      )}
+                    </motion.div>
+                  </motion.button>
+                </motion.div>
+              )}
             </div>
           </div>
         </div>
