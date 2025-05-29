@@ -1,33 +1,27 @@
 "use client";
-/* eslint-disable */
-import { useState, useCallback } from 'react';
-import Image from 'next/image';
-import { FaSuitcase, FaExternalLinkAlt, FaTimes } from 'react-icons/fa';
-import { motion, AnimatePresence } from 'framer-motion';
+
+import { useState } from 'react';
 import { 
   workExperience, 
   educationExperience, 
-  jobTitleToResponsibilities, 
-  projectTags,
   Institution 
 } from '@/data/experience';
 import { useJobTitle } from '@/context/JobTitleContext';
-import React from 'react';
+import MobileExperienceTab from './MobileExperienceTab';
+import MobileExperienceTimeline from './MobileExperienceTimeline';
+import MobileInstitutionModal from './MobileInstitutionModal';
 
 export default function MobileExperienceSection() {
   const [activeTab, setActiveTab] = useState<'work' | 'education'>('work');
   const [activeInstitution, setActiveInstitution] = useState<Institution | null>(null);
   const [isChangingTab, setIsChangingTab] = useState(false);
   
-  // Use the JobTitle context directly instead of events
-  const {
-    titleIndex,
-    jobTitles,
-    highlightIntensity,
-    titlePinned
-  } = useJobTitle();
+  // NEW: Add state for "See More" functionality
+  const [showAllWorkExperiences, setShowAllWorkExperiences] = useState(false);
+  const [showAllEducationExperiences, setShowAllEducationExperiences] = useState(false);
   
-  // Get the current job title
+  // Use the JobTitle context
+  const { titleIndex, jobTitles, highlightIntensity, titlePinned } = useJobTitle();
   const currentJobTitle = jobTitles[titleIndex];
 
   // Function to open institution details modal
@@ -36,7 +30,6 @@ export default function MobileExperienceSection() {
     document.body.style.overflow = 'hidden'; // Prevent background scrolling
     
     // Use projectModalStateChange event instead of direct DOM manipulation
-    // This will let the job title remain visible
     const event = new CustomEvent('projectModalStateChange', { 
       detail: { isOpen: true } 
     });
@@ -74,7 +67,7 @@ export default function MobileExperienceSection() {
           roleElement.classList.add('highlight-role-mobile');
           setTimeout(() => roleElement.classList.remove('highlight-role-mobile'), 1500);
         }
-      }, 500); // Increased from 400ms to 500ms for more reliable rendering
+      }, 500);
     }
   };
 
@@ -89,64 +82,6 @@ export default function MobileExperienceSection() {
     });
     document.dispatchEvent(event);
   };
-
-  // Gather all the responsibility points that should be highlighted for this job title
-  const highlightedPoints = React.useMemo(() => {
-    const points: string[] = [];
-    
-    const jobMapping = jobTitleToResponsibilities[currentJobTitle] || {};
-    
-    // For each institution in the mapping
-    Object.keys(jobMapping).forEach(instName => {
-      const institutionMapping = jobMapping[instName];
-      
-      // For each role in this institution
-      Object.keys(institutionMapping).forEach(roleTitle => {
-        // Add all points that should be highlighted
-        const rolePoints = institutionMapping[roleTitle] || [];
-        points.push(...rolePoints);
-      });
-    });
-    
-    return points;
-  }, [currentJobTitle]);
-
-  // Function to check if a responsibility should be highlighted
-  const shouldHighlight = useCallback((responsibility: {text: string, bold: string}) => {
-    // Check if any highlighted point is contained in this responsibility text
-    return highlightedPoints.some(point => 
-      responsibility.text.toLowerCase().includes(point.toLowerCase()));
-  }, [highlightedPoints]);
-
-  // Get style for highlighted points - making relevant points much brighter and others dimmer
-  const getHighlightStyle = useCallback((responsibility: {text: string, bold: string}) => {
-    // Base text opacity values - increased contrast for mobile
-    const baseOpacity = 0.6; // Slightly less dimmed for better readability on small screens
-    const highlightedOpacity = 1.0; // Fully bright text (highlighted)
-    
-    // If this responsibility should be highlighted, make it brighter
-    if (shouldHighlight(responsibility)) {
-      // Use full intensity when pinned
-      const effectiveIntensity = titlePinned ? 1 : highlightIntensity;
-      
-      // Interpolate opacity based on highlight intensity
-      const opacity = baseOpacity + (highlightedOpacity - baseOpacity) * effectiveIntensity;
-      
-      return {
-        opacity: opacity,
-        transition: 'opacity 0.5s ease', // Slightly longer transition for smoother effect
-        // Add subtle text shadow when pinned
-        textShadow: titlePinned ? '0 0 1px rgba(255,255,255,0.1)' : 'none'
-      };
-    } 
-    // Otherwise, dim it more significantly
-    else {
-      return {
-        opacity: baseOpacity,
-        transition: 'opacity 0.5s ease'
-      };
-    }
-  }, [highlightIntensity, shouldHighlight, titlePinned]);
 
   // Enhanced tab switching with animation
   const handleTabChange = (tab: 'work' | 'education') => {
@@ -163,10 +98,74 @@ export default function MobileExperienceSection() {
       setActiveTab(tab);
       setIsChangingTab(false);
       
+      // Reset see more state when switching tabs
+      if (tab === 'work') {
+        setShowAllEducationExperiences(false);
+      } else {
+        setShowAllWorkExperiences(false);
+      }
+      
       // Restore scroll position after a slight delay to ensure render is complete
       setTimeout(() => window.scrollTo(0, scrollPosition), 50);
     }, 300);
   };
+  
+  // NEW: Handle "See More/Less" button click as a toggle
+  const handleSeeMoreClick = () => {
+    if (activeTab === 'work') {
+      setShowAllWorkExperiences(prev => !prev);
+    } else {
+      setShowAllEducationExperiences(prev => !prev);
+    }
+  };
+  
+  // NEW: Get experiences to show based on showAll state
+  const getExperiencesToShow = () => {
+    const currentExperiences = activeTab === 'work' ? workExperience : educationExperience;
+    
+    // For education, respect the showAll state as well
+    const showAll = activeTab === 'work' 
+      ? showAllWorkExperiences 
+      : showAllEducationExperiences;
+    
+    if (showAll) {
+      return currentExperiences; // Show everything
+    } else {
+      // Create a deep copy of the first organization
+      if (currentExperiences.length > 0) {
+        // Create new object to avoid modifying the original
+        const firstOrg = {
+          ...currentExperiences[0],
+          roles: [{ ...currentExperiences[0].roles[0] }] // Only include first role
+        };
+        return [firstOrg];
+      }
+      return [];
+    }
+  };
+  
+  const experiencesToShow = getExperiencesToShow();
+  const showAllCurrent = activeTab === 'work' ? showAllWorkExperiences : showAllEducationExperiences;
+  
+  // NEW: Calculate total hidden content for button text
+  const getTotalHiddenContent = () => {
+    const currentExperiences = activeTab === 'work' ? workExperience : educationExperience;
+    
+    if (currentExperiences.length === 0) return { roles: 0, orgs: 0 };
+    
+    const firstOrg = currentExperiences[0];
+    const hiddenRolesInFirstOrg = firstOrg.roles.length - 1; // Remaining roles in first org
+    const hiddenOrgs = currentExperiences.length - 1; // Remaining organizations
+    
+    let totalHiddenRoles = hiddenRolesInFirstOrg;
+    for (let i = 1; i < currentExperiences.length; i++) {
+      totalHiddenRoles += currentExperiences[i].roles.length;
+    }
+    
+    return { roles: totalHiddenRoles, orgs: hiddenOrgs };
+  };
+  
+  const hiddenContent = getTotalHiddenContent();
 
   return (
     <section className="py-6">
@@ -176,370 +175,39 @@ export default function MobileExperienceSection() {
             Experience
           </h2>
           
-          {/* Tabs - mobile optimized and repositioned */}
           <div className="px-4 pt-4 relative">
-            {/* Simplified tab design - more prominent */}
-            <div className="flex rounded-lg mb-8 overflow-hidden bg-gray-800/80 max-w-xs mx-auto border border-purple-500/60">
-              <button
-                className={`flex-1 py-3 px-4 font-semibold text-center relative transition-all duration-300 text-white text-base`}
-                onClick={(e) => {
-                  e.preventDefault();
-                  handleTabChange('work');
-                }}
-                style={{ 
-                  background: activeTab === 'work' 
-                    ? 'linear-gradient(90deg, #a64ff9 0%, #8226e3 50%, #c0392b 100%)' 
-                    : 'transparent',
-                  boxShadow: activeTab === 'work' ? '0 4px 12px rgba(166, 79, 249, 0.4)' : 'none'
-                }}
-              >
-                Work
-              </button>
-              <button
-                className={`flex-1 py-3 px-4 font-semibold text-center relative transition-all duration-300 text-white text-base`}
-                onClick={(e) => {
-                  e.preventDefault();
-                  handleTabChange('education');
-                }}
-                style={{ 
-                  background: activeTab === 'education' 
-                    ? 'linear-gradient(270deg, #a64ff9 0%, #8226e3 50%, #c0392b 100%)' // Changed to 270deg (right to left)
-                    : 'transparent',
-                  boxShadow: activeTab === 'education' ? '0 4px 12px rgba(166, 79, 249, 0.4)' : 'none'
-                }}
-              >
-                Education
-              </button>
-            </div>
+            {/* Tab selector component */}
+            <MobileExperienceTab 
+              activeTab={activeTab}
+              handleTabChange={handleTabChange}
+            />
             
-            {/* Completely redesigned timeline content with improved transitions */}
-            <div className="pb-4 min-h-[200px]"> {/* Added min-height to prevent layout shift */}
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={activeTab}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                  transition={{ duration: 0.3 }}
-                  className={`${isChangingTab ? 'pointer-events-none' : ''}`}
-                >
-                  {/* Experience items with clearer layout */}
-                  <div className="space-y-10">
-                    {(activeTab === 'work' ? workExperience : educationExperience).map((institution, index) => (
-                      <div key={`${institution.name}-${index}`} className="bg-gray-800/30 rounded-lg border border-purple-500/20 overflow-hidden">
-                        {/* Institution logo aligned to the left - now clickable */}
-                        <div 
-                          className="flex justify-start pl-2 pt-4 pb-2"
-                          onClick={() => openInstitutionDetails(institution)}
-                        >
-                          <div className="w-[60px] h-[60px] rounded-full overflow-hidden flex items-center justify-center border-2 border-white/70 bg-white/10 cursor-pointer hover:border-purple-500/70 transition-all duration-300">
-                            {institution.logo ? (
-                              <Image
-                                src={institution.logo}
-                                alt={institution.name}
-                                width={60}
-                                height={60}
-                                style={{ objectFit: 'contain' }}
-                              />
-                            ) : (
-                              <FaSuitcase className="w-8 h-8 text-white" />
-                            )}
-                          </div>
-                        </div>
-                        
-                        {/* List all roles with improved spacing and readability */}
-                        <div className="px-4 pb-4">
-                          {institution.roles.map((role, roleIndex) => {
-                            // Check if this role has highlighted points for the current job title
-                            const hasHighlightedPoints = jobTitleToResponsibilities[currentJobTitle]?.[institution.name]?.[role.title]?.length > 0;
-                            
-                            return (
-                              <div 
-                                key={`${role.title}-${roleIndex}`} 
-                                className={`mb-6 ${roleIndex > 0 ? 'pt-5 border-t border-white/10' : ''}`}
-                              >
-                                {/* Organization name without period */}
-                                <div className="mb-3">
-                                  <div className="flex-1 min-w-0">
-                                    {/* Make company name clickable to open modal */}
-                                    <span 
-                                      className="text-white hover:text-white/80 transition-colors text-sm font-medium cursor-pointer inline-block"
-                                      onClick={() => roleIndex === 0 
-                                        ? openInstitutionDetails(institution) // First role - open modal without scrolling
-                                        : openInstitutionDetails(institution, roleIndex) // Other roles - scroll to specific role
-                                      }
-                                    >
-                                      {institution.name}
-                                      <FaExternalLinkAlt className="text-[10px] opacity-70 ml-1 inline-block align-baseline" />
-                                    </span>
-                                  </div>
-                                </div>
-                                
-                                {/* Period above title - aligned to left */}
-                                <div className="text-gray-300 text-sm mb-1">
-                                  {role.period}
-                                </div>
-                                
-                                {/* Title with larger font size */}
-                                <div className="mb-3">
-                                  <h3
-                                    className="text-xl font-bold break-words active:opacity-70 transition-opacity cursor-pointer leading-tight"
-                                    style={{
-                                      background: 'linear-gradient(90deg, #a64ff9 0%, #8226e3 50%, #c0392b 100%)',
-                                      WebkitBackgroundClip: 'text',
-                                      WebkitTextFillColor: 'transparent',
-                                      backgroundClip: 'text',
-                                      color: 'transparent'
-                                    }}
-                                    onClick={() => openInstitutionDetails(institution, roleIndex)}
-                                  >
-                                    {role.title}
-                                    <FaExternalLinkAlt className="inline-block ml-1.5 text-[10px] opacity-50" />
-                                  </h3>
-                                </div>
-                                
-                                {/* Add role summary - NEW ADDITION */}
-                                {role.summary && (
-                                  <p className="text-gray-300 text-sm mb-3 leading-relaxed">
-                                    {role.summary}
-                                  </p>
-                                )}
-                                
-                                {/* If no summary but has responsibilities, add less bottom margin */}
-                                {!role.summary && role.responsibilities.length > 0 && (
-                                  <div className="mb-1"></div>
-                                )}
-                                
-                                {/* Responsibilities - larger text for better readability */}
-                                {role.responsibilities.length > 0 && (
-                                  <ul className="space-y-2 text-gray-200 text-sm">
-                                    {role.responsibilities.map((responsibility, respIndex) => (
-                                      <li 
-                                        key={`resp-${respIndex}`}
-                                        className="flex transition-all duration-300 mb-1.5"
-                                        style={getHighlightStyle(responsibility)}
-                                      >
-                                        <span className="inline-block flex-shrink-0 w-4 mr-1.5 text-center">•</span>
-                                        <span className="flex-1">
-                                          {responsibility.bold ? (
-                                            <>
-                                              <span className="font-bold">{responsibility.bold}</span>
-                                              {responsibility.text.substring(responsibility.bold.length)}
-                                            </>
-                                          ) : (
-                                            responsibility.text
-                                          )}
-                                        </span>
-                                      </li>
-                                    ))}
-                                  </ul>
-                                )}
-                                
-                                {/* Project tags with improved styling */}
-                                {role.title.includes('NFTVue') && (
-                                  <div className="mt-3 flex gap-2 flex-wrap">
-                                    {projectTags.map((tag) => (
-                                      <a
-                                        key={tag.name}
-                                        href={tag.url}
-                                        className="px-3 py-1 text-sm border border-purple-500/30 rounded-md text-white hover:bg-purple-500/20 transition-colors inline-flex items-center gap-1 bg-gray-800/30"
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                      >
-                                        <span className="mr-1">🔗</span> {tag.name}
-                                      </a>
-                                    ))}
-                                  </div>
-                                )}
-                              </div>
-                            );
-                          })}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </motion.div>
-              </AnimatePresence>
-            </div>
+            {/* Timeline content component with new props */}
+            <MobileExperienceTimeline
+              activeTab={activeTab}
+              isChangingTab={isChangingTab}
+              openInstitutionDetails={openInstitutionDetails}
+              currentJobTitle={currentJobTitle}
+              highlightIntensity={highlightIntensity}
+              titlePinned={titlePinned}
+              experiencesToShow={experiencesToShow}
+              showAllCurrent={showAllCurrent}
+              handleSeeMoreClick={handleSeeMoreClick}
+              hiddenContent={hiddenContent}
+            />
           </div>
         </div>
       </div>
 
-      {/* Institution details modal - with proper scrolling enabled */}
-      <AnimatePresence>
-        {activeInstitution && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.25 }}
-            className="fixed inset-0 z-[9999] overflow-y-auto bg-black/95" // Changed overflow-hidden back to overflow-y-auto
-            onClick={closeInstitutionDetails}
-          >
-            <motion.div
-              initial={{ y: 50, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              exit={{ y: 50, opacity: 0 }}
-              transition={{ type: 'spring', stiffness: 400, damping: 35 }}
-              className="relative bg-gradient-to-b from-gray-900 to-black min-h-screen w-full border-0 pt-16" // Removed overflow-hidden
-              onClick={e => e.stopPropagation()}
-            >
-              {/* Close button matched to job title button size and styling */}
-              <motion.button
-                className="fixed top-4 right-4 z-[10000] w-[42px] h-[42px] flex items-center justify-center rounded-full bg-black/70 backdrop-blur-sm text-white shadow-lg border border-purple-500/30 active:scale-95 transition-all hover:bg-black/80"
-                onClick={closeInstitutionDetails}
-                whileHover={{ scale: 1.05, boxShadow: '0 0 8px rgba(139, 92, 246, 0.5)' }}
-                whileTap={{ scale: 0.95 }}
-                aria-label="Close modal"
-              >
-                <FaTimes size={18} />
-              </motion.button>
-              
-              {/* Hero image section - moved up to eliminate gap */}
-              <div className="h-48 relative w-full overflow-hidden border-0 -mt-16"> {/* Added negative margin to pull up */}
-                {activeInstitution.bannerImage ? (
-                  <Image
-                    src={activeInstitution.bannerImage}
-                    alt={activeInstitution.name}
-                    fill
-                    style={{ objectFit: 'cover' }}
-                    quality={95}
-                    priority
-                    className="brightness-90"
-                  />
-                ) : (
-                  <div className="w-full h-full bg-gradient-to-r from-purple-900 to-indigo-900 flex items-center justify-center">
-                    {activeInstitution.logo && (
-                      <div className="w-24 h-24 relative">
-                        <Image
-                          src={activeInstitution.logo}
-                          alt={activeInstitution.name}
-                          fill
-                          style={{ objectFit: 'contain' }}
-                        />
-                      </div>
-                    )}
-                  </div>
-                )}
-                <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/80 to-transparent"></div>
-              </div>
-              
-              {/* Company content with mobile-optimized layout */}
-              <div className="px-5 py-6 relative z-10 pb-24"> {/* Added more bottom padding */}
-                {/* Title section with proper background and styling */}
-                <div className="mb-6 pb-6 border-b border-gray-800 flex flex-col">
-                  <h2
-                    className="text-3xl font-bold mb-3"
-                    style={{
-                      background: 'linear-gradient(90deg, #a64ff9 0%, #8226e3 50%, #c0392b 100%)',
-                      WebkitBackgroundClip: 'text',
-                      WebkitTextFillColor: 'transparent',
-                      backgroundClip: 'text',
-                      color: 'transparent'
-                    }}
-                  >
-                    {activeInstitution.name}
-                  </h2>
-                  
-                  {/* External link button if available */}
-                  {activeInstitution.link && (
-                    <a
-                      href={activeInstitution.link}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-gray-800/80 text-white hover:bg-gray-700 transition-all duration-300 self-start"
-                      onClick={(e) => e.stopPropagation()}
-                    >
-                      <span>Website</span>
-                      <FaExternalLinkAlt size={12} />
-                    </a>
-                  )}
-                </div>
-
-                {/* Company overview */}
-                {activeInstitution.description && (
-                  <div className="mb-6 pb-6 border-b border-gray-800">
-                    <h3 className="text-base uppercase text-gray-200 font-medium mb-3">BACKGROUND</h3>
-                    <div className="bg-gray-800/30 border-l-2 border-purple-500/40 pl-4 py-3 pr-3 rounded-r-sm">
-                      <p className="text-gray-300 text-sm leading-relaxed">
-                        {activeInstitution.description}
-                      </p>
-                    </div>
-                  </div>
-                )}
-
-                {/* Roles section */}
-                <div className="mb-6">
-                  <h3 className="text-base uppercase text-gray-200 font-medium mb-3">
-                    {activeTab === 'work' ? 'ROLES & ACHIEVEMENTS' : 'QUALIFICATIONS & RESEARCH'}
-                  </h3>
-                  
-                  <div className="space-y-8">
-                    {activeInstitution.roles.map((role, roleIndex) => (
-                      <div 
-                        key={`mobile-modal-role-${roleIndex}`} 
-                        id={`mobile-modal-role-${roleIndex}`}
-                        className="bg-gray-800/30 border-l-2 border-purple-500/40 pl-4 py-3 pr-3 rounded-r-sm transition-all duration-500"
-                      >
-                        {/* Period and title - fixed layout with top alignment */}
-                        <div className="mb-3 flex justify-between items-start">
-                          <div className="flex-1 min-w-0 pr-2">
-                            <h4
-                              className="text-xl font-bold break-words"
-                              style={{
-                                background: 'linear-gradient(90deg, #a64ff9 0%, #8226e3 50%, #c0392b 100%)',
-                                WebkitBackgroundClip: 'text',
-                                WebkitTextFillColor: 'transparent',
-                                backgroundClip: 'text',
-                                color: 'transparent'
-                              }}
-                            >
-                              {role.title}
-                            </h4>
-                          </div>
-                          <div className="text-gray-400 text-sm whitespace-nowrap flex-shrink-0 pt-1">
-                            {role.period}
-                          </div>
-                        </div>
-                        
-                        {/* Add role summary in modal - NEW ADDITION */}
-                        {role.summary && (
-                          <p className="text-gray-300 mb-3 text-sm">
-                            {role.summary}
-                          </p>
-                        )}
-                        
-                        {/* Responsibilities with highlighting applied */}
-                        <ul className="space-y-1 text-gray-300 text-sm">
-                          {role.responsibilities.map((responsibility, respIndex) => (
-                            <li 
-                              key={`modal-resp-${roleIndex}-${respIndex}`}
-                              className="flex transition-all duration-300 mb-1.5"
-                              style={getHighlightStyle(responsibility)}
-                            >
-                              <span className="inline-block flex-shrink-0 w-4 mr-1.5 text-center">•</span>
-                              <span className="flex-1">
-                                {responsibility.bold ? (
-                                  <>
-                                    <span className="font-bold">{responsibility.bold}</span>
-                                    {responsibility.text.substring(responsibility.bold.length)}
-                                  </>
-                                ) : (
-                                  responsibility.text
-                                )}
-                              </span>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {/* Institution details modal component */}
+      <MobileInstitutionModal
+        activeInstitution={activeInstitution}
+        closeInstitutionDetails={closeInstitutionDetails}
+        activeTab={activeTab}
+        currentJobTitle={currentJobTitle}
+        highlightIntensity={highlightIntensity}
+        titlePinned={titlePinned}
+      />
 
       {/* Enhanced style tag with transition effects */}
       <style jsx global>{`

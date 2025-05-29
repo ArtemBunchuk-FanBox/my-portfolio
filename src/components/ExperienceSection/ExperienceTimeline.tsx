@@ -1,6 +1,6 @@
 import React, { useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Institution } from '@/data/experience';
+import { Institution, workExperience } from '@/data/experience';
 import ExperienceItem from './ExperienceItem';
 import { FaChevronDown, FaChevronUp } from 'react-icons/fa';
 
@@ -68,9 +68,7 @@ export default function ExperienceTimeline({
   const getNextRole = () => {
     if (activeTab !== 'work' || showAllCurrent) return null;
     
-    // Import full experience data
-    const { workExperience } = require('@/data/experience');
-    
+    // Use imported workExperience instead of require
     if (experiencesToShow.length === 1 && experiencesToShow[0].roles.length === 1) {
       const firstInstitution = workExperience[0];
       
