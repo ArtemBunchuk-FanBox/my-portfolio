@@ -6,15 +6,15 @@
 export const profileConfig = {
   // Personal information
   name: "Artem Bunchuk",
-  location: "", // Leave empty if you don't want to display location
+  location: "",
   
   // Resume and social media links
-  resumeUrl: "/your-resume.pdf",
-  linkedinUrl: "https://linkedin.com/in/yourprofile",
-  githubUrl: "https://github.com/yourusername",
-  emailAddress: "your.email@example.com",
-  blogUrl: "https://your-cooking-blog.com",
-  blogName: "Artichoks - My Cooking Blog",
+  resumeUrl: "/Artem_Bunchuk_CV.pdf",
+  linkedinUrl: "https://www.linkedin.com/in/artem-bunchuk-4023b6143/",
+  githubUrl: "https://github.com/ArtemBunchuk-FanBox",
+  emailAddress: "artem.cheshire@gmail.com",
+  blogUrl: "articooks.com",
+  blogName: "Articooks - My Cooking Blog",
   
   // Job titles for the rotating display
   jobTitles: [

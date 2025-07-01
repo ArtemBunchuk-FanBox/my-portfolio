@@ -38,7 +38,7 @@ export const workExperience: Institution[] = [
     period: '',
     roles: [
       {
-        title: 'Head of Operations',
+        title: 'Director of Research, Strategy & Operations',
         period: 'Jul 2023 - Present',
         summary: 'Led day-to-day operations and strategic planning for a 30-person workforce across multiple departments, including full-time, part-time, and freelance staff. Partnered directly with founders to shape company direction, identify new business opportunities, and translate vision into actionable roadmaps.',
         responsibilities: [
@@ -331,7 +331,7 @@ export const projectTags = [
 export const jobTitleToResponsibilities: JobTitleResponsibilityMap = {
   "Strategy Director": {
     "Fanbox": {
-      "Head of Operations": [
+      "Director of Research, Strategy & Operations": [
         "Spearheaded AI integration across consumer-facing products and internal productivity tools, driving both user engagement and operational efficiency.",
         "Designed pricing frameworks and cost models across consumer products and client deliverables, balancing engagement, scalability, and profitability.",
         "Founded and led the Content Department, overseeing B2B and B2C strategy across social channels."
@@ -375,7 +375,7 @@ export const jobTitleToResponsibilities: JobTitleResponsibilityMap = {
   },
   "VP of Product": {
     "Fanbox": {
-      "Head of Operations": [
+      "Director of Research, Strategy & Operations": [
         "Spearheaded AI integration across consumer-facing products and internal productivity tools, driving both user engagement and operational efficiency.",
         "Introduced automation workflows across analytics, invoicing, and reporting, cutting repetitive admin time and streamlining freelancer payments.",
         "Designed pricing frameworks and cost models across consumer products and client deliverables, balancing engagement, scalability, and profitability.",
@@ -408,7 +408,7 @@ export const jobTitleToResponsibilities: JobTitleResponsibilityMap = {
   },
   "Innovation Lead": {
     "Fanbox": {
-      "Head of Operations": [
+      "Director of Research, Strategy & Operations": [
         "Spearheaded AI integration across consumer-facing products and internal productivity tools, driving both user engagement and operational efficiency.",
         "Introduced automation workflows across analytics, invoicing, and reporting, cutting repetitive admin time and streamlining freelancer payments.",
         "Launched 'Tech Grooming Tuesdays,' reducing development backlog by 22% and increasing issue resolution speed by 28%."
@@ -435,7 +435,7 @@ export const jobTitleToResponsibilities: JobTitleResponsibilityMap = {
   },
   "Chief of Staff": {
     "Fanbox": {
-      "Head of Operations": [
+      "Director of Research, Strategy & Operations": [
         "Designed pricing frameworks and cost models across consumer products and client deliverables, balancing engagement, scalability, and profitability.",
         "Founded and led the Content Department, overseeing B2B and B2C strategy across social channels.",
         "Conducted risk assessments and implemented contingency plans, strengthening company resilience and ensuring business continuity.",
@@ -473,7 +473,7 @@ export const jobTitleToResponsibilities: JobTitleResponsibilityMap = {
   },
   "Research Director": {
     "Fanbox": {
-      "Head of Operations": [
+      "Director of Research, Strategy & Operations": [
         "Spearheaded AI integration across consumer-facing products and internal productivity tools, driving both user engagement and operational efficiency."
       ],
       "Head of Research, Insights & Audience Activation": [
@@ -508,7 +508,7 @@ export const jobTitleToResponsibilities: JobTitleResponsibilityMap = {
   },
   "VP of Marketing": {
     "Fanbox": {
-      "Head of Operations": [
+      "Director of Research, Strategy & Operations": [
         "Designed pricing frameworks and cost models across consumer products and client deliverables, balancing engagement, scalability, and profitability.",
         "Founded and led the Content Department, overseeing B2B and B2C strategy across social channels."
       ],
@@ -542,7 +542,7 @@ export const jobTitleToResponsibilities: JobTitleResponsibilityMap = {
   },
   "Insights Director": {
     "Fanbox": {
-      "Head of Operations": [
+      "Director of Research, Strategy & Operations": [
         "Spearheaded AI integration across consumer-facing products and internal productivity tools, driving both user engagement and operational efficiency.",
         "Introduced automation workflows across analytics, invoicing, and reporting, cutting repetitive admin time and streamlining freelancer payments."
       ],
