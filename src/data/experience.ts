@@ -471,7 +471,7 @@ export const jobTitleToResponsibilities: JobTitleResponsibilityMap = {
       "Freelance Research Consultant": []
     }
   },
-  "Head of Research": {
+  "Research Director": {
     "Fanbox": {
       "Head of Operations": [
         "Spearheaded AI integration across consumer-facing products and internal productivity tools, driving both user engagement and operational efficiency."

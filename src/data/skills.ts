@@ -120,7 +120,7 @@ export const jobTitleToSkills: JobTitleSkillMap = {
   "Influencer Marketing",
     "Experimental Design"
   ],
-"Head of Research": [
+"Research Director": [
   "Risk and Resilience",
   "Data-Driven Decision Making",
   "Data Visualization", 
@@ -218,6 +218,30 @@ export const jobTitleToSkills: JobTitleSkillMap = {
   "Visual Communication",
   "Brand Strategy",
   "Content Strategy"
+],
+"Head of Operations": [
+  "Team Building",
+  "Stakeholder Management", 
+  "Project Roadmapping",
+  "Data-Driven Decision Making",
+  "Budget Planning",
+  "Risk and Resilience",
+  "Mentoring & Coaching",
+  "Go-to-Market Planning",
+  "Business Development",
+  "Automation",
+  "Technology Evaluation",
+  "Technical Project Management",
+  "AI Integration",
+  "Stakeholder Presentations",
+  "Executive Reporting",
+  "Cross-Functional Collaboration",
+  "Strategic Storytelling",
+  "Negotiation",
+  "Team Alignment",
+  "Conflict Resolution",
+  "Content Strategy",
+  "Brand Strategy"
 ],
 "Dungeon Master": [
   "Creative Direction",

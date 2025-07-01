@@ -159,8 +159,9 @@ export const jobTitleToTech: Record<string, string[]> = {
   "Strategy Director": ['JavaScript', 'TypeScript', 'React', 'Node.JS', 'MongoDB', 'Git', 'GitHub', 'Tableau', 'Advanced Excel'],
   "VP of Product": ['JavaScript', 'TypeScript', 'React', 'Node.JS', 'MongoDB', 'Git', 'GitHub', 'Next.JS', 'Tailwind CSS'],
   "Innovation Lead": ['JavaScript', 'TypeScript', 'Python', 'React', 'Vue.JS', 'Next.JS', 'Node.JS', 'MongoDB', 'MySQL', 'AWS', 'Git', 'GitHub', 'OpenAI API', 'Hugging Face'],
-  "Head of Research": ['JavaScript', 'Python', 'R', 'MATLAB', 'SPSS', 'Tableau', 'Power BI', 'MongoDB', 'MySQL', 'Advanced Excel'],
+  "Research Director": ['JavaScript', 'Python', 'R', 'MATLAB', 'SPSS', 'Tableau', 'Power BI', 'MongoDB', 'MySQL', 'Advanced Excel'],
   "VP of Marketing": ['WordPress', 'Elementor', 'Photoshop', 'Illustrator', 'Premier Pro', 'PowerPoint'],
   "Insights Director": ['JavaScript', 'Python', 'R', 'SQL', 'Tableau', 'Power BI', 'MongoDB', 'MySQL'],
+  "Head of Operations": ['JavaScript', 'TypeScript', 'React', 'Node.JS', 'MongoDB', 'Git', 'GitHub', 'Advanced Excel', 'Tableau', 'AI Integration'],
   "Chief of Staff": ['Advanced Excel', 'PowerPoint']
 };
