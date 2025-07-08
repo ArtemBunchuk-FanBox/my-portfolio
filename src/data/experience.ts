@@ -42,6 +42,11 @@ export const workExperience: Institution[] = [
         period: 'Jul 2023 - Present',
         summary: 'Led day-to-day operations and strategic planning for a 30-person workforce across multiple departments, including full-time, part-time, and freelance staff. Partnered directly with founders to shape company direction, identify new business opportunities, and translate vision into actionable roadmaps.',
         responsibilities: [
+  
+          {
+            text: 'Oversaw end-to-end research operations from design through execution across creative testing, social listening, and audience segmentation studies, acting as primary point of contact and delivering actionable insights to key studio partners\' research, insights, and media teams.',
+            bold: 'Oversaw end-to-end research operations'
+          },
           {
             text: 'Spearheaded AI integration across consumer-facing products and internal productivity tools, driving both user engagement and operational efficiency.',
             bold: 'Spearheaded AI integration'
@@ -332,6 +337,7 @@ export const jobTitleToResponsibilities: JobTitleResponsibilityMap = {
   "Strategy Director": {
     "Fanbox": {
       "Director of Research, Strategy & Operations": [
+        "Oversaw end-to-end research operations from design through execution across creative testing, social listening, and audience segmentation studies, acting as primary point of contact and delivering actionable insights to key studio partners' research, insights, and media teams.",
         "Spearheaded AI integration across consumer-facing products and internal productivity tools, driving both user engagement and operational efficiency.",
         "Designed pricing frameworks and cost models across consumer products and client deliverables, balancing engagement, scalability, and profitability.",
         "Founded and led the Content Department, overseeing B2B and B2C strategy across social channels."
@@ -376,6 +382,7 @@ export const jobTitleToResponsibilities: JobTitleResponsibilityMap = {
   "VP of Product": {
     "Fanbox": {
       "Director of Research, Strategy & Operations": [
+        "Oversaw end-to-end research operations from design through execution across creative testing, social listening, and audience segmentation studies, acting as primary point of contact and delivering actionable insights to key studio partners' research, insights, and media teams.",
         "Spearheaded AI integration across consumer-facing products and internal productivity tools, driving both user engagement and operational efficiency.",
         "Introduced automation workflows across analytics, invoicing, and reporting, cutting repetitive admin time and streamlining freelancer payments.",
         "Designed pricing frameworks and cost models across consumer products and client deliverables, balancing engagement, scalability, and profitability.",
@@ -436,6 +443,7 @@ export const jobTitleToResponsibilities: JobTitleResponsibilityMap = {
   "Chief of Staff": {
     "Fanbox": {
       "Director of Research, Strategy & Operations": [
+        "Oversaw end-to-end research operations from design through execution across creative testing, social listening, and audience segmentation studies, acting as primary point of contact and delivering actionable insights to key studio partners' research, insights, and media teams.",
         "Designed pricing frameworks and cost models across consumer products and client deliverables, balancing engagement, scalability, and profitability.",
         "Founded and led the Content Department, overseeing B2B and B2C strategy across social channels.",
         "Conducted risk assessments and implemented contingency plans, strengthening company resilience and ensuring business continuity.",
@@ -474,6 +482,7 @@ export const jobTitleToResponsibilities: JobTitleResponsibilityMap = {
   "Research Director": {
     "Fanbox": {
       "Director of Research, Strategy & Operations": [
+        "Oversaw end-to-end research operations from design through execution across creative testing, social listening, and audience segmentation studies, acting as primary point of contact and delivering actionable insights to key studio partners' research, insights, and media teams.",
         "Spearheaded AI integration across consumer-facing products and internal productivity tools, driving both user engagement and operational efficiency."
       ],
       "Head of Research, Insights & Audience Activation": [
@@ -543,6 +552,7 @@ export const jobTitleToResponsibilities: JobTitleResponsibilityMap = {
   "Insights Director": {
     "Fanbox": {
       "Director of Research, Strategy & Operations": [
+        "Oversaw end-to-end research operations from design through execution across creative testing, social listening, and audience segmentation studies, acting as primary point of contact and delivering actionable insights to key studio partners' research, insights, and media teams.",
         "Spearheaded AI integration across consumer-facing products and internal productivity tools, driving both user engagement and operational efficiency.",
         "Introduced automation workflows across analytics, invoicing, and reporting, cutting repetitive admin time and streamlining freelancer payments."
       ],
