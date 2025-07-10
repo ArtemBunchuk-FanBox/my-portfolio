@@ -215,7 +215,7 @@ export const workExperience: Institution[] = [
     roles: [
       {
         title: 'International Business Development Director',
-        period: '10/2016 - 04/2018',
+        period: 'Oct 2016 - Apr 2018',
         summary: 'Led international operations and supplier partnerships, managing relationships with global manufacturers and technology partners to support industrial modernization and expansion.',
         responsibilities: [
           {
